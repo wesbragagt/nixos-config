@@ -35,8 +35,11 @@
     isNormalUser = true;
     description = "wesbragagt";
     extraGroups = [ "networkmanager" "wheel" "video" "audio" ];
+    shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFOS29+SNkpKHCMcaonfqERiIr/xKPuxu4sVv5yyIG33 wesbragagt@mac" ];
   };
+
+  programs.zsh.enable = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.gc = {

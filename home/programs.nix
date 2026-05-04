@@ -47,6 +47,36 @@
     '';
   };
 
+  programs.zsh = {
+    enable = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+    enableCompletion = true;
+    historySubstringSearch.enable = true;
+    history = {
+      size = 50000;
+      save = 50000;
+      ignoreDups = true;
+      share = true;
+      extended = true;
+    };
+    shellAliases = {
+      ll = "ls -lah";
+      gs = "git status";
+    };
+    initContent = ''
+      rebuild() {
+        sudo nixos-rebuild switch --impure --flake ~/nixos-config#"$(hostname)" "$@"
+      }
+    '';
+  };
+
+  programs.starship = {
+    enable = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+  };
+
   programs.tmux = {
     enable = true;
     keyMode = "vi";
