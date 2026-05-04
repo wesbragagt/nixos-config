@@ -10,7 +10,7 @@
 
       monitor = ",preferred,auto,1";
 
-      exec-once = [ "waybar" ];
+      exec-once = [ "waybar" "nm-applet --indicator" ];
 
       input = {
         kb_layout = "us";

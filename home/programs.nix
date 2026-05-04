@@ -6,6 +6,8 @@
     grim
     slurp
     wl-clipboard
+    networkmanagerapplet
+    iwgtk
   ];
 
   programs.chromium = {
@@ -27,10 +29,6 @@
 
   programs.foot = {
     enable = true;
-    settings = {
-      main = {
-        font = "JetBrainsMono Nerd Font:size=12";
-      };
-    };
+    settings.main.font = "JetBrainsMono Nerd Font:size=12";
   };
 }
