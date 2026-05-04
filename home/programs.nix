@@ -103,6 +103,9 @@
     historyLimit = 50000;
     baseIndex = 1;
     mouse = true;
+    extraConfig = ''
+      set-option -g status-position top
+    '';
   };
   programs.rofi = {
     enable = true;
