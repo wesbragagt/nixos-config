@@ -1,5 +1,5 @@
 {
-  description = "nixos-hp system configuration";
+  description = "wesbragagt's NixOS + home-manager flake (multi-host)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
@@ -13,21 +13,36 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, zen-browser, ... }@inputs: {
-    nixosConfigurations.nixos-hp = nixpkgs.lib.nixosSystem {
+  outputs = { self, nixpkgs, home-manager, zen-browser, ... }@inputs:
+    let
       system = "x86_64-linux";
-      specialArgs = { inherit inputs; };
-      modules = [
-        ./configuration.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "hm-bak";
-          home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.users.wesbragagt = import ./home/wesbragagt.nix;
-        }
-      ];
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+    in {
+      nixosConfigurations.nixos-hp = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./hosts/nixos-hp
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.backupFileExtension = "hm-bak";
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.users.wesbragagt = import ./home/wesbragagt.nix;
+          }
+        ];
+      };
+
+      # Standalone home-manager for non-NixOS Linux machines.
+      # Apply with: nix run home-manager/master -- switch --flake .#wesbragagt
+      homeConfigurations.wesbragagt = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        extraSpecialArgs = { inherit inputs; };
+        modules = [ ./home/wesbragagt.nix ];
+      };
     };
-  };
 }

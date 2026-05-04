@@ -2,7 +2,6 @@
 
 {
   imports = [
-    ./hardware-configuration.nix
     ./modules/graphics.nix
     ./modules/audio.nix
     ./modules/fonts.nix
@@ -11,14 +10,7 @@
     ./modules/keyboard.nix
   ];
 
-  # Bootloader
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  networking.hostName = "nixos-hp";
   networking.networkmanager.enable = true;
-
   time.timeZone = "America/Chicago";
 
   i18n.defaultLocale = "en_US.UTF-8";
@@ -65,6 +57,4 @@
 
   services.openssh.enable = true;
   security.sudo.wheelNeedsPassword = false;
-
-  system.stateVersion = "25.11";
 }
