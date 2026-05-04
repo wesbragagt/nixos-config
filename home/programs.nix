@@ -42,8 +42,7 @@
     enable = true;
     initExtra = ''
       rebuild() {
-        ( cd ~/nixos-config && git add -A ) && \
-          sudo nixos-rebuild switch --flake ~/nixos-config#"$(hostname)" "$@"
+        sudo nixos-rebuild switch --impure --flake ~/nixos-config#"$(hostname)" "$@"
       }
     '';
   };
