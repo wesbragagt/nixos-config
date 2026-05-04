@@ -147,9 +147,6 @@
       bind-key -T copy-mode-vi 'C-l' select-pane -R
       bind-key -T copy-mode-vi 'C-\' select-pane -l
 
-      # Detect harlequin and free C-j for query execution.
-      set-hook -g pane-focus-in 'if-shell "[[ #{pane_current_command} == harlequin ]]" "unbind -n C-j" "bind -n C-j send-keys C-j"'
-
       bind C-p display-popup "zsh"
 
       # sesh + fzf session picker
