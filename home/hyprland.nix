@@ -6,16 +6,23 @@
       "\$mod" = "SUPER";
       "\$term" = "kitty";
       "\$browser" = "chromium";
-      "\$menu" = "wofi --show drun";
+      "\$menu" = "rofi-freq";
 
       monitor = ",preferred,auto,1";
 
-      exec-once = [ "waybar" "nm-applet --indicator" ];
+      cursor.no_hardware_cursors = true;
+
+      env = [
+        "XCURSOR_THEME,capitaine-cursors"
+        "XCURSOR_SIZE,24"
+      ];
+
+      exec-once = [ "waybar" "nm-applet --indicator" "nwg-dock-hyprland -p bottom -lp end -i 36 -c rofi-freq" ];
 
       input = {
         kb_layout = "us";
         follow_mouse = 1;
-        touchpad.natural_scroll = true;
+        touchpad.natural_scroll = false;
       };
 
       general = {
@@ -26,6 +33,21 @@
       };
 
       decoration.rounding = 8;
+
+      animations = {
+        enabled = true;
+        bezier = [
+          "snappy, 0.25, 0.46, 0.45, 0.94"
+        ];
+        animation = [
+          "windows, 1, 2, snappy"
+          "windowsOut, 1, 2, snappy, popin 95%"
+          "border, 1, 2, snappy"
+          "fade, 1, 3, snappy"
+          "workspaces, 1, 3, snappy, fade"
+        ];
+      };
+
 
       bind = [
         "\$mod, Return, exec, \$term"
