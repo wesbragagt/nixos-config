@@ -38,6 +38,16 @@
     settings.main.font = "JetBrainsMono Nerd Font:size=12";
   };
 
+  programs.bash = {
+    enable = true;
+    initExtra = ''
+      rebuild() {
+        ( cd ~/nixos-config && git add -A ) && \
+          sudo nixos-rebuild switch --flake ~/nixos-config#"$(hostname)" "$@"
+      }
+    '';
+  };
+
   programs.tmux = {
     enable = true;
     keyMode = "vi";
