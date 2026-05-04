@@ -50,7 +50,7 @@ For services with NixOS modules (e.g. `programs.thunar`, `services.openssh`), pr
 - **Live in git, not in disk**: edits invisible to `nix flake build` until staged. Always `git add -A` before rebuild.
 - **No secrets in tree**: only public keys are referenced (e.g. authorized_keys). When secrets are needed, add `agenix` (simpler) or `sops-nix`.
 - **`allowUnfree = true`** is set in `common.nix`. The `homeConfigurations` output also passes `config.allowUnfree = true` because some packages (e.g. `apple-cursor`) require it.
-- **Inputs flow through `extraSpecialArgs`** — to use a flake input from inside `home/`, add `inputs` to the function args (`{ pkgs, config, inputs, ... }:`) and reference `inputs.<name>.packages.${pkgs.system}.default`.
+- **Inputs flow through `extraSpecialArgs`** — to use a flake input from inside `home/`, add `inputs` to the function args (`{ pkgs, config, inputs, ... }:`) and reference `inputs.<name>.packages.${pkgs.stdenv.hostPlatform.system}.default`.
 - **Don't edit generated files**. `hardware-configuration.nix` is the only one — leave it alone.
 
 ## Common files when changing the desktop

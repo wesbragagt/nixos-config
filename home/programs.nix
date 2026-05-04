@@ -7,7 +7,7 @@
     wl-clipboard
     networkmanagerapplet
     iwgtk
-    inputs.zen-browser.packages.${pkgs.system}.default
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     bitwarden-desktop
     bitwarden-cli
     gh
