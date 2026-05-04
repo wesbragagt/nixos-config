@@ -2,6 +2,42 @@
 
 NixOS + home-manager flake. Per-host system configs under `hosts/`, shared base in `common.nix`, user/dotfiles in `home/`.
 
+## Quick start: new NixOS system
+
+From the live ISO, after disks are partitioned, formatted, and mounted at `/mnt`:
+
+```bash
+# 1. Network
+sudo systemctl start NetworkManager   # or `wpa_supplicant` / `iwctl` for wifi
+
+# 2. Generate hardware config for THIS machine
+sudo nixos-generate-config --root /mnt
+
+# 3. Pull this repo
+nix-shell -p git --run 'git clone https://github.com/wesbragagt/nixos-config /mnt/etc/nixos'
+
+# 4. Carve out a host directory and move the generated hardware file in
+HOST=<newhost>
+sudo mkdir -p /mnt/etc/nixos/hosts/$HOST
+sudo mv /mnt/etc/nixos/hardware-configuration.nix /mnt/etc/nixos/hosts/$HOST/
+
+# 5. Create the host's default.nix (copy nixos-hp's, change hostName)
+sudo cp /mnt/etc/nixos/hosts/nixos-hp/default.nix /mnt/etc/nixos/hosts/$HOST/default.nix
+sudo sed -i "s/nixos-hp/$HOST/" /mnt/etc/nixos/hosts/$HOST/default.nix
+
+# 6. Register the host in flake.nix (add a sibling to nixosConfigurations.nixos-hp)
+#    nixosConfigurations.$HOST = nixpkgs.lib.nixosSystem { ... modules = [ ./hosts/$HOST ... ]; };
+
+# 7. Install
+sudo nixos-install --flake /mnt/etc/nixos#$HOST --root /mnt
+
+# 8. Reboot, log in, then on the running system:
+git clone https://github.com/wesbragagt/nixos-config ~/nixos-config
+sudo nixos-rebuild switch --flake ~/nixos-config#$HOST
+```
+
+After the first switch, `home-manager` activates automatically (it's wired in as a NixOS module). Add your SSH public key to `users.users.<you>.openssh.authorizedKeys.keys` in `common.nix` (or per-host) before the next push so passwordless SSH from your other machines works.
+
 ## Layout
 
 ```
@@ -15,26 +51,6 @@ hosts/
     hardware-configuration.nix
 rofi/                      # rasi themes wired via xdg.configFile
 scripts/                   # rofi-freq frequency-sorted launcher
-```
-
-## Bootstrap a new NixOS machine
-
-From the live ISO, after partitioning and mounting to `/mnt`:
-
-```bash
-sudo nixos-generate-config --root /mnt
-nix-shell -p git
-git clone https://github.com/wesbragagt/nixos-config /mnt/etc/nixos
-mkdir -p /mnt/etc/nixos/hosts/<newhost>
-cp /mnt/etc/nixos/hardware-configuration.nix /mnt/etc/nixos/hosts/<newhost>/
-# Copy hosts/nixos-hp/default.nix -> hosts/<newhost>/default.nix and adjust hostName
-# Add nixosConfigurations.<newhost> to flake.nix mirroring nixos-hp
-sudo nixos-install --flake /mnt/etc/nixos#<newhost>
-```
-
-After install, on the running system:
-```bash
-sudo nixos-rebuild switch --flake ~/nixos-config#<newhost>
 ```
 
 ## Apply on an existing NixOS box
