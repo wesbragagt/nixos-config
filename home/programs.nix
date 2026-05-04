@@ -78,6 +78,23 @@
     settings = builtins.fromTOML (builtins.readFile ../starship/zephyr.toml);
   };
 
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+    defaultCommand = "rg --files --hidden --follow --glob '!.git'";
+    defaultOptions = [ "--height=40%" "--layout=reverse" "--border" ];
+  };
+
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+    options = [ "--cmd cd" ];
+  };
+
+  programs.ripgrep.enable = true;
+
   programs.tmux = {
     enable = true;
     keyMode = "vi";
