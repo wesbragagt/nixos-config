@@ -69,4 +69,9 @@
     algorithm = "zstd";
     memoryPercent = 50;
   };
+
+  boot.tmp = {
+    useTmpfs = true;
+    tmpfsSize = "50%";
+  };
 }
