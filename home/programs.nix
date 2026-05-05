@@ -51,6 +51,8 @@
     swww
     swappy
     wf-recorder
+    mpv
+    imv
     libnotify
     sesh
     fd
