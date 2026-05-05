@@ -10,21 +10,59 @@
   ];
 
   home.packages = with pkgs; [
+    # wayland / audio
     pavucontrol
+    wl-clipboard
+    cliphist
+    wlr-randr
+    libnotify
+
+    # screenshot / recording
     grim
     slurp
-    wl-clipboard
+    swappy
+    wf-recorder
+
+    # network
     networkmanagerapplet
     iwgtk
+
+    # browsers
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+    # cli tools
     inputs.exacli.packages.${pkgs.stdenv.hostPlatform.system}.default
-    bitwarden-desktop
-    bitwarden-cli
     gh
-    gtk3
     jq
     yq-go
+    fd
+    sesh
+
+    # secrets / auth
+    bitwarden-desktop
+    bitwarden-cli
     libsecret
+
+    # desktop / ui
+    gtk3
+    nwg-dock-hyprland
+    waypaper
+    swww
+
+    # media
+    mpv
+    imv
+
+    # data
+    csvlens     # interactive CSV viewer
+    duckdb      # in-process analytical SQL
+    harlequin   # terminal database UI
+
+    # git
+    lazygit
+    delta
+
+    # scripts
     (pkgs.writeShellScriptBin "rofi-freq" (builtins.readFile ../scripts/rofi-freq.sh))
     (pkgs.writeShellScriptBin "sf" (builtins.readFile ../scripts/sf.sh))
     (pkgs.writeShellScriptBin "sgrep" (builtins.readFile ../scripts/sg.sh))
@@ -46,18 +84,6 @@
         --name=Slack \
         "$@"
     '')
-    nwg-dock-hyprland
-    waypaper
-    swww
-    swappy
-    wf-recorder
-    mpv
-    imv
-    libnotify
-    sesh
-    fd
-    cliphist
-    wlr-randr
     (pkgs.callPackage ../pkgs/workmux {})
   ];
 
@@ -152,6 +178,32 @@
   };
 
   programs.ripgrep.enable = true;
+
+  programs.git = {
+    enable = true;
+    delta = {
+      enable = true;
+      options = {
+        navigate = true;
+        side-by-side = true;
+        line-numbers = true;
+      };
+    };
+  };
+
+  programs.lazygit.enable = true;
+
+  programs.obsidian = {
+    enable = true;
+    vaults."notes-live-sync" = {
+      target = "notes-live-sync";
+    };
+  };
+
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
 
   programs.tmux = {
     enable = true;
