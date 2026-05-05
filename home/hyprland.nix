@@ -124,8 +124,9 @@
         "wl-paste --watch cliphist store"
         "waybar"
         "nm-applet --indicator"
-        "nwg-dock-hyprland -p bottom -lp end -i 36 -c rofi-freq"
+        "nwg-dock-hyprland -p bottom -lp end -i 36 -c rofi-freq -x"
         "swaync"
+        "swww-daemon"
       ];
 
       input = {
@@ -197,6 +198,15 @@
         "\$mod SHIFT, 3, movetoworkspace, 3"
         "\$mod SHIFT, 4, movetoworkspace, 4"
         "\$mod SHIFT, 5, movetoworkspace, 5"
+        "\$mod SHIFT, BackSpace, exec, waypaper"
+      ];
+
+      windowrulev2 = [
+        "float, class:^(waypaper)$"
+        "size 480 100%, class:^(waypaper)$"
+        "move 100%-480 0, class:^(waypaper)$"
+        "animation slide, class:^(waypaper)$"
+        "opacity 0.85 0.85, class:^(waypaper)$"
       ];
 
       bindel = [ ];
