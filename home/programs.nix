@@ -27,6 +27,14 @@
     (pkgs.writeShellScriptBin "sf" (builtins.readFile ../scripts/sf.sh))
     (pkgs.writeShellScriptBin "sgrep" (builtins.readFile ../scripts/sg.sh))
     (pkgs.writeShellScriptBin "battery-estimate" (builtins.readFile ../scripts/battery-estimate.sh))
+    (pkgs.writeShellScriptBin "spotify-webapp" ''
+      exec ${pkgs.chromium}/bin/chromium \
+        --ozone-platform=wayland \
+        --app=https://open.spotify.com/ \
+        --class=Spotify \
+        --name=Spotify \
+        "$@"
+    '')
     nwg-dock-hyprland
     sesh
     fd
@@ -222,6 +230,24 @@
         };
       };
     };
+  };
+
+  home.file.".cache/nwg-dock-pinned".text = ''
+    foot
+    chromium-browser
+    thunar
+    Spotify
+  '';
+
+  home.file.".local/share/icons/hicolor/scalable/apps/spotify.svg".source = ../assets/spotify.svg;
+
+  xdg.desktopEntries.spotify = {
+    name = "Spotify";
+    exec = "spotify-webapp";
+    icon = "spotify";
+    terminal = false;
+    categories = [ "AudioVideo" "Audio" "Player" "Network" ];
+    settings.StartupWMClass = "Spotify";
   };
 
   xdg.configFile = {

@@ -5,19 +5,23 @@ CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/rofi-freq.tsv"
 mkdir -p "$(dirname "$CACHE")"
 [ -f "$CACHE" ] || : > "$CACHE"
 
-dirs=(
-  /run/current-system/sw/share/applications
-  /etc/profiles/per-user/"$USER"/share/applications
-  "$HOME/.nix-profile/share/applications"
-  "$HOME/.local/share/applications"
-)
+dirs=("$HOME/.local/share/applications")
+
+if [ -n "${XDG_DATA_DIRS:-}" ]; then
+  IFS=':' read -ra data_dirs <<< "$XDG_DATA_DIRS"
+  for dir in "${data_dirs[@]}"; do
+    [ -d "$dir/applications" ] && dirs+=("$dir/applications")
+  done
+fi
 
 # Collect all .desktop file paths (dedup by basename, first-seen wins).
 mapfile -t files < <(
   for dir in "${dirs[@]}"; do
-    [ -d "$dir" ] && printf '%s\n' "$dir"/*.desktop
+    [ -d "$dir" ] && find "$dir" -maxdepth 1 \( -type f -o -type l \) -name '*.desktop'
   done | awk '!seen[gensub(/.*\//,"",1,$0)]++'
 )
+
+[ ${#files[@]} -eq 0 ] && exit 0
 
 # One awk pass over all files: emit "id\tname\ticon" for visible Applications.
 # Then merge with cache counts and sort.
