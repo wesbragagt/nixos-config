@@ -288,7 +288,7 @@
       [Default]
       early_exit=true
       auto_save=true
-      save_dir=$HOME/Pictures/Screenshots
+      save_dir=$HOME/Screenshots
     '';
     "waypaper/config.ini".text = ''
       [Settings]
@@ -314,7 +314,7 @@
 
   home.activation.createDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
     mkdir -p $HOME/wallpapers
-    mkdir -p $HOME/Pictures/Screenshots
+    mkdir -p $HOME/Screenshots
     mkdir -p $HOME/Videos
   '';
 }
