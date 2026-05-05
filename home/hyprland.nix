@@ -1,14 +1,32 @@
 { ... }:
 {
+  services.hypridle = {
+    enable = true;
+    settings = {
+      general = {
+        after_sleep_cmd = "hyprctl dispatch dpms on";
+        ignore_dbus_inhibit = false;
+      };
+
+      listener = [
+        {
+          timeout = 300;
+          on-timeout = "hyprctl dispatch dpms off";
+          on-resume = "hyprctl dispatch dpms on";
+        }
+      ];
+    };
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
     settings = {
       "\$mod" = "SUPER";
-      "\$term" = "kitty";
+      "\$term" = "foot";
       "\$browser" = "chromium";
       "\$menu" = "rofi-freq";
 
-      monitor = ",preferred,auto,1";
+      monitor = "eDP-1,1366x768@60.012,0x0,1";
 
       cursor.no_hardware_cursors = true;
 
@@ -17,12 +35,15 @@
         "XCURSOR_SIZE,24"
       ];
 
-      exec-once = [ "waybar" "nm-applet --indicator" "nwg-dock-hyprland -p bottom -lp end -i 36 -c rofi-freq" ];
+      exec-once = [ "wl-paste --watch cliphist store" "waybar" "nm-applet --indicator" "nwg-dock-hyprland -p bottom -lp end -i 36 -c rofi-freq" ];
 
       input = {
         kb_layout = "us";
+        repeat_delay = 250;
+        repeat_rate = 40;
         follow_mouse = 1;
         touchpad.natural_scroll = false;
+        touchpad.disable_while_typing = false;
       };
 
       general = {
@@ -50,13 +71,15 @@
 
 
       bind = [
-        "\$mod, Return, exec, \$term"
+        "\$mod, T, exec, \$term"
         "\$mod, B, exec, \$browser"
+        "\$mod, E, exec, thunar"
         "\$mod, Q, killactive,"
         "\$mod, M, exit,"
         "\$mod, Space, exec, \$menu"
         "\$mod, F, fullscreen,"
-        "\$mod, V, togglefloating,"
+        "\$mod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+        "\$mod SHIFT, V, togglefloating,"
         "\$mod, H, movefocus, l"
         "\$mod, L, movefocus, r"
         "\$mod, K, movefocus, u"
@@ -71,6 +94,18 @@
         "\$mod SHIFT, 3, movetoworkspace, 3"
         "\$mod SHIFT, 4, movetoworkspace, 4"
         "\$mod SHIFT, 5, movetoworkspace, 5"
+      ];
+
+      bindel = [
+        ", XF86MonBrightnessUp, exec, brightnessctl set 5%+"
+        ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
+        ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86AudioLowerVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%-"
+      ];
+
+      bindl = [
+        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
       ];
     };
   };

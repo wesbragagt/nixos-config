@@ -4,6 +4,7 @@
     ./hyprland.nix
     ./waybar.nix
     ./programs.nix
+    ./neovim.nix
   ];
 
   home.username = "wesbragagt";

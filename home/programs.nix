@@ -1,5 +1,14 @@
 { pkgs, config, inputs, ... }:
 {
+  home.sessionVariables = {
+    NPM_GLOBAL = "$HOME/.npm-global";
+    NPM_CONFIG_PREFIX = "$HOME/.npm-global";
+  };
+
+  home.sessionPath = [
+    "$HOME/.npm-global/bin"
+  ];
+
   home.packages = with pkgs; [
     pavucontrol
     grim
@@ -12,10 +21,16 @@
     bitwarden-cli
     gh
     gtk3
+    jq
+    yq-go
     (pkgs.writeShellScriptBin "rofi-freq" (builtins.readFile ../scripts/rofi-freq.sh))
+    (pkgs.writeShellScriptBin "sf" (builtins.readFile ../scripts/sf.sh))
+    (pkgs.writeShellScriptBin "sgrep" (builtins.readFile ../scripts/sg.sh))
+    (pkgs.writeShellScriptBin "battery-estimate" (builtins.readFile ../scripts/battery-estimate.sh))
     nwg-dock-hyprland
     sesh
     fd
+    cliphist
   ];
 
   programs.chromium = {
@@ -37,12 +52,21 @@
 
   programs.foot = {
     enable = true;
-    settings.main.font = "JetBrainsMono Nerd Font:size=12";
+    settings = {
+      main = {
+        font = "JetBrainsMono Nerd Font:size=12";
+      };
+      colors.alpha = 0.8;
+    };
   };
 
   programs.bash = {
     enable = true;
     initExtra = ''
+      export NPM_GLOBAL="$HOME/.npm-global"
+      export NPM_CONFIG_PREFIX="$NPM_GLOBAL"
+      export PATH="$NPM_GLOBAL/bin:$PATH"
+
       rebuild() {
         sudo nixos-rebuild switch --impure --flake ~/nixos-config#"$(hostname)" "$@"
       }
@@ -52,7 +76,6 @@
   programs.zsh = {
     enable = true;
     autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
     enableCompletion = true;
     historySubstringSearch.enable = true;
     history = {
@@ -65,8 +88,13 @@
     shellAliases = {
       ll = "ls -lah";
       gs = "git status";
+      sg = "sgrep";
     };
     initContent = ''
+      export NPM_GLOBAL="$HOME/.npm-global"
+      export NPM_CONFIG_PREFIX="$NPM_GLOBAL"
+      export PATH="$NPM_GLOBAL/bin:$PATH"
+
       rebuild() {
         sudo nixos-rebuild switch --impure --flake ~/nixos-config#"$(hostname)" "$@"
       }
@@ -172,7 +200,7 @@
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
-    terminal = "${pkgs.kitty}/bin/kitty";
+    terminal = "${pkgs.foot}/bin/foot";
     extraConfig = {
       modi = "drun,run,window";
       show-icons = true;

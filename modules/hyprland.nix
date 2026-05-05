@@ -13,6 +13,9 @@
   security.polkit.enable = true;
   services.dbus.enable = true;
 
+  environment.systemPackages = with pkgs; [ brightnessctl ];
+  services.udev.packages = with pkgs; [ brightnessctl ];
+
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
   };
