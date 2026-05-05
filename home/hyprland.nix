@@ -125,6 +125,7 @@
         "waybar"
         "nm-applet --indicator"
         "nwg-dock-hyprland -p bottom -lp end -i 36 -c rofi-freq"
+        "swaync"
       ];
 
       input = {

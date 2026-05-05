@@ -5,6 +5,7 @@
     ./waybar.nix
     ./programs.nix
     ./neovim.nix
+    ./swaync.nix
   ];
 
   home.username = "wesbragagt";

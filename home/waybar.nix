@@ -14,7 +14,7 @@
 
       modules-left = [ "custom/logo" "cpu" "memory" "disk" ];
       modules-center = [ "hyprland/workspaces" ];
-      modules-right = [ "pulseaudio" "custom/battery" "clock" "tray" ];
+      modules-right = [ "custom/notifications" "pulseaudio" "custom/battery" "clock" "tray" ];
 
       "custom/logo" = {
         format = "❄";
@@ -72,6 +72,15 @@
         tooltip = true;
       };
 
+      "custom/notifications" = {
+        format = "💬  {}";
+        exec = "swaync-client -swb";
+        return-type = "json";
+        on-click = "swaync-client -t -sw";
+        on-click-right = "swaync-client -d -sw";
+        escape = true;
+      };
+
       tray = {
         icon-size = 16;
         spacing = 8;
@@ -103,6 +112,7 @@
       #network,
       #pulseaudio,
       #custom-battery,
+      #custom-notifications,
       #clock,
       #tray {
         background: rgba(17, 17, 27, 0.85);
@@ -150,6 +160,9 @@
       #custom-battery.warning { color: #f9e2af; }
       #custom-battery.critical { color: #f38ba8; }
       #custom-battery.charging { color: #a6e3a1; }
+
+      #custom-notifications { padding: 1px 10px; color: #cdd6f4; }
+      #custom-notifications.dnd { color: #6c7086; }
 
       #tray { padding: 4px 10px; }
       #tray > .passive { -gtk-icon-effect: dim; }
