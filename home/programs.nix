@@ -52,6 +52,7 @@
     # media
     mpv
     imv
+    spotify
 
     # data
     csvlens     # interactive CSV viewer
@@ -341,11 +342,11 @@
 
   xdg.desktopEntries.spotify = {
     name = "Spotify";
-    exec = "spotify-webapp";
+    exec = "spotify";
     icon = "spotify";
     terminal = false;
     categories = [ "AudioVideo" "Audio" "Player" "Network" ];
-    settings.StartupWMClass = "chrome-open.spotify.com__-Default";
+    settings.StartupWMClass = "spotify";
   };
 
   xdg.desktopEntries.slack = {
