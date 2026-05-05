@@ -262,6 +262,25 @@
 
   home.file.".local/share/icons/hicolor/256x256/apps/slack.png".source = ../assets/slack.png;
 
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "image/jpeg"      = "imv.desktop";
+      "image/png"       = "imv.desktop";
+      "image/gif"       = "imv.desktop";
+      "image/webp"      = "imv.desktop";
+      "image/bmp"       = "imv.desktop";
+      "image/tiff"      = "imv.desktop";
+      "image/svg+xml"   = "imv.desktop";
+      "video/mp4"       = "mpv.desktop";
+      "video/x-matroska" = "mpv.desktop";
+      "video/webm"      = "mpv.desktop";
+      "video/quicktime" = "mpv.desktop";
+      "video/x-msvideo" = "mpv.desktop";
+      "video/x-flv"     = "mpv.desktop";
+    };
+  };
+
   xdg.desktopEntries.spotify = {
     name = "Spotify";
     exec = "spotify-webapp";
