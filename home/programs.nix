@@ -143,6 +143,7 @@
       ll = "ls -lah";
       gs = "git status";
       sg = "sgrep";
+      gitd = "lazygit";
     };
     initContent = ''
       export NPM_GLOBAL="$HOME/.npm-global"
@@ -191,7 +192,12 @@
     };
   };
 
-  programs.lazygit.enable = true;
+  programs.lazygit = {
+    enable = true;
+    settings.git.pagers = [
+      { pager = "delta --dark --paging=never --line-numbers"; }
+    ];
+  };
 
   programs.obsidian = {
     enable = true;
