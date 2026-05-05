@@ -50,6 +50,11 @@
   };
   nix.optimise.automatic = true;
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [
+    (final: prev: {
+      chromium = prev.chromium.override { enableWideVine = true; };
+    })
+  ];
 
   environment.systemPackages = with pkgs; [
     vim

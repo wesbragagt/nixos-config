@@ -1,5 +1,20 @@
 {
   "nodes": {
+    "chromium-webapps": {
+      "locked": {
+        "lastModified": 1759073438,
+        "narHash": "sha256-dPx2e+Nz5DuNrmnokkrMTGAgYIQp9JdlvoyppBohF6o=",
+        "owner": "chobbledotcom",
+        "repo": "nix-chromium-webapps",
+        "rev": "02585369973fe5dcf2eade5b0bd861cc09ff5863",
+        "type": "github"
+      },
+      "original": {
+        "owner": "chobbledotcom",
+        "repo": "nix-chromium-webapps",
+        "type": "github"
+      }
+    },
     "exacli": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -115,6 +130,7 @@
     },
     "root": {
       "inputs": {
+        "chromium-webapps": "chromium-webapps",
         "exacli": "exacli",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",

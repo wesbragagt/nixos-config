@@ -16,6 +16,10 @@
       url = "github:wesbragagt/exacli";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    chromium-webapps = {
+      url = "github:chobbledotcom/nix-chromium-webapps";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, zen-browser, ... }@inputs:
