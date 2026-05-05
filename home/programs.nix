@@ -1,4 +1,4 @@
-{ pkgs, config, inputs, ... }:
+{ pkgs, lib, config, inputs, ... }:
 {
   home.sessionVariables = {
     NPM_GLOBAL = "$HOME/.npm-global";
@@ -37,7 +37,17 @@
         --name=Spotify \
         "$@"
     '')
+    (pkgs.writeShellScriptBin "slack-webapp" ''
+      exec ${pkgs.chromium}/bin/chromium \
+        --ozone-platform=wayland \
+        --app=https://app.slack.com/ \
+        --class=Slack \
+        --name=Slack \
+        "$@"
+    '')
     nwg-dock-hyprland
+    waypaper
+    swww
     sesh
     fd
     cliphist
@@ -240,10 +250,11 @@
     foot
     chromium-browser
     thunar
-    Spotify
   '';
 
   home.file.".local/share/icons/hicolor/scalable/apps/spotify.svg".source = ../assets/spotify.svg;
+
+  home.file.".local/share/icons/hicolor/256x256/apps/slack.png".source = ../assets/slack.png;
 
   xdg.desktopEntries.spotify = {
     name = "Spotify";
@@ -251,7 +262,16 @@
     icon = "spotify";
     terminal = false;
     categories = [ "AudioVideo" "Audio" "Player" "Network" ];
-    settings.StartupWMClass = "Spotify";
+    settings.StartupWMClass = "chrome-open.spotify.com__-Default";
+  };
+
+  xdg.desktopEntries.slack = {
+    name = "Slack";
+    exec = "slack-webapp";
+    icon = "slack";
+    terminal = false;
+    categories = [ "Network" "InstantMessaging" ];
+    settings.StartupWMClass = "chrome-app.slack.com__-Default";
   };
 
   xdg.configFile = {
@@ -260,6 +280,29 @@
     "rofi/launchers/type-2/shared/fonts.rasi".source = ../rofi/launchers/type-2/shared/fonts.rasi;
     "rofi/colors/catppuccin.rasi".source = ../rofi/colors/catppuccin.rasi;
     "workmux/config.yaml".text = "nerdfont: true\n";
+    "waypaper/config.ini".text = ''
+      [Settings]
+      language = en
+      folder = /home/wesbragagt/wallpapers
+      monitors = All
+      backend = swww
+      fill = fill
+      sort = name
+      color = #ffffff
+      subfolders = False
+      show_hidden = False
+      show_gifs_only = False
+      number_of_columns = 3
+      swww_transition_type = any
+      swww_transition_step = 90
+      swww_transition_angle = 0
+      swww_transition_duration = 2
+      swww_transition_fps = 60
+      use_xdg_state = False
+    '';
   };
 
+  home.activation.createWallpapersDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    mkdir -p $HOME/wallpapers
+  '';
 }
