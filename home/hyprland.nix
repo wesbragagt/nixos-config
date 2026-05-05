@@ -124,7 +124,7 @@
         "wl-paste --watch cliphist store"
         "waybar"
         "nm-applet --indicator"
-        "nwg-dock-hyprland -p bottom -lp end -i 36 -c rofi-freq -x"
+        "nwg-dock-hyprland -p bottom -lp end -i 36 -c rofi-freq -d"
         "swaync"
         "swww-daemon"
       ];
@@ -165,7 +165,7 @@
         ];
         animation = [
           "windows, 1, 5, subtle"
-          "windowsOut, 1, 5, subtle, popin 98%"
+          "windowsOut, 1, 5, subtle, slide"
           "border, 1, 6, subtle"
           "fade, 1, 6, subtle"
           "workspaces, 1, 5, subtle, fade"
@@ -203,8 +203,8 @@
 
       windowrulev2 = [
         "float, class:^(waypaper)$"
-        "size 480 100%, class:^(waypaper)$"
-        "move 100%-480 0, class:^(waypaper)$"
+        "size 480 768, class:^(waypaper)$"
+        "move 886 0, class:^(waypaper)$"
         "animation slide, class:^(waypaper)$"
         "opacity 0.85 0.85, class:^(waypaper)$"
       ];
