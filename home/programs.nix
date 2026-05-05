@@ -42,6 +42,7 @@
     fd
     cliphist
     wlr-randr
+    (pkgs.callPackage ../pkgs/workmux {})
   ];
 
   programs.chromium = {
@@ -258,6 +259,7 @@
     "rofi/launchers/type-2/shared/colors.rasi".source = ../rofi/launchers/type-2/shared/colors.rasi;
     "rofi/launchers/type-2/shared/fonts.rasi".source = ../rofi/launchers/type-2/shared/fonts.rasi;
     "rofi/colors/catppuccin.rasi".source = ../rofi/colors/catppuccin.rasi;
+    "workmux/config.yaml".text = "nerdfont: true\n";
   };
 
 }
