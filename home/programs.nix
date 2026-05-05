@@ -24,6 +24,7 @@
     gtk3
     jq
     yq-go
+    libsecret
     (pkgs.writeShellScriptBin "rofi-freq" (builtins.readFile ../scripts/rofi-freq.sh))
     (pkgs.writeShellScriptBin "sf" (builtins.readFile ../scripts/sf.sh))
     (pkgs.writeShellScriptBin "sgrep" (builtins.readFile ../scripts/sg.sh))
