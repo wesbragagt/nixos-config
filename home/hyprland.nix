@@ -26,7 +26,7 @@
       "\$browser" = "chromium";
       "\$menu" = "rofi-freq";
 
-      monitor = "eDP-1,1366x768@60.012,0x0,1";
+      monitor = "eDP-1,preferred,auto,1";
 
       cursor.no_hardware_cursors = true;
 
@@ -58,14 +58,14 @@
       animations = {
         enabled = true;
         bezier = [
-          "snappy, 0.25, 0.46, 0.45, 0.94"
+          "subtle, 0.16, 1, 0.3, 1"
         ];
         animation = [
-          "windows, 1, 2, snappy"
-          "windowsOut, 1, 2, snappy, popin 95%"
-          "border, 1, 2, snappy"
-          "fade, 1, 3, snappy"
-          "workspaces, 1, 3, snappy, fade"
+          "windows, 1, 5, subtle"
+          "windowsOut, 1, 5, subtle, popin 98%"
+          "border, 1, 6, subtle"
+          "fade, 1, 6, subtle"
+          "workspaces, 1, 5, subtle, fade"
         ];
       };
 

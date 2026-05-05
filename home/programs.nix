@@ -17,6 +17,7 @@
     networkmanagerapplet
     iwgtk
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.exacli.packages.${pkgs.stdenv.hostPlatform.system}.default
     bitwarden-desktop
     bitwarden-cli
     gh
@@ -39,6 +40,7 @@
     sesh
     fd
     cliphist
+    wlr-randr
   ];
 
   programs.chromium = {
