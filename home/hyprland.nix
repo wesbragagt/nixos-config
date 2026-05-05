@@ -207,7 +207,7 @@
         "\$mod SHIFT, 8, movetoworkspace, 8"
         "\$mod SHIFT, 9, movetoworkspace, 9"
         "\$mod SHIFT, BackSpace, exec, waypaper"
-        "\$mod SHIFT, minus, exec, pkill -35 nwg-dock-hyprland"
+        "\$mod SHIFT, l, exec, pkill -35 nwg-dock-hyprland"
       ];
 
       windowrulev2 = [
