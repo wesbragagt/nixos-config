@@ -207,6 +207,8 @@
         "\$mod SHIFT, 8, movetoworkspace, 8"
         "\$mod SHIFT, 9, movetoworkspace, 9"
         "\$mod SHIFT, BackSpace, exec, waypaper"
+        "\$mod SHIFT, P, exec, grim -g \"$(slurp -d)\" - | swappy -f -"
+        "\$mod SHIFT, R, exec, wf-record"
         "\$mod SHIFT, l, exec, kill -35 $(pgrep -fo nwg-dock)"
       ];
 
