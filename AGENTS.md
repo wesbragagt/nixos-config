@@ -69,3 +69,65 @@ Operational checklist for this repo.
 - Passwordless sudo for `wheel` is enabled
 - SSH authorized key for `wesbragagt` is pinned in `common.nix`
 - DHCP IP may change; update SSH host alias/known_hosts as needed
+
+## Web apps (Chromium-based)
+
+Managed declaratively via the `chromium-webapps` home-manager module
+(`github:chobbledotcom/nix-chromium-webapps`, wired in `flake.nix` and
+`home/wesbragagt.nix`).
+
+### Add a new web app
+
+Edit `home/wesbragagt.nix` → `programs.chromium-webapps.webApps`:
+
+```nix
+{
+  name = "AppName";
+  url = "https://app.example.com";
+  icon = papirusIcon "com.example.AppName"; # optional
+}
+```
+
+The module generates a `.desktop` entry with a unique `WM_CLASS`,
+isolates the profile under `~/.config/chromium-webapps/<name>/`, and
+auto-converts the icon path to all needed sizes.
+
+### Icon lookup (Papirus)
+
+```bash
+find /nix/store/*papirus*/share/icons/Papirus/64x64/apps -name '*.svg' | grep -i <app>
+```
+
+Then pass the basename (without `.svg`) to the `papirusIcon` helper
+defined in `home/wesbragagt.nix`.
+
+### Why Widevine matters
+
+Spotify (and other DRM-protected web players) need Widevine. NixOS
+Chromium does not include Widevine by default, so we override it in
+`common.nix`:
+
+```nix
+nixpkgs.overlays = [
+  (final: prev: {
+    chromium = prev.chromium.override { enableWideVine = true; };
+  })
+];
+```
+
+Without this, Spotify Web silently plays no audio (player runs, no
+sound). Slack, Meet, ro.am, etc. work without Widevine.
+
+### Why not `programs.chromium`
+
+Both `programs.chromium` and the webapps module add Chromium to the
+environment. Enabling both creates two derivations of the same
+Chromium version (the home-manager module wraps it differently),
+which fails with `pkgs.buildEnv: two given paths contain a conflicting
+subpath`. Wayland is enabled instead via `NIXOS_OZONE_WL=1` in
+`modules/hyprland.nix`.
+
+### Removing the native client when a webapp covers it
+
+Native + webapp produces duplicate launcher entries. Remove the
+native package from `home/programs.nix` once the webapp is verified.

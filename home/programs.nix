@@ -3,6 +3,7 @@
   home.sessionVariables = {
     NPM_GLOBAL = "$HOME/.npm-global";
     NPM_CONFIG_PREFIX = "$HOME/.npm-global";
+    NIXOS_OZONE_WL = "1";
   };
 
   home.sessionPath = [
@@ -52,7 +53,6 @@
     # media
     mpv
     imv
-    spotify
 
     # data
     csvlens     # interactive CSV viewer
@@ -69,29 +69,9 @@
     (pkgs.writeShellScriptBin "sgrep" (builtins.readFile ../scripts/sg.sh))
     (pkgs.writeShellScriptBin "battery-estimate" (builtins.readFile ../scripts/battery-estimate.sh))
     (pkgs.writeShellScriptBin "wf-record" (builtins.readFile ../scripts/wf-recorder.sh))
-    (pkgs.writeShellScriptBin "spotify-webapp" ''
-      exec ${pkgs.chromium}/bin/chromium \
-        --ozone-platform=wayland \
-        --app=https://open.spotify.com/ \
-        --class=Spotify \
-        --name=Spotify \
-        "$@"
-    '')
-    (pkgs.writeShellScriptBin "slack-webapp" ''
-      exec ${pkgs.chromium}/bin/chromium \
-        --ozone-platform=wayland \
-        --app=https://app.slack.com/ \
-        --class=Slack \
-        --name=Slack \
-        "$@"
-    '')
     (pkgs.callPackage ../pkgs/workmux {})
   ];
 
-  programs.chromium = {
-    enable = true;
-    commandLineArgs = [ "--ozone-platform=wayland" ];
-  };
 
   programs.kitty = {
     enable = true;
@@ -317,10 +297,6 @@
     thunar
   '';
 
-  home.file.".local/share/icons/hicolor/scalable/apps/spotify.svg".source = ../assets/spotify.svg;
-
-  home.file.".local/share/icons/hicolor/256x256/apps/slack.png".source = ../assets/slack.png;
-
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
@@ -338,24 +314,6 @@
       "video/x-msvideo" = "mpv.desktop";
       "video/x-flv"     = "mpv.desktop";
     };
-  };
-
-  xdg.desktopEntries.spotify = {
-    name = "Spotify";
-    exec = "spotify";
-    icon = "spotify";
-    terminal = false;
-    categories = [ "AudioVideo" "Audio" "Player" "Network" ];
-    settings.StartupWMClass = "spotify";
-  };
-
-  xdg.desktopEntries.slack = {
-    name = "Slack";
-    exec = "slack-webapp";
-    icon = "slack";
-    terminal = false;
-    categories = [ "Network" "InstantMessaging" ];
-    settings.StartupWMClass = "chrome-app.slack.com__-Default";
   };
 
   xdg.configFile = {
