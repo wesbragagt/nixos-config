@@ -29,6 +29,7 @@
     (pkgs.writeShellScriptBin "sf" (builtins.readFile ../scripts/sf.sh))
     (pkgs.writeShellScriptBin "sgrep" (builtins.readFile ../scripts/sg.sh))
     (pkgs.writeShellScriptBin "battery-estimate" (builtins.readFile ../scripts/battery-estimate.sh))
+    (pkgs.writeShellScriptBin "wf-record" (builtins.readFile ../scripts/wf-recorder.sh))
     (pkgs.writeShellScriptBin "spotify-webapp" ''
       exec ${pkgs.chromium}/bin/chromium \
         --ozone-platform=wayland \
@@ -48,6 +49,9 @@
     nwg-dock-hyprland
     waypaper
     swww
+    swappy
+    wf-recorder
+    libnotify
     sesh
     fd
     cliphist
@@ -280,6 +284,12 @@
     "rofi/launchers/type-2/shared/fonts.rasi".source = ../rofi/launchers/type-2/shared/fonts.rasi;
     "rofi/colors/catppuccin.rasi".source = ../rofi/colors/catppuccin.rasi;
     "workmux/config.yaml".text = "nerdfont: true\n";
+    "swappy/config".text = ''
+      [Default]
+      early_exit=true
+      auto_save=true
+      save_dir=$HOME/Pictures/Screenshots
+    '';
     "waypaper/config.ini".text = ''
       [Settings]
       language = en
@@ -302,7 +312,9 @@
     '';
   };
 
-  home.activation.createWallpapersDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  home.activation.createDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
     mkdir -p $HOME/wallpapers
+    mkdir -p $HOME/Pictures/Screenshots
+    mkdir -p $HOME/Videos
   '';
 }
