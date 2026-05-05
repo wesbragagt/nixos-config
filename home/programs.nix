@@ -293,7 +293,7 @@
     "waypaper/config.ini".text = ''
       [Settings]
       language = en
-      folder = /home/wesbragagt/wallpapers
+      folder = /home/wesbragagt/Wallpapers
       monitors = All
       backend = swww
       fill = fill
@@ -313,7 +313,7 @@
   };
 
   home.activation.createDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    mkdir -p $HOME/wallpapers
+    mkdir -p $HOME/Wallpapers
     mkdir -p $HOME/Screenshots
     mkdir -p $HOME/Videos
   '';
