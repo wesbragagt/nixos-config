@@ -220,9 +220,16 @@
         "opacity 0.7 0.7, class:^(waypaper)$"
       ];
 
-      bindel = [ ];
+      bindel = [
+        ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", F8, exec, wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"
+        ", F7, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ", F6, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+      ];
 
-      bindl = [ ];
+      bindl = [];
     };
   };
 }
