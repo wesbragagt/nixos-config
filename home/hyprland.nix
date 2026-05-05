@@ -124,7 +124,7 @@
         "wl-paste --watch cliphist store"
         "waybar"
         "nm-applet --indicator"
-        "nwg-dock-hyprland -p bottom -lp end -i 36 -c rofi-freq"
+        "nwg-dock-hyprland -p bottom -lp end -i 36 -c rofi-freq -r"
         "swaync"
         "swww-daemon"
       ];
@@ -207,15 +207,15 @@
         "\$mod SHIFT, 8, movetoworkspace, 8"
         "\$mod SHIFT, 9, movetoworkspace, 9"
         "\$mod SHIFT, BackSpace, exec, waypaper"
-        "\$mod SHIFT, l, exec, pkill -35 -f nwg-dock-hyprland"
+        "\$mod SHIFT, l, exec, kill -35 $(pgrep -fo nwg-dock)"
       ];
 
       windowrulev2 = [
         "float, class:^(waypaper)$"
-        "size 480 768, class:^(waypaper)$"
-        "move 886 0, class:^(waypaper)$"
-        "animation slide, class:^(waypaper)$"
-        "opacity 0.85 0.85, class:^(waypaper)$"
+        "size 900 600, class:^(waypaper)$"
+        "center, class:^(waypaper)$"
+        "animation fade, class:^(waypaper)$"
+        "opacity 0.7 0.7, class:^(waypaper)$"
       ];
 
       bindel = [ ];
