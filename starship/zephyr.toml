@@ -6,12 +6,25 @@ add_newline = false
 
 # A minimal left prompt
 format = """\
+$username\
+$hostname\
 $directory\
 $git_branch\
 ${custom.git_status_dirty}\
 ${custom.git_status_clean} """
 
 palette = "wombat"
+
+[username]
+show_always = true
+style_user = "yellow bold"
+style_root = "red bold"
+format = "[$user]($style)"
+
+[hostname]
+ssh_only = false
+style = "purple bold"
+format = "@[$hostname]($style) "
 
 [palettes.tokyo_night]
 black = '#15161e'

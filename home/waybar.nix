@@ -14,7 +14,7 @@
 
       modules-left = [ "custom/logo" "cpu" "memory" "disk" ];
       modules-center = [ "hyprland/workspaces" ];
-      modules-right = [ "network" "pulseaudio" "battery" "clock" "tray" ];
+      modules-right = [ "pulseaudio" "custom/battery" "clock" "tray" ];
 
       "custom/logo" = {
         format = "❄";
@@ -65,23 +65,11 @@
         on-click = "pavucontrol";
       };
 
-      network = {
-        format-wifi = "📶 {signalStrength}%";
-        format-ethernet = "🔌";
-        format-disconnected = "📵";
-        tooltip-format-wifi = "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}";
-        tooltip-format-ethernet = "{ifname} {ipaddr}/{cidr}";
-        tooltip-format-disconnected = "Disconnected";
-        on-click = "kitty --class waybar-popup -e nmtui";
-        on-click-right = "iwgtk";
-      };
-
-      battery = {
-        states = { warning = 30; critical = 15; };
-        format = "{icon} {capacity}%";
-        format-charging = "⚡ {capacity}%";
-        format-plugged = "🔌 {capacity}%";
-        format-icons = [ "🪫" "🔋" "🔋" "🔋" "🔋" ];
+      "custom/battery" = {
+        exec = "battery-estimate";
+        return-type = "json";
+        interval = 15;
+        tooltip = true;
       };
 
       tray = {
@@ -114,7 +102,7 @@
       #disk,
       #network,
       #pulseaudio,
-      #battery,
+      #custom-battery,
       #clock,
       #tray {
         background: rgba(17, 17, 27, 0.85);
@@ -159,9 +147,9 @@
 
       #network.disconnected { color: #f38ba8; }
       #pulseaudio.muted { color: #6c7086; }
-      #battery.warning { color: #f9e2af; }
-      #battery.critical { color: #f38ba8; }
-      #battery.charging { color: #a6e3a1; }
+      #custom-battery.warning { color: #f9e2af; }
+      #custom-battery.critical { color: #f38ba8; }
+      #custom-battery.charging { color: #a6e3a1; }
 
       #tray { padding: 4px 10px; }
       #tray > .passive { -gtk-icon-effect: dim; }

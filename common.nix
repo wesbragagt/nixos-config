@@ -8,6 +8,7 @@
     ./modules/hyprland.nix
     ./modules/login.nix
     ./modules/keyboard.nix
+    ./modules/tailscale.nix
   ];
 
   networking.networkmanager.enable = true;

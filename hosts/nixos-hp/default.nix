@@ -14,5 +14,11 @@
   # Identity
   networking.hostName = "nixos-hp";
 
+  services.logind.settings.Login = {
+    HandleLidSwitch = "suspend";
+    HandleLidSwitchExternalPower = "suspend";
+    HandleLidSwitchDocked = "ignore";
+  };
+
   system.stateVersion = "25.11";
 }
