@@ -28,10 +28,32 @@ Operational checklist for this repo.
 - `modules/*.nix` — system features (graphics/audio/fonts/hyprland/login/keyboard/tailscale)
 - `hosts/<host>/default.nix` — host-specific settings
 - `home/wesbragagt.nix` — HM entrypoint
-- `home/hyprland.nix` — WM behavior/keybinds/exec
-- `home/waybar.nix` — bar config + CSS
+- `home/hyprland/` — Hyprland Home Manager wiring + `hyprland.conf` / `hyprlock.conf`
+- `home/waybar/` — Waybar Home Manager wiring + `config.jsonc` / `style.css`
 - `home/programs.nix` — user programs, rofi wiring, ssh config
 - `scripts/` + `rofi/` — launcher scripts and themes
+
+## Module structure conventions
+
+- Keep **system-level concerns** in `modules/`:
+  - NixOS services
+  - PAM/polkit/udev
+  - system packages
+  - host-wide session/platform settings
+- Keep **user-level concerns** in `home/`:
+  - Home Manager modules
+  - user packages
+  - dotfiles and app config
+  - launcher/theme/editor/user-session wiring
+- Organize by **feature/domain**, not by file type, once a feature has more than one file.
+  - Good: `home/hyprland/default.nix` + `home/hyprland/hyprland.conf`
+  - Good: `home/waybar/default.nix` + `home/waybar/config.jsonc` + `style.css`
+- Use `default.nix` as the feature entrypoint when a module owns multiple related files.
+- Keep top-level entrypoints thin:
+  - `common.nix` imports system modules
+  - `home/wesbragagt.nix` imports Home Manager feature modules
+- Keep runtime-editable config files next to the module that wires them.
+- Do not move user config into `modules/` just because it is desktop-related; `modules/` and `home/` stay separate by ownership.
 
 ## Common action items
 

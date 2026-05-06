@@ -1,8 +1,8 @@
 { pkgs, inputs, ... }:
 {
   imports = [
-    ./hyprland.nix
-    ./waybar.nix
+    ./hyprland
+    ./waybar
     ./programs.nix
     ./neovim.nix
     ./swaync.nix
