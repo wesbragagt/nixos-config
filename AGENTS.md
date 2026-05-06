@@ -31,6 +31,7 @@ Operational checklist for this repo.
 - `home/hyprland/` — Hyprland Home Manager wiring + `hyprland.conf` / `hyprlock.conf`
 - `home/waybar/` — Waybar Home Manager wiring + `config.jsonc` / `style.css`
 - `home/neovim/` — Neovim Home Manager wiring + config + `lsp-registry.json`
+- `home/tmux/` — tmux Home Manager wiring + `tmux.conf`
 - `home/programs.nix` — user programs, rofi wiring, ssh config
 - `scripts/` + `rofi/` — launcher scripts and themes
 

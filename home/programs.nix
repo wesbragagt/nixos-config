@@ -1,4 +1,8 @@
 { pkgs, lib, config, inputs, ... }:
+let
+  rofiColorsDir = "${config.home.homeDirectory}/nixos-config/rofi/colors";
+  rofiLaunchersDir = "${config.home.homeDirectory}/nixos-config/rofi/launchers";
+in
 {
   home.sessionVariables = {
     NPM_GLOBAL = "$HOME/.npm-global";
@@ -38,10 +42,11 @@
     yq-go
     fd
     sesh
+    uv
+    python3
 
     # secrets / auth
     bitwarden-desktop
-    bitwarden-cli
     libsecret
 
     # desktop / ui
@@ -161,15 +166,15 @@
 
   programs.ripgrep.enable = true;
 
-  programs.git = {
+  programs.git.enable = true;
+
+  programs.delta = {
     enable = true;
-    delta = {
-      enable = true;
-      options = {
-        navigate = true;
-        side-by-side = true;
-        line-numbers = true;
-      };
+    enableGitIntegration = true;
+    options = {
+      navigate = true;
+      side-by-side = true;
+      line-numbers = true;
     };
   };
 
@@ -192,78 +197,6 @@
     nix-direnv.enable = true;
   };
 
-  programs.tmux = {
-    enable = true;
-    keyMode = "vi";
-    terminal = "xterm-256color";
-    escapeTime = 0;
-    historyLimit = 3000;
-    baseIndex = 1;
-    mouse = true;
-    prefix = "C-Space";
-    plugins = [ pkgs.tmuxPlugins.nord ];
-    extraConfig = ''
-      bind r source-file ~/.config/tmux/tmux.conf \; display "Reloaded!"
-
-      set-option -ga terminal-overrides ",xterm-256color:Tc"
-      set-option -g status-position top
-      set -g extended-keys on
-      set -g extended-keys-format csi-u
-
-      bind-key x kill-pane
-      set -g detach-on-destroy off
-
-      bind-key c new-window -c "#{pane_current_path}"
-      bind-key % split-window -h -c "#{pane_current_path}"
-      bind-key '"' split-window -v -c "#{pane_current_path}"
-
-      set-option -sg escape-time 10
-      set-option -g focus-events on
-
-      bind -T copy-mode-vi v send-keys -X begin-selection
-      bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel 'wl-copy'
-
-      bind -r i resizep -x 50
-
-      # Smart pane switching with awareness of Vim splits.
-      # See: https://github.com/christoomey/vim-tmux-navigator
-      is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
-          | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
-
-      bind-key -n 'C-h' if-shell "$is_vim" 'send-keys C-h'  'select-pane -L'
-      bind-key -n 'C-j' if-shell "$is_vim" 'send-keys C-j'  'select-pane -D'
-      bind-key -n 'C-k' if-shell "$is_vim" 'send-keys C-k'  'select-pane -U'
-      bind-key -n 'C-l' if-shell "$is_vim" 'send-keys C-l'  'select-pane -R'
-      bind-key -n 'C-\' if-shell "$is_vim" 'send-keys C-\\\\' 'select-pane -l'
-
-      bind-key -T copy-mode-vi 'C-h' select-pane -L
-      bind-key -T copy-mode-vi 'C-j' select-pane -D
-      bind-key -T copy-mode-vi 'C-k' select-pane -U
-      bind-key -T copy-mode-vi 'C-l' select-pane -R
-      bind-key -T copy-mode-vi 'C-\' select-pane -l
-
-      bind C-p display-popup "zsh"
-
-      # sesh + fzf session picker
-      bind-key "Space" run-shell "sesh connect \"$(
-          sesh list | fzf-tmux -p 55%,60% \
-              --no-sort --ansi --border-label ' sesh ' --prompt '⚡  ' \
-              --header '  ^a all ^t tmux ^g configs ^x zoxide ^d tmux kill ^f find' \
-              --bind 'tab:down,btab:up' \
-              --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list)' \
-              --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -t)' \
-              --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -c)' \
-              --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list -z)' \
-              --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . ~)' \
-              --bind 'ctrl-d:execute(tmux kill-session -t {})+change-prompt(⚡  )+reload(sesh list)'
-      )\""
-
-      bind-key d new-window -n "revdiff:#{b:pane_current_path}" "revdiff"
-
-      set-option -g status-right ""
-      set -g status-left-length 100
-    '';
-  };
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
@@ -317,10 +250,8 @@
   };
 
   xdg.configFile = {
-    "rofi/launchers/type-2/style-1.rasi".source = ../rofi/launchers/type-2/style-1.rasi;
-    "rofi/launchers/type-2/shared/colors.rasi".source = ../rofi/launchers/type-2/shared/colors.rasi;
-    "rofi/launchers/type-2/shared/fonts.rasi".source = ../rofi/launchers/type-2/shared/fonts.rasi;
-    "rofi/colors/catppuccin.rasi".source = ../rofi/colors/catppuccin.rasi;
+    "rofi/colors".source = config.lib.file.mkOutOfStoreSymlink rofiColorsDir;
+    "rofi/launchers".source = config.lib.file.mkOutOfStoreSymlink rofiLaunchersDir;
     "workmux/config.yaml".text = "nerdfont: true\n";
     "swappy/config".text = ''
       [Default]
