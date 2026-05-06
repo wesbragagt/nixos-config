@@ -4,6 +4,7 @@
     ./hyprland
     ./waybar
     ./programs.nix
+    ./tmux
     ./neovim
     ./swaync.nix
     inputs.chromium-webapps.homeManagerModules.default
