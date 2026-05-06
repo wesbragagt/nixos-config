@@ -12,6 +12,22 @@
     "kanagawa.nvim": {
       "rev": "8ad3b4cdcc804b332c32db8f9743667e1bb82b99",
       "src": "https://github.com/rebelot/kanagawa.nvim"
+    },
+    "nvim-autopairs": {
+      "rev": "59bce2eef357189c3305e25bc6dd2d138c1683f5",
+      "src": "https://github.com/windwp/nvim-autopairs"
+    },
+    "nvim-web-devicons": {
+      "rev": "4fc505ac7bd7692824a142e96e5f529c133862f8",
+      "src": "https://github.com/nvim-tree/nvim-web-devicons"
+    },
+    "oil.nvim": {
+      "rev": "0fcc83805ad11cf714a949c98c605ed717e0b83e",
+      "src": "https://github.com/stevearc/oil.nvim"
+    },
+    "vim-tmux-navigator": {
+      "rev": "e41c431a0c7b7388ae7ba341f01a0d217eb3a432",
+      "src": "https://github.com/christoomey/vim-tmux-navigator"
     }
   }
 }
