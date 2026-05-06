@@ -30,6 +30,7 @@ Operational checklist for this repo.
 - `home/wesbragagt.nix` — HM entrypoint
 - `home/hyprland/` — Hyprland Home Manager wiring + `hyprland.conf` / `hyprlock.conf`
 - `home/waybar/` — Waybar Home Manager wiring + `config.jsonc` / `style.css`
+- `home/neovim/` — Neovim Home Manager wiring + config + `lsp-registry.json`
 - `home/programs.nix` — user programs, rofi wiring, ssh config
 - `scripts/` + `rofi/` — launcher scripts and themes
 
