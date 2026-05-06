@@ -9,6 +9,8 @@ Operational checklist for this repo.
 3. Rebuild:
    - Host switch: `sudo nixos-rebuild switch --flake .#nixos-hp`
    - Dry run: `sudo nixos-rebuild build --flake .#nixos-hp`
+   - Home Manager build: `nix build .#homeConfigurations.wesbragagt.activationPackage`
+   - Shortcut: `./scripts/validate-config.sh` (add `--switch` for final activation)
 4. If it fails, scroll to the **last `error:`** line first.
 
 ## High-value reminders

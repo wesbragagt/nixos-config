@@ -1,8 +1,7 @@
-{ pkgs, lib, config, inputs, ... }:
+{ pkgs, lib, config, inputs, repoRoot, ... }:
 let
   unstable = import inputs.nixpkgs-unstable {
     inherit (pkgs.stdenv.hostPlatform) system;
-    config.allowUnfree = true;
   };
 
   lspRegistry = builtins.fromJSON (builtins.readFile ./config/lsp-registry.json);
@@ -32,5 +31,5 @@ in
   ] ++ lspPackages;
 
   xdg.configFile."nvim".source =
-    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-config/home/neovim/config";
+    config.lib.file.mkOutOfStoreSymlink "${repoRoot}/home/neovim/config";
 }

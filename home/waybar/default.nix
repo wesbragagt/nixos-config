@@ -1,6 +1,6 @@
-{ pkgs, config, ... }:
+{ pkgs, config, repoRoot, ... }:
 let
-  waybarSourceDir = "${config.home.homeDirectory}/nixos-config/home/waybar";
+  waybarSourceDir = "${repoRoot}/home/waybar";
 in
 {
   programs.waybar = {
