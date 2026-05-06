@@ -1,6 +1,6 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, repoRoot, ... }:
 let
-  tmuxSourceDir = "${config.home.homeDirectory}/nixos-config/home/tmux";
+  tmuxSourceDir = "${repoRoot}/home/tmux";
 in
 {
   programs.tmux.enable = true;

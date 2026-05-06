@@ -1,6 +1,6 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, repoRoot, ... }:
 let
-  hyprlandSourceDir = "${config.home.homeDirectory}/nixos-config/home/hyprland";
+  hyprlandSourceDir = "${repoRoot}/home/hyprland";
 in
 {
   home.packages = with pkgs; [ hyprlock ];

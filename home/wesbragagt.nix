@@ -1,6 +1,7 @@
 { pkgs, inputs, ... }:
 {
   imports = [
+    ./repo-root.nix
     ./hyprland
     ./waybar
     ./programs.nix

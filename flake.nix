@@ -24,10 +24,7 @@
   outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, zen-browser, ... }@inputs:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
+      pkgs = nixpkgs.legacyPackages.${system};
     in {
       nixosConfigurations.nixos-hp = nixpkgs.lib.nixosSystem {
         inherit system;
@@ -50,7 +47,10 @@
       homeConfigurations.wesbragagt = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         extraSpecialArgs = { inherit inputs; };
-        modules = [ ./home/wesbragagt.nix ];
+        modules = [
+          ./home/standalone-policy.nix
+          ./home/wesbragagt.nix
+        ];
       };
     };
 }
