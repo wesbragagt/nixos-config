@@ -24,7 +24,14 @@ vim.pack.add({
   { src = "https://github.com/rebelot/kanagawa.nvim" },
   { src = "https://github.com/ibhagwan/fzf-lua" },
   { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
+  { src = "https://github.com/christoomey/vim-tmux-navigator" },
+  { src = "https://github.com/nvim-tree/nvim-web-devicons" },
+  { src = "https://github.com/stevearc/oil.nvim" },
 })
+
+vim.pack.add({
+  { src = "https://github.com/windwp/nvim-autopairs" },
+}, { load = false })
 
 require("fzf-lua").setup({})
 require("blink.cmp").setup({
@@ -35,12 +42,35 @@ require("blink.cmp").setup({
   fuzzy = { implementation = "prefer_rust_with_warning" },
 })
 
+require("nvim-web-devicons").setup({})
+require("oil").setup({
+  columns = { "icon" },
+})
+
+vim.api.nvim_create_autocmd("InsertEnter", {
+  once = true,
+  callback = function()
+    vim.cmd.packadd("nvim-autopairs")
+    require("nvim-autopairs").setup({})
+  end,
+})
+
 vim.cmd.colorscheme("kanagawa")
 
 local fzf = require("fzf-lua")
 vim.keymap.set("n", "<leader>sf", fzf.files, { desc = "Find files" })
 vim.keymap.set("n", "<leader>sg", fzf.live_grep, { desc = "Live grep" })
 vim.keymap.set("n", "<leader><Space>", fzf.buffers, { desc = "Buffers" })
+vim.keymap.set("n", "<leader>di", vim.diagnostic.setqflist, { desc = "Diagnostics quickfix" })
+vim.keymap.set("n", "<leader>pt", function()
+  vim.cmd("Oil")
+end, { desc = "Open Oil" })
+
+vim.keymap.set("x", "<leader>y", '"+y', { desc = "Yank selection to system clipboard" })
+vim.keymap.set("n", "<leader>p", '"+p', { desc = "Paste below from system clipboard" })
+vim.keymap.set("x", "<leader>p", '"+p', { desc = "Paste below from system clipboard" })
+vim.keymap.set("n", "<leader>P", '"+P', { desc = "Paste above from system clipboard" })
+vim.keymap.set("x", "<leader>P", '"+P', { desc = "Paste above from system clipboard" })
 
 require("lsp").setup(require("blink.cmp").get_lsp_capabilities())
 
@@ -56,7 +86,21 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("n", "K", vim.lsp.buf.hover, "Hover")
     map("n", "<leader>rn", vim.lsp.buf.rename, "Rename")
     map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
-    map("n", "[d", vim.diagnostic.goto_prev, "Prev diagnostic")
-    map("n", "]d", vim.diagnostic.goto_next, "Next diagnostic")
+    map("n", "[d", function()
+      vim.diagnostic.jump({
+        count = -1,
+        on_jump = function(_, bufnr)
+          vim.diagnostic.open_float({ bufnr = bufnr, scope = "cursor", focus = false })
+        end,
+      })
+    end, "Prev diagnostic")
+    map("n", "]d", function()
+      vim.diagnostic.jump({
+        count = 1,
+        on_jump = function(_, bufnr)
+          vim.diagnostic.open_float({ bufnr = bufnr, scope = "cursor", focus = false })
+        end,
+      })
+    end, "Next diagnostic")
   end,
 })
