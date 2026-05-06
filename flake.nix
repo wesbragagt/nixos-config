@@ -18,7 +18,6 @@
     };
     chromium-webapps = {
       url = "github:chobbledotcom/nix-chromium-webapps";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
