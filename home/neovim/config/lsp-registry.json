@@ -1,0 +1,43 @@
+{
+  "lua_ls": {
+    "packageAttrPath": ["lua-language-server"],
+    "cmd": ["lua-language-server"],
+    "filetypes": ["lua"],
+    "root_markers": [".luarc.json", ".luarc.jsonc", ".git"],
+    "override": "lua_ls"
+  },
+  "nixd": {
+    "packageAttrPath": ["nixd"],
+    "extraPackageAttrPaths": [["nixfmt-rfc-style"]],
+    "cmd": ["nixd"],
+    "filetypes": ["nix"],
+    "root_markers": ["flake.nix", ".git"],
+    "override": "nixd"
+  },
+  "pyright": {
+    "packageAttrPath": ["pyright"],
+    "cmd": ["pyright-langserver", "--stdio"],
+    "filetypes": ["python"],
+    "root_markers": ["pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Pipfile", ".git"],
+    "override": "pyright"
+  },
+  "tofu_ls": {
+    "packageAttrPath": ["tofu-ls"],
+    "cmd": ["tofu-ls", "serve"],
+    "filetypes": ["terraform", "opentofu", "opentofu-vars", "terraform-vars"],
+    "root_markers": [".terraform", ".git", "*.tf"]
+  },
+  "ts_ls": {
+    "packageAttrPath": ["nodePackages", "typescript-language-server"],
+    "cmd": ["typescript-language-server", "--stdio"],
+    "filetypes": ["javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx"],
+    "root_markers": ["tsconfig.json", "jsconfig.json", "package.json", ".git"]
+  },
+  "yamlls": {
+    "packageAttrPath": ["yaml-language-server"],
+    "cmd": ["yaml-language-server", "--stdio"],
+    "filetypes": ["yaml", "yaml.docker-compose", "yaml.gitlab"],
+    "root_markers": [".git"],
+    "override": "yamlls"
+  }
+}
