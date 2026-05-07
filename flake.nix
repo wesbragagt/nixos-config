@@ -19,6 +19,10 @@
     chromium-webapps = {
       url = "github:chobbledotcom/nix-chromium-webapps";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, zen-browser, ... }@inputs:
@@ -31,6 +35,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           ./hosts/nixos-hp
+          inputs.sops-nix.nixosModules.sops
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

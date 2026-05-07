@@ -8,7 +8,9 @@
     ./tmux
     ./neovim
     ./swaync.nix
+    ./sops
     inputs.chromium-webapps.homeManagerModules.default
+    inputs.sops-nix.homeManagerModules.sops
   ];
 
   home.username = "wesbragagt";

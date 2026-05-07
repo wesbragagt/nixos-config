@@ -10,6 +10,7 @@
     ./modules/keyboard.nix
     ./modules/tailscale.nix
     ./modules/containers.nix
+    ./modules/sops.nix
   ];
 
   networking.networkmanager.enable = true;

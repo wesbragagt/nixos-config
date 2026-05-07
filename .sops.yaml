@@ -1,0 +1,24 @@
+# Fill in real recipients below, then run `sops-updatekeys-all` after adding
+# or removing a YubiKey, backup age key, or host recipient.
+#
+# Example:
+# keys:
+#   - &nixos_hp age1...
+#   - &wes_yk1 age1yubikey1...
+#   - &wes_yk2 age1yubikey1...
+#   - &backup age1...
+# creation_rules:
+#   - path_regex: ^secrets/secrets\.yaml$
+#     age:
+#       - *nixos_hp
+#       - *wes_yk1
+#       - *wes_yk2
+#       - *backup
+keys: 
+    - &nixos-hp age1m8znq9pewhzrhrtamkl2pvy36lq5lwlax82e8c5unq6acaqqz9xsufa4jj
+    - &yubico-1 age1yubikey1qgpjm23gn7q2d7n7jlz5cl43aaflmnxq4437wc92kl8fz8ssfvtnjdk5h94
+creation_rules: 
+    - path_regex: ^secrets/secrets\.yaml$
+      age:
+        - *nixos-hp
+        - *yubico-1
