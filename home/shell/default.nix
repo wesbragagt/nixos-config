@@ -1,20 +1,47 @@
-{ lib, repoRoot, ... }:
+{ lib, repoRoot, config, ... }:
 let
+  exaApiKeyPath = config.sops.secrets.exa_api_key.path;
   shellBootstrap = ''
     export NPM_GLOBAL="$HOME/.npm-global"
     export NPM_CONFIG_PREFIX="$NPM_GLOBAL"
     export PATH="$NPM_GLOBAL/bin:$PATH"
 
+    if [[ -f "${exaApiKeyPath}" ]]; then
+      export EXA_API_KEY="$(< "${exaApiKeyPath}")"
+    fi
+
     rebuild() {
       sudo nixos-rebuild switch --impure --flake ${repoRoot}#"$(hostname)" "$@"
+    }
+
+    cd/() {
+      local repo_root
+      repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || return 1
+      cd "$repo_root"
+    }
+
+    cdl() {
+      local selection dir
+      selection=$(fzf --preview 'bat --style=numbers --color=always --line-range :500 {}') || return 0
+      [[ -n "$selection" ]] || return 0
+
+      sleep 0.3
+      dir=$(dirname "$selection")
+      [[ -n "$dir" ]] || return 0
+
+      echo "Changing directory to $dir"
+      cd "$dir"
     }
   '';
 in
 {
+  sops.secrets.exa_api_key = { };
   home.sessionVariables = {
     NPM_GLOBAL = "$HOME/.npm-global";
     NPM_CONFIG_PREFIX = "$HOME/.npm-global";
     EDITOR = "nvim";
+    VISUAL = "nvim";
+    MANPAGER = "nvim +Man!";
   };
 
   home.sessionPath = [
@@ -48,7 +75,12 @@ in
       nvimh = "nvim --headless";
     };
     initContent = shellBootstrap + ''
+      autoload -Uz edit-command-line
+      zle -N edit-command-line
       bindkey '^Y' autosuggest-accept
+      bindkey '^P' up-line-or-history
+      bindkey '^N' down-line-or-history
+      bindkey '^X^E' edit-command-line
     '';
   };
 
