@@ -9,6 +9,7 @@
     ./modules/login.nix
     ./modules/keyboard.nix
     ./modules/tailscale.nix
+    ./modules/containers.nix
   ];
 
   networking.networkmanager.enable = true;
@@ -35,7 +36,7 @@
   users.users.wesbragagt = {
     isNormalUser = true;
     description = "wesbragagt";
-    extraGroups = [ "networkmanager" "wheel" "video" "audio" ];
+    extraGroups = [ "networkmanager" "wheel" "video" "audio" "podman" ];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFOS29+SNkpKHCMcaonfqERiIr/xKPuxu4sVv5yyIG33 wesbragagt@mac" ];
   };
