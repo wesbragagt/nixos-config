@@ -17,7 +17,8 @@ Operational checklist for this repo.
 
 - **Flake only sees git-tracked/staged content**. Untracked edits are invisible.
 - **Do not edit** `hosts/*/hardware-configuration.nix` manually.
-- **No secrets in repo** (public keys only). Add `agenix` or `sops-nix` when needed.
+- **No plaintext secrets in repo**. Encrypted GitOps secrets live in `secrets/secrets.yaml` via `sops-nix`; recipient rules live in `.sops.yaml`.
+- For the secrets workflow and setup details, read `secrets/README.md` first, then `docs/sops-yubikey.md` for YubiKey recipient enrollment.
 - Prefer **NixOS/Home Manager modules** over raw packages when available.
 - Put packages in the right scope:
   - System-wide: `common.nix` / `modules/*.nix`
@@ -36,6 +37,9 @@ Operational checklist for this repo.
 - `home/tmux/` — tmux Home Manager wiring + `tmux.conf`
 - `home/programs.nix` — user programs, rofi wiring, ssh config
 - `scripts/` + `rofi/` — launcher scripts and themes
+- `secrets/README.md` — canonical secrets setup and GitOps workflow
+- `docs/sops-yubikey.md` — add/update YubiKey recipients for SOPS
+- `docs/add-another-machine.md` — comprehensive multi-host machine onboarding guide
 
 ## Module structure conventions
 
@@ -63,11 +67,14 @@ Operational checklist for this repo.
 
 ### Add a new host
 
+Follow `docs/add-another-machine.md` for the full multi-host + secrets workflow.
+
 1. Create `hosts/<newhost>/`
 2. Copy machine-generated `hardware-configuration.nix` there
 3. Copy `hosts/nixos-hp/default.nix` → `hosts/<newhost>/default.nix`, update `networking.hostName`
 4. Add `nixosConfigurations.<newhost>` in `flake.nix`
-5. `git add -A && sudo nixos-rebuild switch --flake .#<newhost>`
+5. If the machine should decrypt shared secrets, add its host SSH recipient to `.sops.yaml` and run `sops-updatekeys-all`
+6. `git add -A && sudo nixos-rebuild switch --flake .#<newhost>`
 
 ### Add a package
 

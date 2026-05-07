@@ -84,4 +84,10 @@ Passwordless sudo for `wheel` is set in `common.nix`.
 
 ## Secrets
 
-None committed. When needed, add `agenix` (simple) or `sops-nix` (multi-recipient).
+This repo now includes `sops-nix` scaffolding with an optional repo-shared secrets file:
+
+- `secrets/secrets.yaml`
+- repo-level recipient config in `.sops.yaml`
+
+If that file does not exist, the config still evaluates/builds.
+See `secrets/README.md` for the YubiKey + age workflow and `docs/add-another-machine.md` for multi-host setup.
