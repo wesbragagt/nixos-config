@@ -11,9 +11,9 @@ in
   assertions = lib.optional (!(builtins.pathExists hardwareConfig)) {
     assertion = false;
     message = ''
-      nixos-icebox is missing hosts/nixos-icebox/hardware-configuration.nix.
-      Generate it on nixos-icebox with:
-        sudo nixos-generate-config --show-hardware-config > hosts/nixos-icebox/hardware-configuration.nix
+      icebox is missing hosts/icebox/hardware-configuration.nix.
+      Generate it on icebox with:
+        sudo nixos-generate-config --show-hardware-config > hosts/icebox/hardware-configuration.nix
     '';
   };
 
@@ -23,7 +23,7 @@ in
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Identity
-  networking.hostName = "nixos-icebox";
+  networking.hostName = "icebox";
 
   system.stateVersion = "25.11";
 }

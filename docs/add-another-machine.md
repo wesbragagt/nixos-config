@@ -114,6 +114,7 @@ nixosConfigurations = {
       isLaptop = false;
       hasWireless = false;
       graphics = "generic"; # use "intel" only for Intel VA-API/iHD hosts
+      sopsHostKeyPath = null; # bootstrap mode; enable after adding host recipient
     };
   };
 };
@@ -124,12 +125,19 @@ The profile controls shared laptop/desktop behavior:
 - `isLaptop = true` enables battery Waybar config, `battery-estimate`, brightness keys, and laptop Hyprland config.
 - `hasWireless = true` installs Wi-Fi tray/UI helpers and launches `nm-applet` from the laptop Hyprland config.
 - `graphics = "intel"` enables Intel VA-API packages and `LIBVA_DRIVER_NAME=iHD`; leave desktops as `"generic"` unless you know they need Intel-specific acceleration.
+- `sopsHostKeyPath = null` disables system secret declarations for bootstrap installs. Set it to `"/etc/ssh/ssh_host_ed25519_key"` after the host recipient has been added and secrets have been re-wrapped.
 
 ## 6. Add this machine as a SOPS recipient
 
-For this repo's NixOS hosts, treat this as required. The shared config declares `exa_api_key` as a system-side `sops-nix` secret and Home Manager reads it from `/run/secrets/exa_api_key`, so the new machine's host SSH key must be able to decrypt `secrets/secrets.yaml` for unattended rebuilds.
+For a brand-new machine, you can bootstrap without SOPS by leaving the host profile's `sopsHostKeyPath = null`. This avoids the chicken-and-egg problem where the first switch needs `/etc/ssh/ssh_host_ed25519_key` before the host key exists or before it has been added to `.sops.yaml`.
 
-You can still use the YubiKey to edit/re-wrap secrets during setup, but the host recipient is what makes future `nixos-rebuild switch` work without depending on the YubiKey being present.
+After the first successful switch, add the host SSH recipient and enable unattended system secrets by setting:
+
+```nix
+sopsHostKeyPath = "/etc/ssh/ssh_host_ed25519_key";
+```
+
+The YubiKey is still useful for editing/re-wrapping secrets, but the host recipient is what makes future `nixos-rebuild switch` work without depending on a YubiKey being present.
 
 ## 7. Get the new machine's host recipient
 
