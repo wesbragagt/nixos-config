@@ -2,6 +2,7 @@
 {
   imports = [
     ./repo-root.nix
+    ./claude
     ./hyprland
     ./waybar
     ./zen
@@ -40,6 +41,13 @@
   };
 
   programs.home-manager.enable = true;
+
+  wes.claudeCode = {
+    enable = true;
+    aliases = {
+      ccd = "claude --dangerously-skip-permissions";
+    };
+  };
 
   programs.chromium-webapps = {
     enable = true;

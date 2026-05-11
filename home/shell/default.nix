@@ -101,7 +101,9 @@ in
 
   programs.bash = {
     enable = true;
-    shellAliases = {};
+    shellAliases = {
+      sg = "$HOME/.nix-profile/bin/sg";
+    };
     initExtra = shellBootstrap;
   };
 
@@ -118,6 +120,7 @@ in
       extended = true;
     };
     shellAliases = {
+      sg = "$HOME/.nix-profile/bin/sg";
       gs = "git status";
       gitd = "lazygit";
       # git add all changes and commit
