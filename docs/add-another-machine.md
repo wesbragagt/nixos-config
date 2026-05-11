@@ -220,7 +220,7 @@ sudo nixos-rebuild switch --flake .#$newhost
 To test that the machine can decrypt with its host key:
 
 ```bash
-sudo SOPS_AGE_SSH_PRIVATE_KEY_FILE=/etc/ssh/ssh_host_ed25519_key sops -d secrets/secrets.yaml
+sudo env SOPS_AGE_KEY_CMD='ssh-to-age -private-key -i /etc/ssh/ssh_host_ed25519_key' sops -d secrets/secrets.yaml
 ```
 
 That checks the host recipient path directly.
