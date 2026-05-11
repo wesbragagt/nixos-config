@@ -4,7 +4,7 @@
     enable = true;
     settings.user = {
       name = "wesbragagt";
-      email = "12345678+wesbragagt@users.noreply.github.com";
+      email = "40429790+wesbragagt@users.noreply.github.com";
     };
   };
 

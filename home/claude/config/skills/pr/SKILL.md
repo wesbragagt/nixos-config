@@ -1,6 +1,6 @@
 ---
 name: pr
-description: Create a GitHub pull request for the current branch. Invokes /commit first to stage and commit any uncommitted changes, then uses the GitHub CLI (gh) to open a PR with a generated title and body. Use this skill whenever the user wants to open a PR, submit their work for review, push a branch and create a pull request, or says anything like "open a PR", "create a pull request", "submit for review", "push and PR", or "ship this".
+description: Create a GitHub pull request for the current branch. Invokes /commit first to stage and commit any uncommitted changes, then uses `gh` to open the PR. Use when the user wants to open a PR or ship a branch for review.
 argument-hint: "[optional PR title or description context]"
 ---
 

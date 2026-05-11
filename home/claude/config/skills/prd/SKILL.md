@@ -1,6 +1,6 @@
 ---
 name: prd
-description: Plan a feature using the prd-planner subagent
+description: Plan a feature by delegating to the prd-planner subagent to produce a product requirements doc. Use when the user wants to plan, scope, or write a PRD for a new feature.
 argument-hint: <feature-name> --description "<description>" [--context "<context>"] [--quick]
 ---
 

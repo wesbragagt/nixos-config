@@ -1,6 +1,6 @@
 ---
 name: code
-description: Execute tasks from a tasks.yaml by orchestrating code-writer agents
+description: Execute tasks from a tasks.yaml by orchestrating code-writer agents. Use when the user has a tasks.yaml ready to run or says "run the tasks", "execute tasks.yaml".
 argument-hint: <path-to-tasks-yaml> [--task <task-key>]
 ---
 

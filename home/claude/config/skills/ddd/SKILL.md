@@ -1,6 +1,6 @@
 ---
 name: ddd
-description: Domain-Driven Design + Ports & Adapters (Hexagonal Architecture) implementation guide. Use this skill whenever the user invokes /ddd, asks to build a feature using DDD, wants to model a domain, design bounded contexts, implement hexagonal architecture, or review code for DDD compliance. Also trigger when the user mentions entities, value objects, aggregates, repositories, domain events, use cases, ports, adapters, or composition root in an architectural context.
+description: Domain-Driven Design + Ports & Adapters (Hexagonal Architecture) implementation guide. Use when the user wants to model a domain, design bounded contexts, implement hexagonal architecture, or review code for DDD compliance.
 ---
 
 # Domain-Driven Design + Ports & Adapters
