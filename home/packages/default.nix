@@ -18,9 +18,6 @@
     networkmanagerapplet
     iwgtk
 
-    # browsers
-    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
-
     # cli tools
     inputs.exacli.packages.${pkgs.stdenv.hostPlatform.system}.default
     gh
@@ -58,6 +55,7 @@
     glow
 
     # scripts
+    (pkgs.writeShellScriptBin "rofi-bookmarks" (builtins.readFile ../../scripts/rofi-bookmarks.sh))
     (pkgs.writeShellScriptBin "rofi-freq" (builtins.readFile ../../scripts/rofi-freq.sh))
     (pkgs.writeShellScriptBin "sf" (builtins.readFile ../../scripts/sf.sh))
     (pkgs.writeShellScriptBin "sgrep" (builtins.readFile ../../scripts/sg.sh))
