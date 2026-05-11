@@ -38,6 +38,7 @@ in
 
       # secrets / auth
       bitwarden-desktop
+      bitwarden-cli
       libsecret
 
       # desktop / ui
@@ -45,6 +46,7 @@ in
       nwg-dock-hyprland
       waypaper
       swww
+      slack
 
       # media
       mpv
@@ -68,6 +70,9 @@ in
       (pkgs.writeShellScriptBin "sf" (builtins.readFile ../../scripts/sf.sh))
       (pkgs.writeShellScriptBin "sgrep" (builtins.readFile ../../scripts/sg.sh))
       (pkgs.writeShellScriptBin "wf-record" (builtins.readFile ../../scripts/wf-recorder.sh))
+      (pkgs.writeShellScriptBin "bw-ssh-load" ''
+        exec ${pkgs.python3}/bin/python3 ${../../scripts/bw-ssh-load.py} "$@"
+      '')
       (pkgs.callPackage ../../pkgs/workmux { })
     ]
     ++ lib.optionals hasWireless [

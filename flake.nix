@@ -125,12 +125,10 @@
             hypridle = {
               lockTimeout = 900;
               dpmsTimeout = 1200;
-              suspendTimeout = 1800;
+              suspendTimeout = 3600;
               suspendRequiresNoSsh = true;
             };
-            # Bootstrap mode: no system secrets until icebox has a host SSH
-            # recipient in .sops.yaml and secrets/secrets.yaml has been re-wrapped.
-            sopsHostKeyPath = null;
+            sopsHostKeyPath = "/etc/ssh/ssh_host_ed25519_key";
           };
         };
       };

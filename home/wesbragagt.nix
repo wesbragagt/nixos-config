@@ -49,11 +49,6 @@
           "${pkgs.papirus-icon-theme}/share/icons/Papirus/64x64/apps/${name}.svg";
       in [
         {
-          name = "Slack";
-          url = "https://app.slack.com";
-          icon = papirusIcon "com.slack.Slack";
-        }
-        {
           name = "Spotify";
           url = "https://open.spotify.com";
           icon = papirusIcon "com.spotify.Client";
