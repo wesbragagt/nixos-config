@@ -47,13 +47,19 @@ in
 
   home.file.".cache/nwg-dock-pinned".text = ''
     foot
-    chromium-browser
+    zen-beta
     thunar
   '';
 
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
+      "text/html" = "zen-beta.desktop";
+      "application/xhtml+xml" = "zen-beta.desktop";
+      "x-scheme-handler/http" = "zen-beta.desktop";
+      "x-scheme-handler/https" = "zen-beta.desktop";
+      "x-scheme-handler/about" = "zen-beta.desktop";
+      "x-scheme-handler/unknown" = "zen-beta.desktop";
       "image/jpeg" = "imv.desktop";
       "image/png" = "imv.desktop";
       "image/gif" = "imv.desktop";
@@ -69,6 +75,17 @@ in
       "video/x-flv" = "mpv.desktop";
     };
   };
+
+  xdg.dataFile."applications/rofi-bookmarks.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Bookmarks
+    Comment=Fuzzy search Zen bookmarks
+    Exec=rofi-bookmarks
+    Icon=bookmarks-organize
+    Terminal=false
+    Categories=Utility;
+  '';
 
   xdg.configFile = {
     "rofi/colors".source = config.lib.file.mkOutOfStoreSymlink rofiColorsDir;

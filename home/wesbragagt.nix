@@ -4,11 +4,13 @@
     ./repo-root.nix
     ./hyprland
     ./waybar
+    ./zen
     ./programs.nix
     ./tmux
     ./neovim
     ./swaync.nix
     ./sops
+    inputs.zen-browser.homeModules.beta
     inputs.chromium-webapps.homeManagerModules.default
     inputs.sops-nix.homeManagerModules.sops
   ];
