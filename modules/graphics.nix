@@ -1,17 +1,25 @@
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  graphics = config.wes.host.graphics;
+in
 {
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
-    extraPackages = with pkgs; [
-      intel-media-driver
-      intel-vaapi-driver
-      libva-vdpau-driver
-      libvdpau-va-gl
+    extraPackages = lib.optionals (graphics == "intel") [
+      pkgs.intel-media-driver
+      pkgs.intel-vaapi-driver
+      pkgs.libva-vdpau-driver
+      pkgs.libvdpau-va-gl
     ];
   };
 
-  environment.sessionVariables = {
+  environment.sessionVariables = lib.optionalAttrs (graphics == "intel") {
     LIBVA_DRIVER_NAME = "iHD";
   };
 }

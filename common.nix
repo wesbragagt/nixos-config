@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./modules/host-profile.nix
     ./modules/graphics.nix
     ./modules/audio.nix
     ./modules/fonts.nix
@@ -37,15 +38,26 @@
   users.users.wesbragagt = {
     isNormalUser = true;
     description = "wesbragagt";
-    extraGroups = [ "networkmanager" "wheel" "video" "audio" "podman" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "video"
+      "audio"
+      "podman"
+    ];
     shell = pkgs.zsh;
-    openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFOS29+SNkpKHCMcaonfqERiIr/xKPuxu4sVv5yyIG33 wesbragagt@mac" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFOS29+SNkpKHCMcaonfqERiIr/xKPuxu4sVv5yyIG33 wesbragagt@mac"
+    ];
   };
 
   programs.zsh.enable = true;
 
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     warn-dirty = false;
   };
   nix.gc = {
@@ -70,7 +82,10 @@
 
   programs.thunar = {
     enable = true;
-    plugins = with pkgs.xfce; [ thunar-archive-plugin thunar-volman ];
+    plugins = with pkgs.xfce; [
+      thunar-archive-plugin
+      thunar-volman
+    ];
   };
   services.gvfs.enable = true;
   services.tumbler.enable = true;

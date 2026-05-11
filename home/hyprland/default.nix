@@ -1,6 +1,22 @@
-{ pkgs, lib, config, repoRoot, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  repoRoot,
+  hostProfile ? { },
+  ...
+}:
 let
   hyprlandSourceDir = "${repoRoot}/home/hyprland";
+  isLaptop = hostProfile.isLaptop or false;
+  hasWireless = hostProfile.hasWireless or false;
+  hyprlandConfig =
+    if isLaptop then
+      "hyprland.conf"
+    else if hasWireless then
+      "hyprland-desktop-wireless.conf"
+    else
+      "hyprland-desktop.conf";
 in
 {
   home.packages = with pkgs; [ hyprlock ];
@@ -10,7 +26,7 @@ in
   };
 
   xdg.configFile."hypr/hyprland.conf" = lib.mkForce {
-    source = config.lib.file.mkOutOfStoreSymlink "${hyprlandSourceDir}/hyprland.conf";
+    source = config.lib.file.mkOutOfStoreSymlink "${hyprlandSourceDir}/${hyprlandConfig}";
     onChange = ''
       (
         XDG_RUNTIME_DIR=''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}

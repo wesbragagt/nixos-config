@@ -25,18 +25,30 @@ sudo mv /mnt/etc/nixos/hardware-configuration.nix /mnt/etc/nixos/hosts/$HOST/
 sudo cp /mnt/etc/nixos/hosts/nixos-hp/default.nix /mnt/etc/nixos/hosts/$HOST/default.nix
 sudo sed -i "s/nixos-hp/$HOST/" /mnt/etc/nixos/hosts/$HOST/default.nix
 
-# 6. Register the host in flake.nix (add a sibling to nixosConfigurations.nixos-hp)
-#    nixosConfigurations.$HOST = nixpkgs.lib.nixosSystem { ... modules = [ ./hosts/$HOST ... ]; };
+# 6. Register the host in flake.nix (add a sibling with mkHost)
+#    For a non-laptop desktop without Wi-Fi UI:
+#    nixosConfigurations.$HOST = mkHost {
+#      name = "$HOST";
+#      hostProfile = { isLaptop = false; hasWireless = false; graphics = "generic"; };
+#    };
 
-# 7. Install
+# 7. If using repo secrets, pre-generate target SSH host key, add its age
+#    recipient to .sops.yaml, then run sops-updatekeys-all with your YubiKey.
+#    This makes the first activation able to decrypt /run/secrets/exa_api_key.
+sudo install -d -m 0755 /mnt/etc/ssh
+sudo ssh-keygen -t ed25519 -N "" -f /mnt/etc/ssh/ssh_host_ed25519_key
+nix-shell -p ssh-to-age --run 'ssh-to-age < /mnt/etc/ssh/ssh_host_ed25519_key.pub'
+
+# 8. Stage flake-visible changes, then install
+git -C /mnt/etc/nixos add -A
 sudo nixos-install --flake /mnt/etc/nixos#$HOST --root /mnt
 
-# 8. Reboot, log in, then on the running system:
+# 9. Reboot, log in, then on the running system:
 git clone https://github.com/wesbragagt/nixos-config ~/nixos-config
 sudo nixos-rebuild switch --flake ~/nixos-config#$HOST
 ```
 
-After the first switch, `home-manager` activates automatically (it's wired in as a NixOS module). Add your SSH public key to `users.users.<you>.openssh.authorizedKeys.keys` in `common.nix` (or per-host) before the next push so passwordless SSH from your other machines works.
+After the first switch, `home-manager` activates automatically (it's wired in as a NixOS module). Clone this repo to `~/nixos-config` before first graphical use; Hyprland, Waybar, Neovim, and rofi are intentionally linked from that working tree for live iteration. Add your SSH public key to `users.users.<you>.openssh.authorizedKeys.keys` in `common.nix` (or per-host) before the next push so passwordless SSH from your other machines works.
 
 ## Layout
 
@@ -89,5 +101,5 @@ This repo now includes `sops-nix` scaffolding with an optional repo-shared secre
 - `secrets/secrets.yaml`
 - repo-level recipient config in `.sops.yaml`
 
-If that file does not exist, the config still evaluates/builds.
+If that file does not exist, the config still evaluates/builds. Because NixOS hosts expose `exa_api_key` as `/run/secrets/exa_api_key`, add each new host's SSH age recipient to `.sops.yaml` and run `sops-updatekeys-all` before expecting unattended rebuilds.
 See `secrets/README.md` for the YubiKey + age workflow and `docs/add-another-machine.md` for multi-host setup.

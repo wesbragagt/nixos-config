@@ -1,66 +1,81 @@
-{ pkgs, inputs, ... }:
 {
-  home.packages = with pkgs; [
-    # wayland / audio
-    pavucontrol
-    wl-clipboard
-    cliphist
-    wlr-randr
-    libnotify
+  pkgs,
+  inputs,
+  lib,
+  hostProfile ? { },
+  ...
+}:
+let
+  isLaptop = hostProfile.isLaptop or false;
+  hasWireless = hostProfile.hasWireless or false;
+in
+{
+  home.packages =
+    with pkgs;
+    [
+      # wayland / audio
+      pavucontrol
+      wl-clipboard
+      cliphist
+      wlr-randr
+      libnotify
 
-    # screenshot / recording
-    grim
-    slurp
-    swappy
-    wf-recorder
+      # screenshot / recording
+      grim
+      slurp
+      swappy
+      wf-recorder
 
-    # network
-    networkmanagerapplet
-    iwgtk
+      # cli tools
+      inputs.exacli.packages.${pkgs.stdenv.hostPlatform.system}.default
+      gh
+      jq
+      yq-go
+      fd
+      sesh
+      uv
+      python3
 
-    # cli tools
-    inputs.exacli.packages.${pkgs.stdenv.hostPlatform.system}.default
-    gh
-    jq
-    yq-go
-    fd
-    sesh
-    uv
-    python3
+      # secrets / auth
+      bitwarden-desktop
+      libsecret
 
-    # secrets / auth
-    bitwarden-desktop
-    libsecret
+      # desktop / ui
+      gtk3
+      nwg-dock-hyprland
+      waypaper
+      swww
 
-    # desktop / ui
-    gtk3
-    nwg-dock-hyprland
-    waypaper
-    swww
+      # media
+      mpv
+      imv
 
-    # media
-    mpv
-    imv
+      # data
+      csvlens # interactive CSV viewer
+      duckdb # in-process analytical SQL
+      harlequin # terminal database UI
 
-    # data
-    csvlens     # interactive CSV viewer
-    duckdb      # in-process analytical SQL
-    harlequin   # terminal database UI
+      # git
+      lazygit
+      delta
 
-    # git
-    lazygit
-    delta
+      # markdown viewing
+      glow
 
-    # markdown viewing
-    glow
-
-    # scripts
-    (pkgs.writeShellScriptBin "rofi-bookmarks" (builtins.readFile ../../scripts/rofi-bookmarks.sh))
-    (pkgs.writeShellScriptBin "rofi-freq" (builtins.readFile ../../scripts/rofi-freq.sh))
-    (pkgs.writeShellScriptBin "sf" (builtins.readFile ../../scripts/sf.sh))
-    (pkgs.writeShellScriptBin "sgrep" (builtins.readFile ../../scripts/sg.sh))
-    (pkgs.writeShellScriptBin "battery-estimate" (builtins.readFile ../../scripts/battery-estimate.sh))
-    (pkgs.writeShellScriptBin "wf-record" (builtins.readFile ../../scripts/wf-recorder.sh))
-    (pkgs.callPackage ../../pkgs/workmux {})
-  ];
+      # scripts
+      (pkgs.writeShellScriptBin "rofi-bookmarks" (builtins.readFile ../../scripts/rofi-bookmarks.sh))
+      (pkgs.writeShellScriptBin "rofi-freq" (builtins.readFile ../../scripts/rofi-freq.sh))
+      (pkgs.writeShellScriptBin "sf" (builtins.readFile ../../scripts/sf.sh))
+      (pkgs.writeShellScriptBin "sgrep" (builtins.readFile ../../scripts/sg.sh))
+      (pkgs.writeShellScriptBin "wf-record" (builtins.readFile ../../scripts/wf-recorder.sh))
+      (pkgs.callPackage ../../pkgs/workmux { })
+    ]
+    ++ lib.optionals hasWireless [
+      # network / Wi-Fi tray helpers
+      networkmanagerapplet
+      iwgtk
+    ]
+    ++ lib.optionals isLaptop [
+      (pkgs.writeShellScriptBin "battery-estimate" (builtins.readFile ../../scripts/battery-estimate.sh))
+    ];
 }

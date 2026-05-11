@@ -86,45 +86,65 @@ At minimum, change:
 networking.hostName = "nixos-desktop";
 ```
 
+For a desktop/non-laptop host, also remove laptop-only settings from the copied file, especially:
+
+```nix
+services.logind.settings.Login = {
+  HandleLidSwitch = "suspend";
+  HandleLidSwitchExternalPower = "suspend";
+  HandleLidSwitchDocked = "ignore";
+};
+```
+
 Adjust any host-specific boot, kernel, suspend, or hardware choices as needed.
 
 ## 5. Add the host to `flake.nix`
 
-Copy the `nixosConfigurations.nixos-hp` block and create a new one for the new host.
+Add a sibling entry under `nixosConfigurations` using the shared `mkHost` helper.
 
-You want a new entry like:
+For a desktop with no Wi-Fi UI and no battery/backlight/lid handling:
 
 ```nix
-nixosConfigurations.nixos-desktop = nixpkgs.lib.nixosSystem {
-  inherit system;
-  specialArgs = { inherit inputs; };
-  modules = [
-    ./hosts/nixos-desktop
-    inputs.sops-nix.nixosModules.sops
-    home-manager.nixosModules.home-manager
-    {
-      home-manager.useGlobalPkgs = true;
-      home-manager.useUserPackages = true;
-      home-manager.backupFileExtension = "hm-bak";
-      home-manager.extraSpecialArgs = { inherit inputs; };
-      home-manager.users.wesbragagt = import ./home/wesbragagt.nix;
-    }
-  ];
+nixosConfigurations = {
+  nixos-hp = mkHost { ... };
+
+  nixos-desktop = mkHost {
+    name = "nixos-desktop";
+    hostProfile = {
+      isLaptop = false;
+      hasWireless = false;
+      graphics = "generic"; # use "intel" only for Intel VA-API/iHD hosts
+    };
+  };
 };
 ```
 
-## 6. Decide whether this machine should decrypt shared secrets
+The profile controls shared laptop/desktop behavior:
 
-If the machine should consume `secrets/secrets.yaml`, add its SSH host key as a SOPS recipient.
+- `isLaptop = true` enables battery Waybar config, `battery-estimate`, brightness keys, and laptop Hyprland config.
+- `hasWireless = true` installs Wi-Fi tray/UI helpers and launches `nm-applet` from the laptop Hyprland config.
+- `graphics = "intel"` enables Intel VA-API packages and `LIBVA_DRIVER_NAME=iHD`; leave desktops as `"generic"` unless you know they need Intel-specific acceleration.
 
-If not, you can skip this section and the rest of the host config can still work.
+## 6. Add this machine as a SOPS recipient
+
+For this repo's NixOS hosts, treat this as required. The shared config declares `exa_api_key` as a system-side `sops-nix` secret and Home Manager reads it from `/run/secrets/exa_api_key`, so the new machine's host SSH key must be able to decrypt `secrets/secrets.yaml` for unattended rebuilds.
+
+You can still use the YubiKey to edit/re-wrap secrets during setup, but the host recipient is what makes future `nixos-rebuild switch` work without depending on the YubiKey being present.
 
 ## 7. Get the new machine's host recipient
 
-On the new machine, run:
+On an already-running NixOS machine, run:
 
 ```bash
 ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub
+```
+
+During a fresh ISO install, pre-generate the target host key before `nixos-install` so the recipient is known before the first activation tries to decrypt secrets:
+
+```bash
+sudo install -d -m 0755 /mnt/etc/ssh
+sudo ssh-keygen -t ed25519 -N "" -f /mnt/etc/ssh/ssh_host_ed25519_key
+nix-shell -p ssh-to-age --run 'ssh-to-age < /mnt/etc/ssh/ssh_host_ed25519_key.pub'
 ```
 
 Copy the resulting `age1...` recipient.
@@ -195,7 +215,7 @@ On the new machine:
 sudo nixos-rebuild switch --flake .#$newhost
 ```
 
-## 12. Optional: verify host-side secret decryption
+## 12. Verify host-side secret decryption
 
 To test that the machine can decrypt with its host key:
 

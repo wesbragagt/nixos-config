@@ -15,6 +15,7 @@ If that file does not exist, the config still evaluates.
   - enables `services.pcscd`
   - imports host SSH keys as age identities via `sops.age.sshKeyPaths`
   - enables `age-plugin-yubikey` for `sops-nix`
+  - exposes `exa_api_key` at `/run/secrets/exa_api_key` for NixOS hosts, owned by `wesbragagt`
 - `home/sops/default.nix`
   - installs `age`, `ssh-to-age`, `age-plugin-yubikey`, `yubikey-manager`
   - installs `sops` wrapped with the YubiKey age plugin
@@ -24,7 +25,7 @@ If that file does not exist, the config still evaluates.
 
 Because this repo uses a single shared GitOps secrets file, include every recipient that should be able to decrypt it:
 
-- host recipient for unattended machine decryption
+- every NixOS host recipient for unattended machine decryption and rebuilds
 - one or more YubiKey recipients for admin access
 - optional software age backup recipient
 

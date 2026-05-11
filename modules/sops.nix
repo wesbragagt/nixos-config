@@ -1,4 +1,9 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   repoSecretsFile = ../secrets/secrets.yaml;
 in
@@ -11,7 +16,11 @@ in
       plugins = [ pkgs.age-plugin-yubikey ];
     };
     defaultSopsFormat = "yaml";
-  } // lib.optionalAttrs (builtins.pathExists repoSecretsFile) {
+  }
+  // lib.optionalAttrs (builtins.pathExists repoSecretsFile) {
     defaultSopsFile = repoSecretsFile;
+    secrets.exa_api_key = {
+      owner = "wesbragagt";
+    };
   };
 }
