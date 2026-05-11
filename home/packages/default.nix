@@ -68,12 +68,9 @@ in
       # scripts
       (pkgs.writeShellScriptBin "rofi-bookmarks" (builtins.readFile ../../scripts/rofi-bookmarks.sh))
       (pkgs.writeShellScriptBin "rofi-freq" (builtins.readFile ../../scripts/rofi-freq.sh))
-      (pkgs.writeShellScriptBin "sf" (builtins.readFile ../../scripts/sf.sh))
-      (pkgs.writeShellScriptBin "sg" (builtins.readFile ../../scripts/sg.sh))
+      (pkgs.writeShellScriptBin "file-fzf" (builtins.readFile ../../scripts/sf.sh))
+      (pkgs.writeShellScriptBin "grep-fzf" (builtins.readFile ../../scripts/sg.sh))
       (pkgs.writeShellScriptBin "wf-record" (builtins.readFile ../../scripts/wf-recorder.sh))
-      (pkgs.writeShellScriptBin "bw-ssh-load" ''
-        exec ${pkgs.python3}/bin/python3 ${../../scripts/bw-ssh-load.py} "$@"
-      '')
       (pkgs.callPackage ../../pkgs/workmux { })
     ]
     ++ lib.optionals hasWireless [
