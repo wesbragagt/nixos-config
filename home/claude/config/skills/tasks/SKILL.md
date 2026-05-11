@@ -1,6 +1,6 @@
 ---
 name: tasks
-description: Break down a PRD into tasks following the task YAML spec
+description: Break down a PRD into actionable tasks with dependencies, written to tasks.yaml. Use when the user wants to convert a PRD or feature description into trackable tasks.
 argument-hint: <prd-path-or-description> [--name <feature-name>]
 ---
 

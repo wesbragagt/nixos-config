@@ -1,6 +1,6 @@
 ---
 name: rebase
-description: Rebase current branch onto target with conflict resolution
+description: Rebase the current branch onto a target branch and walk through conflict resolution. Use when the user wants to rebase, sync with main, or resolve rebase conflicts.
 argument-hint: [target]
 allowed-tools: Bash(git fetch:*), Bash(git rebase:*), Bash(git log:*), Bash(git add:*), Bash(git status:*), Read, Edit
 ---

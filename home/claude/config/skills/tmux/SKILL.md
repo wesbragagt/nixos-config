@@ -1,6 +1,6 @@
 ---
 name: tmux
-description: Manage tmux sessions, windows, and panes from the CLI — list state, read pane output, send keys/commands, create or kill sessions and windows, and inspect long-running terminal work. Use this skill whenever the user mentions tmux, asks to check what's running in another terminal, wants to start a background process in a tmux session, send a command to a running pane, capture or tail output from a tmux pane, attach context from a pane, or troubleshoot a stuck tmux process — even if they don't explicitly say "tmux command."
+description: Manage tmux sessions, windows, and panes non-interactively — list state, read pane output, send keys, create/kill sessions, inspect long-running terminal work. Use when the user mentions tmux or asks about something running in another terminal.
 ---
 
 # tmux

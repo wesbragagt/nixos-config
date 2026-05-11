@@ -1,6 +1,6 @@
 ---
 name: agent-browser
-description: This skill should be used when the user needs to automate browser interactions, test UI workflows, verify page elements, take screenshots, upload files to forms, or interact with web applications during development and debugging. Use this skill for testing PDF upload dialogs, form interactions, dropdown selections, and visual verification of web pages.
+description: Automate browser interactions for UI testing and debugging — navigate pages, fill forms, take screenshots, upload files, verify elements. Use when the user wants to test or interact with a web app from the CLI.
 version: 1.0.0
 ---
 

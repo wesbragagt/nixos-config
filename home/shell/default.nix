@@ -9,6 +9,19 @@ let
   sopsHostKeyPath = hostProfile.sopsHostKeyPath or null;
   useSystemSopsSecrets = sopsHostKeyPath != null;
   useHomeSopsSecrets = hostProfile.useHomeSopsSecrets or false;
+  commonAliases = {
+    vi = "nvim";
+    sf = "file-fzf";
+    sg = "grep-fzf";
+    gs = "git status";
+    gitd = "lazygit";
+    # git add all changes and commit
+    gg = "git add -A && git commit";
+    # github cli command to push current branch to origin
+    gpr = "git push -u origin HEAD";
+    # github cli command to open pull request in browser
+    got = "gh pr view --web";
+  };
   secretPath =
     systemPath: homePath:
     if useSystemSopsSecrets then
@@ -101,9 +114,7 @@ in
 
   programs.bash = {
     enable = true;
-    shellAliases = {
-      sg = "$HOME/.nix-profile/bin/sg";
-    };
+    shellAliases = commonAliases;
     initExtra = shellBootstrap;
   };
 
@@ -119,18 +130,7 @@ in
       share = true;
       extended = true;
     };
-    shellAliases = {
-      sf = "file-fzf";
-      sg = "grep-fzf";
-      gs = "git status";
-      gitd = "lazygit";
-      # git add all changes and commit
-      gg = "git add -A && git commit";
-      # github cli command to push current branch to origin
-      gpr = "git push -u origin HEAD";
-      # github cli command to open pull request in browser
-      got = "gh pr view";
-    };
+    shellAliases = commonAliases;
     initContent = shellBootstrap + ''
       autoload -Uz edit-command-line
       zle -N edit-command-line

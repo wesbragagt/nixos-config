@@ -1,6 +1,6 @@
 ---
 name: research
-description: Research skill that delegates investigation to a single subagent. Use this skill whenever the user asks to research, investigate, explore, look into, or learn about any topic. Invoke it for questions like "research X", "what do we know about Y", "look into Z for me", "deep dive on", or "find out about".
+description: Delegate investigation of a topic to a single subagent and report back. Use when the user asks to research, investigate, explore, or deep-dive on any topic.
 argument-hint: <topic or question>
 ---
 

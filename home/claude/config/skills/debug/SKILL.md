@@ -1,6 +1,6 @@
 ---
 name: debug
-description: Diagnose bugs, errors, and unexpected behavior — then suggest a fix. Use whenever the user describes something broken: error messages, crashes, wrong output, "this isn't working", "why is X happening". Delegates to a debugger subagent using a four-phase investigation (root cause → pattern → hypothesis → fix) before recommending anything. Never writes code — produces a structured prose diagnosis only.
+description: Diagnose bugs, errors, and unexpected behavior — then suggest a fix. Use when the user describes something broken (errors, crashes, wrong output, "why is X happening"). Produces a structured prose diagnosis; never writes code.
 argument-hint: "<problem description>"
 ---
 

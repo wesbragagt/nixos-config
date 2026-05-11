@@ -28,6 +28,7 @@ vim.pack.add({
   { src = "https://github.com/christoomey/vim-tmux-navigator" },
   { src = "https://github.com/nvim-tree/nvim-web-devicons" },
   { src = "https://github.com/stevearc/oil.nvim" },
+  { src = "https://github.com/tpope/vim-fugitive" },
 })
 
 vim.pack.add({
@@ -75,6 +76,9 @@ vim.cmd.colorscheme("kanagawa")
 local fzf = require("fzf-lua")
 vim.keymap.set("n", "<leader>sf", fzf.files, { desc = "Find files" })
 vim.keymap.set("n", "<leader>sg", fzf.live_grep, { desc = "Live grep" })
+vim.keymap.set("n", "<leader>gs", function()
+  vim.cmd("Git")
+end, { desc = "Git status" })
 vim.keymap.set("n", "<leader><Space>", fzf.buffers, { desc = "Buffers" })
 vim.keymap.set("n", "<leader>di", vim.diagnostic.setqflist, { desc = "Diagnostics quickfix" })
 vim.keymap.set("n", "<leader>pt", function()
