@@ -24,13 +24,19 @@ Start by identifying the review target:
 - Staged or unstaged local changes
 - Specific files called out by the user
 
-If the review target is unclear, ask once and proceed.
+Do not ask the user to clarify the target if you can infer it from the workspace. Proceed automatically using this fallback order:
+1. specific files explicitly named by the user
+2. staged changes, if any
+3. unstaged changes, if any
+4. current branch diff against its upstream or merge base
+
+Only ask for clarification if there is truly no reviewable target.
 
 ## Step-by-step workflow
 
 ### 1. Triage the review
 
-Establish the review surface before reading code.
+Establish the review surface before reading code. Infer the target automatically using the scope fallback order before considering any clarification question.
 
 Check:
 - PR title, description, linked issue, and requested feedback focus
@@ -130,11 +136,14 @@ Return findings grouped by category:
 - Refactor suggestions
 - Optional nits
 
-For each finding include:
+For each actionable finding include:
 - severity: `must-fix`, `should-fix`, or `optional`
 - confidence: `high`, `medium`, or `low`
 - brief evidence tied to the code
 - concrete recommendation
+
+Write each actionable finding as a Markdown task list item using `- [ ]` so the review can double as a checklist.
+As fixes are implemented, update completed items to `- [x]`.
 
 Prefer a short list of high-signal findings over a long list of weak guesses.
 
@@ -154,6 +163,9 @@ If feedback is educational but not required, label it clearly as optional.
 ## Output artifact
 
 You must write the review to a Markdown file under a `reviews/` folder in the current working directory.
+
+All actionable findings must be formatted as unchecked Markdown task list items using `- [ ]`.
+Update those checkboxes to `- [x]` as the corresponding work is completed.
 
 Filename format:
 - `reviews/review-YYYYMMDD-HHMMSS.md`
@@ -180,16 +192,16 @@ Use this structure unless the user asked for a different one:
 ## Review summary
 
 ### Architecture
-- [must-fix][high] ...
+- [ ] [must-fix][high] ...
 
 ### Potential bugs
-- [should-fix][high] ...
+- [ ] [should-fix][high] ...
 
 ### Coverage gaps
-- [should-fix][high] ...
+- [ ] [should-fix][high] ...
 
 ### Refactor suggestions
-- [optional][medium] ...
+- [ ] [optional][medium] ...
 
 ### Strengths
 - ...
