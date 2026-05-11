@@ -120,7 +120,8 @@ in
       extended = true;
     };
     shellAliases = {
-      sg = "$HOME/.nix-profile/bin/sg";
+      sf = "file-fzf";
+      sg = "grep-fzf";
       gs = "git status";
       gitd = "lazygit";
       # git add all changes and commit
