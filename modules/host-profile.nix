@@ -24,5 +24,16 @@
       default = "generic";
       description = "Host graphics profile used for hardware acceleration packages and environment defaults.";
     };
+
+    sopsHostKeyPath = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      example = "/etc/ssh/ssh_host_ed25519_key";
+      description = ''
+        Host SSH private key path used by sops-nix for unattended system
+        secret decryption. Leave null for bootstrap installs before the host
+        key has been generated and added as a recipient.
+      '';
+    };
   };
 }

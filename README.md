@@ -101,5 +101,5 @@ This repo now includes `sops-nix` scaffolding with an optional repo-shared secre
 - `secrets/secrets.yaml`
 - repo-level recipient config in `.sops.yaml`
 
-If that file does not exist, the config still evaluates/builds. Because NixOS hosts expose `exa_api_key` as `/run/secrets/exa_api_key`, add each new host's SSH age recipient to `.sops.yaml` and run `sops-updatekeys-all` before expecting unattended rebuilds.
+If that file does not exist, the config still evaluates/builds. New hosts can bootstrap with `sopsHostKeyPath = null`; after their SSH host recipient is added to `.sops.yaml` and secrets are re-wrapped, set `sopsHostKeyPath = "/etc/ssh/ssh_host_ed25519_key"` for unattended rebuilds with `/run/secrets/exa_api_key`.
 See `secrets/README.md` for the YubiKey + age workflow and `docs/add-another-machine.md` for multi-host setup.

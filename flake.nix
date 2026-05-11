@@ -48,6 +48,8 @@
         isLaptop = false;
         hasWireless = false;
         graphics = "generic";
+        sopsHostKeyPath = null;
+        useHomeSopsSecrets = false;
       };
 
       mkHost =
@@ -57,8 +59,7 @@
           hostProfile ? { },
         }:
         let
-          resolvedHostProfile =
-            defaultHostProfile // { useSystemSopsSecrets = true; } // hostProfile // { inherit name; };
+          resolvedHostProfile = defaultHostProfile // hostProfile // { inherit name; };
         in
         nixpkgs.lib.nixosSystem {
           inherit system;
@@ -73,7 +74,7 @@
             {
               wes.host = lib.removeAttrs resolvedHostProfile [
                 "name"
-                "useSystemSopsSecrets"
+                "useHomeSopsSecrets"
               ];
 
               home-manager.useGlobalPkgs = true;
@@ -96,15 +97,19 @@
             isLaptop = true;
             hasWireless = true;
             graphics = "intel";
+            sopsHostKeyPath = "/etc/ssh/ssh_host_ed25519_key";
           };
         };
 
-        nixos-icebox = mkHost {
-          name = "nixos-icebox";
+        icebox = mkHost {
+          name = "icebox";
           hostProfile = {
             isLaptop = false;
             hasWireless = false;
             graphics = "amd";
+            # Bootstrap mode: no system secrets until icebox has a host SSH
+            # recipient in .sops.yaml and secrets/secrets.yaml has been re-wrapped.
+            sopsHostKeyPath = null;
           };
         };
       };
@@ -117,6 +122,7 @@
           inherit inputs;
           hostProfile = defaultHostProfile // {
             name = "standalone";
+            useHomeSopsSecrets = true;
           };
         };
         modules = [

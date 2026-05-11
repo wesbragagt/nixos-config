@@ -6,15 +6,22 @@
   ...
 }:
 let
-  useSystemSopsSecrets = hostProfile.useSystemSopsSecrets or false;
+  sopsHostKeyPath = hostProfile.sopsHostKeyPath or null;
+  useSystemSopsSecrets = sopsHostKeyPath != null;
+  useHomeSopsSecrets = hostProfile.useHomeSopsSecrets or false;
   exaApiKeyPath =
-    if useSystemSopsSecrets then "/run/secrets/exa_api_key" else config.sops.secrets.exa_api_key.path;
+    if useSystemSopsSecrets then
+      "/run/secrets/exa_api_key"
+    else if useHomeSopsSecrets then
+      config.sops.secrets.exa_api_key.path
+    else
+      "";
   shellBootstrap = ''
     export NPM_GLOBAL="$HOME/.npm-global"
     export NPM_CONFIG_PREFIX="$NPM_GLOBAL"
     export PATH="$NPM_GLOBAL/bin:$PATH"
 
-    if [[ -f "${exaApiKeyPath}" ]]; then
+    if [[ -n "${exaApiKeyPath}" && -f "${exaApiKeyPath}" ]]; then
       export EXA_API_KEY="$(< "${exaApiKeyPath}")"
     fi
 
@@ -43,7 +50,7 @@ let
   '';
 in
 {
-  sops.secrets = lib.optionalAttrs (!useSystemSopsSecrets) {
+  sops.secrets = lib.optionalAttrs useHomeSopsSecrets {
     exa_api_key = { };
   };
 
