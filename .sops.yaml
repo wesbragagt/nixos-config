@@ -17,8 +17,10 @@
 keys: 
     - &nixos-hp age1m8znq9pewhzrhrtamkl2pvy36lq5lwlax82e8c5unq6acaqqz9xsufa4jj
     - &yubico-1 age1yubikey1qgpjm23gn7q2d7n7jlz5cl43aaflmnxq4437wc92kl8fz8ssfvtnjdk5h94
+    - &yubico-2 age1yubikey1qfneuxjktjfzq8ryug8w5xlra779srdkf9z9w5q6kdt2dsgj2utxkqjrfge
 creation_rules: 
     - path_regex: ^secrets/secrets\.yaml$
       age:
         - *nixos-hp
         - *yubico-1
+        - *yubico-2
