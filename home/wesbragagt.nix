@@ -53,6 +53,14 @@
           url = "https://open.spotify.com";
           icon = papirusIcon "com.spotify.Client";
         }
+        {
+          name = "ro.am";
+          url = "https://ro.am";
+          icon = pkgs.fetchurl {
+            url = "https://ro.am/website/android-chrome-512x512.png";
+            hash = "sha256-XxZBH+r0tk1FDL9LTNuJIAka8UUVJeOYTovWCKEMC6Y=";
+          };
+        }
       ];
   };
 }

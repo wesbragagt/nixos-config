@@ -35,10 +35,10 @@ in
       sesh
       uv
       python3
+      stow
 
       # secrets / auth
       bitwarden-desktop
-      bitwarden-cli
       libsecret
 
       # desktop / ui
