@@ -9,21 +9,50 @@ let
   sopsHostKeyPath = hostProfile.sopsHostKeyPath or null;
   useSystemSopsSecrets = sopsHostKeyPath != null;
   useHomeSopsSecrets = hostProfile.useHomeSopsSecrets or false;
-  exaApiKeyPath =
+  secretPath = systemPath: homePath:
     if useSystemSopsSecrets then
-      "/run/secrets/exa_api_key"
+      systemPath
     else if useHomeSopsSecrets then
-      config.sops.secrets.exa_api_key.path
+      homePath
     else
       "";
+  exaApiKeyPath = secretPath "/run/secrets/exa_api_key" config.sops.secrets.exa_api_key.path;
+  bwClientIdPath = secretPath "/run/secrets/bw_client_id" config.sops.secrets.bw_client_id.path;
+  bwClientSecretPath = secretPath "/run/secrets/bw_client_secret" config.sops.secrets.bw_client_secret.path;
+  bwScopePath = secretPath "/run/secrets/bw_scope" config.sops.secrets.bw_scope.path;
+  bwGrantTypePath = secretPath "/run/secrets/bw_grant_type" config.sops.secrets.bw_grant_type.path;
   shellBootstrap = ''
     export NPM_GLOBAL="$HOME/.npm-global"
     export NPM_CONFIG_PREFIX="$NPM_GLOBAL"
     export PATH="$NPM_GLOBAL/bin:$PATH"
 
+    if [[ -z "$SSH_AUTH_SOCK" && -S "$HOME/.bitwarden-ssh-agent.sock" ]]; then
+      export SSH_AUTH_SOCK="$HOME/.bitwarden-ssh-agent.sock"
+    fi
+
     if [[ -n "${exaApiKeyPath}" && -f "${exaApiKeyPath}" ]]; then
       export EXA_API_KEY="$(< "${exaApiKeyPath}")"
     fi
+
+    if [[ -n "${bwClientIdPath}" && -f "${bwClientIdPath}" ]]; then
+      export BW_CLIENTID="$(< "${bwClientIdPath}")"
+    fi
+
+    if [[ -n "${bwClientSecretPath}" && -f "${bwClientSecretPath}" ]]; then
+      export BW_CLIENTSECRET="$(< "${bwClientSecretPath}")"
+    fi
+
+    if [[ -n "${bwScopePath}" && -f "${bwScopePath}" ]]; then
+      export BW_SCOPE="$(< "${bwScopePath}")"
+    fi
+
+    if [[ -n "${bwGrantTypePath}" && -f "${bwGrantTypePath}" ]]; then
+      export BW_GRANT_TYPE="$(< "${bwGrantTypePath}")"
+    fi
+
+    bw-login-api() {
+      bw login --apikey "$@"
+    }
 
     rebuild() {
       sudo nixos-rebuild switch --impure --flake ${repoRoot}#"$(hostname)" "$@"
@@ -52,6 +81,10 @@ in
 {
   sops.secrets = lib.optionalAttrs useHomeSopsSecrets {
     exa_api_key = { };
+    bw_client_id = { key = "bitwarden/client_id"; };
+    bw_client_secret = { key = "bitwarden/client_secret"; };
+    bw_scope = { key = "bitwarden/scope"; };
+    bw_grant_type = { key = "bitwarden/grant_type"; };
   };
 
   home.sessionVariables = {
