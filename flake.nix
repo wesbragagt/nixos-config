@@ -48,6 +48,7 @@
         isLaptop = false;
         hasWireless = false;
         graphics = "generic";
+        swapAltSuper = true;
         sopsHostKeyPath = null;
         useHomeSopsSecrets = false;
       };
@@ -107,6 +108,7 @@
             isLaptop = false;
             hasWireless = false;
             graphics = "amd";
+            swapAltSuper = false;
             # Bootstrap mode: no system secrets until icebox has a host SSH
             # recipient in .sops.yaml and secrets/secrets.yaml has been re-wrapped.
             sopsHostKeyPath = null;

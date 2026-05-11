@@ -25,6 +25,12 @@
       description = "Host graphics profile used for hardware acceleration packages and environment defaults.";
     };
 
+    swapAltSuper = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Whether Hyprland should swap left Alt and left Super for this host.";
+    };
+
     sopsHostKeyPath = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;

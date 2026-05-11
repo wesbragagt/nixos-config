@@ -1,6 +1,6 @@
 # icebox
 
-Starter desktop host based on `nixos-hp`, using hostname `icebox`, the same `wesbragagt` user, and shared base config, but without laptop-only/wireless profile features.
+Starter desktop host based on `nixos-hp`, using hostname `icebox`, the same `wesbragagt` user, and shared base config, but without laptop-only/wireless profile features. It also disables the Hyprland Alt/Super swap with `swapAltSuper = false`.
 
 Before installing or building this host, generate the machine-specific hardware config on icebox:
 

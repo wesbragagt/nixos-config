@@ -13,13 +13,25 @@ tags:
 
 ## Current config
 
-The Hyprland config currently sets:
+Hosts opt into or out of the swap with `hostProfile.swapAltSuper` in `flake.nix`.
+
+When enabled, the selected Hyprland config contains:
 
 ```ini
 kb_options = altwin:swap_lalt_lwin
 ```
 
-This lives in `home/hyprland/hyprland.conf`.
+Swap-enabled configs:
+
+- `home/hyprland/hyprland.conf`
+- `home/hyprland/hyprland-desktop.conf`
+- `home/hyprland/hyprland-desktop-wireless.conf`
+
+No-swap configs:
+
+- `home/hyprland/hyprland-noswap.conf`
+- `home/hyprland/hyprland-desktop-noswap.conf`
+- `home/hyprland/hyprland-desktop-wireless-noswap.conf`
 
 ## Potential problem
 
@@ -81,6 +93,10 @@ Automatic capability detection should be treated as a fallback, not the first ch
 
 ## Practical takeaway
 
-The current Hyprland setting is safe only if every target keyboard should swap **left Alt** and **left Super**.
+The Hyprland setting is safe only on hosts where every target keyboard should swap **left Alt** and **left Super**.
 
-If some machines or keyboards should keep their native Alt/Command/Super behavior, this setting should be scoped more narrowly than it is today.
+For machines or keyboards that should keep their native Alt/Command/Super behavior, set this in the host profile:
+
+```nix
+swapAltSuper = false;
+```
