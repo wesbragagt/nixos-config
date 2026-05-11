@@ -10,13 +10,30 @@ let
   hyprlandSourceDir = "${repoRoot}/home/hyprland";
   isLaptop = hostProfile.isLaptop or false;
   hasWireless = hostProfile.hasWireless or false;
+  swapAltSuper = hostProfile.swapAltSuper or true;
   hyprlandConfig =
-    if isLaptop then
+    if isLaptop && swapAltSuper then
       "hyprland.conf"
-    else if hasWireless then
+    else if isLaptop then
+      "hyprland-noswap.conf"
+    else if hasWireless && swapAltSuper then
       "hyprland-desktop-wireless.conf"
+    else if hasWireless then
+      "hyprland-desktop-wireless-noswap.conf"
+    else if swapAltSuper then
+      "hyprland-desktop.conf"
     else
-      "hyprland-desktop.conf";
+      "hyprland-desktop-noswap.conf";
+  reloadHyprland = ''
+    (
+      XDG_RUNTIME_DIR=''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
+      if [[ -d "/tmp/hypr" || -d "$XDG_RUNTIME_DIR/hypr" ]]; then
+        for i in $(${config.wayland.windowManager.hyprland.finalPackage}/bin/hyprctl instances -j | jq ".[].instance" -r); do
+          ${config.wayland.windowManager.hyprland.finalPackage}/bin/hyprctl -i "$i" reload config-only
+        done
+      fi
+    )
+  '';
 in
 {
   home.packages = with pkgs; [ hyprlock ];
@@ -27,16 +44,7 @@ in
 
   xdg.configFile."hypr/hyprland.conf" = lib.mkForce {
     source = config.lib.file.mkOutOfStoreSymlink "${hyprlandSourceDir}/${hyprlandConfig}";
-    onChange = ''
-      (
-        XDG_RUNTIME_DIR=''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
-        if [[ -d "/tmp/hypr" || -d "$XDG_RUNTIME_DIR/hypr" ]]; then
-          for i in $(${config.wayland.windowManager.hyprland.finalPackage}/bin/hyprctl instances -j | jq ".[].instance" -r); do
-            ${config.wayland.windowManager.hyprland.finalPackage}/bin/hyprctl -i "$i" reload config-only
-          done
-        fi
-      )
-    '';
+    onChange = reloadHyprland;
   };
 
   services.hypridle = {
