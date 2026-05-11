@@ -24,6 +24,7 @@ vim.pack.add({
   { src = "https://github.com/rebelot/kanagawa.nvim" },
   { src = "https://github.com/ibhagwan/fzf-lua" },
   { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
+  { src = "https://github.com/supermaven-inc/supermaven-nvim" },
   { src = "https://github.com/christoomey/vim-tmux-navigator" },
   { src = "https://github.com/nvim-tree/nvim-web-devicons" },
   { src = "https://github.com/stevearc/oil.nvim" },
@@ -40,6 +41,20 @@ require("blink.cmp").setup({
   completion = { documentation = { auto_show = true, auto_show_delay_ms = 200 } },
   sources = { default = { "lsp", "path", "snippets", "buffer" } },
   fuzzy = { implementation = "prefer_rust_with_warning" },
+})
+
+require("supermaven-nvim").setup({
+  keymaps = {
+    accept_suggestion = "<C-l>",
+    clear_suggestion = "<C-]>",
+    accept_word = "<C-j>",
+  },
+  ignore_filetypes = {
+    gitcommit = true,
+    gitrebase = true,
+    help = true,
+    oil = true,
+  },
 })
 
 require("nvim-web-devicons").setup({})
