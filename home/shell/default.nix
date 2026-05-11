@@ -9,7 +9,8 @@ let
   sopsHostKeyPath = hostProfile.sopsHostKeyPath or null;
   useSystemSopsSecrets = sopsHostKeyPath != null;
   useHomeSopsSecrets = hostProfile.useHomeSopsSecrets or false;
-  secretPath = systemPath: homePath:
+  secretPath =
+    systemPath: homePath:
     if useSystemSopsSecrets then
       systemPath
     else if useHomeSopsSecrets then
@@ -17,10 +18,6 @@ let
     else
       "";
   exaApiKeyPath = secretPath "/run/secrets/exa_api_key" config.sops.secrets.exa_api_key.path;
-  bwClientIdPath = secretPath "/run/secrets/bw_client_id" config.sops.secrets.bw_client_id.path;
-  bwClientSecretPath = secretPath "/run/secrets/bw_client_secret" config.sops.secrets.bw_client_secret.path;
-  bwScopePath = secretPath "/run/secrets/bw_scope" config.sops.secrets.bw_scope.path;
-  bwGrantTypePath = secretPath "/run/secrets/bw_grant_type" config.sops.secrets.bw_grant_type.path;
   shellBootstrap = ''
     export NPM_GLOBAL="$HOME/.npm-global"
     export NPM_CONFIG_PREFIX="$NPM_GLOBAL"
@@ -34,28 +31,35 @@ let
       export EXA_API_KEY="$(< "${exaApiKeyPath}")"
     fi
 
-    if [[ -n "${bwClientIdPath}" && -f "${bwClientIdPath}" ]]; then
-      export BW_CLIENTID="$(< "${bwClientIdPath}")"
-    fi
+    __nixos_flake_host() {
+      local host
+      host="$(hostname -s 2>/dev/null || hostname)"
+      host="''${host%%.*}"
 
-    if [[ -n "${bwClientSecretPath}" && -f "${bwClientSecretPath}" ]]; then
-      export BW_CLIENTSECRET="$(< "${bwClientSecretPath}")"
-    fi
+      if [[ -z "$host" ]]; then
+        echo "Unable to determine current hostname for NixOS rebuild" >&2
+        return 1
+      fi
 
-    if [[ -n "${bwScopePath}" && -f "${bwScopePath}" ]]; then
-      export BW_SCOPE="$(< "${bwScopePath}")"
-    fi
-
-    if [[ -n "${bwGrantTypePath}" && -f "${bwGrantTypePath}" ]]; then
-      export BW_GRANT_TYPE="$(< "${bwGrantTypePath}")"
-    fi
-
-    bw-login-api() {
-      bw login --apikey "$@"
+      echo "$host"
     }
 
     rebuild() {
-      sudo nixos-rebuild switch --impure --flake ${repoRoot}#"$(hostname)" "$@"
+      local action host
+      action="''${1:-switch}"
+
+      case "$action" in
+        boot|build|dry-build|dry-activate|switch|test)
+          shift
+          ;;
+        *)
+          action="switch"
+          ;;
+      esac
+
+      host="$(__nixos_flake_host)" || return
+      echo "Rebuilding host '$host' with action '$action'..." >&2
+      sudo nixos-rebuild "$action" --impure --flake ${repoRoot}#"$host" "$@"
     }
 
     cd/() {
@@ -81,10 +85,6 @@ in
 {
   sops.secrets = lib.optionalAttrs useHomeSopsSecrets {
     exa_api_key = { };
-    bw_client_id = { key = "bitwarden/client_id"; };
-    bw_client_secret = { key = "bitwarden/client_secret"; };
-    bw_scope = { key = "bitwarden/scope"; };
-    bw_grant_type = { key = "bitwarden/grant_type"; };
   };
 
   home.sessionVariables = {
