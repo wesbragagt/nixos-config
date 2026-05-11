@@ -34,7 +34,8 @@ Scope: `home/neovim/*`
 
 1. Stage the Neovim files you changed plus `home/wesbragagt.nix` if imports changed.
 2. Rebuild with:
-   - `sudo nixos-rebuild build --flake .#nixos-hp`
+   - `rebuild build`
+   - Use the `rebuild` shell alias so the current host is detected automatically.
 3. Sanity check the registry shape with:
    - `jq . home/neovim/config/lsp-registry.json`
 4. If needed, open Neovim and confirm the server attaches for the target filetype.

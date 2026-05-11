@@ -7,8 +7,10 @@ Operational checklist for this repo.
 1. Make changes in the right place (`hosts/`, `modules/`, `home/`, `scripts/`, etc.).
 2. Stage everything: `git add -A`.
 3. Rebuild:
-   - Host switch: `sudo nixos-rebuild switch --flake .#nixos-hp`
-   - Dry run: `sudo nixos-rebuild build --flake .#nixos-hp`
+   - Preferred: `rebuild` for a normal switch
+   - Dry run: `rebuild build`
+   - Other actions: `rebuild test` / `rebuild boot` / `rebuild dry-activate`
+   - The `rebuild` shell alias auto-detects the current host, so do not hardcode `.#<host>` unless you specifically need to target a different machine.
    - Home Manager build: `nix build .#homeConfigurations.wesbragagt.activationPackage`
    - Shortcut: `./scripts/validate-config.sh` (add `--switch` for final activation)
 4. If it fails, scroll to the **last `error:`** line first.
@@ -74,7 +76,7 @@ Follow `docs/add-another-machine.md` for the full multi-host + secrets workflow.
 3. Copy `hosts/nixos-hp/default.nix` → `hosts/<newhost>/default.nix`, update `networking.hostName`
 4. Add `nixosConfigurations.<newhost>` in `flake.nix`
 5. If the machine should decrypt shared secrets, add its host SSH recipient to `.sops.yaml` and run `sops-updatekeys-all`
-6. `git add -A && sudo nixos-rebuild switch --flake .#<newhost>`
+6. On the new host: `git add -A && rebuild`
 
 ### Add a package
 
