@@ -31,6 +31,32 @@
       description = "Whether Hyprland should swap left Alt and left Super for this host.";
     };
 
+    hypridle = {
+      lockTimeout = lib.mkOption {
+        type = lib.types.ints.positive;
+        default = 300;
+        description = "Seconds of inactivity before locking the session.";
+      };
+
+      dpmsTimeout = lib.mkOption {
+        type = lib.types.ints.positive;
+        default = 330;
+        description = "Seconds of inactivity before turning displays off.";
+      };
+
+      suspendTimeout = lib.mkOption {
+        type = lib.types.nullOr lib.types.ints.positive;
+        default = null;
+        description = "Seconds of inactivity before suspending, or null to disable idle suspend.";
+      };
+
+      suspendRequiresNoSsh = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "When true, the idle suspend command skips suspend while a remote SSH session is active.";
+      };
+    };
+
     sopsHostKeyPath = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;

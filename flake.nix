@@ -49,6 +49,12 @@
         hasWireless = false;
         graphics = "generic";
         swapAltSuper = true;
+        hypridle = {
+          lockTimeout = 300;
+          dpmsTimeout = 330;
+          suspendTimeout = null;
+          suspendRequiresNoSsh = false;
+        };
         sopsHostKeyPath = null;
         useHomeSopsSecrets = false;
       };
@@ -60,7 +66,9 @@
           hostProfile ? { },
         }:
         let
-          resolvedHostProfile = defaultHostProfile // hostProfile // { inherit name; };
+          resolvedHostProfile = (lib.recursiveUpdate defaultHostProfile hostProfile) // {
+            inherit name;
+          };
         in
         nixpkgs.lib.nixosSystem {
           inherit system;
@@ -98,6 +106,11 @@
             isLaptop = true;
             hasWireless = true;
             graphics = "intel";
+            hypridle = {
+              lockTimeout = 300;
+              dpmsTimeout = 330;
+              suspendTimeout = 1800;
+            };
             sopsHostKeyPath = "/etc/ssh/ssh_host_ed25519_key";
           };
         };
@@ -109,6 +122,12 @@
             hasWireless = false;
             graphics = "amd";
             swapAltSuper = false;
+            hypridle = {
+              lockTimeout = 900;
+              dpmsTimeout = 1200;
+              suspendTimeout = 1800;
+              suspendRequiresNoSsh = true;
+            };
             # Bootstrap mode: no system secrets until icebox has a host SSH
             # recipient in .sops.yaml and secrets/secrets.yaml has been re-wrapped.
             sopsHostKeyPath = null;
