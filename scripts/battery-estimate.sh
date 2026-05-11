@@ -3,6 +3,11 @@
 BAT=/sys/class/power_supply/BAT0
 STATE=/tmp/battery-estimate.state
 
+if [[ ! -d "$BAT" ]]; then
+  printf '{"text":"","tooltip":"No battery detected","class":"none"}\n'
+  exit 0
+fi
+
 read_bat() {
   local name=$1
   [[ -f "$BAT/$name" ]] && cat "$BAT/$name"

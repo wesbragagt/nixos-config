@@ -1,6 +1,14 @@
-{ lib, repoRoot, config, ... }:
+{
+  lib,
+  repoRoot,
+  config,
+  hostProfile ? { },
+  ...
+}:
 let
-  exaApiKeyPath = config.sops.secrets.exa_api_key.path;
+  useSystemSopsSecrets = hostProfile.useSystemSopsSecrets or false;
+  exaApiKeyPath =
+    if useSystemSopsSecrets then "/run/secrets/exa_api_key" else config.sops.secrets.exa_api_key.path;
   shellBootstrap = ''
     export NPM_GLOBAL="$HOME/.npm-global"
     export NPM_CONFIG_PREFIX="$NPM_GLOBAL"
@@ -35,7 +43,10 @@ let
   '';
 in
 {
-  sops.secrets.exa_api_key = { };
+  sops.secrets = lib.optionalAttrs (!useSystemSopsSecrets) {
+    exa_api_key = { };
+  };
+
   home.sessionVariables = {
     NPM_GLOBAL = "$HOME/.npm-global";
     NPM_CONFIG_PREFIX = "$HOME/.npm-global";
@@ -96,7 +107,11 @@ in
     enableZshIntegration = true;
     enableBashIntegration = true;
     defaultCommand = "rg --files --hidden --follow --glob '!.git'";
-    defaultOptions = [ "--height=40%" "--layout=reverse" "--border" ];
+    defaultOptions = [
+      "--height=40%"
+      "--layout=reverse"
+      "--border"
+    ];
   };
 
   programs.zoxide = {
@@ -113,7 +128,7 @@ in
     nix-direnv.enable = true;
   };
 
-  home.activation.createDirs = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  home.activation.createDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     mkdir -p $HOME/Wallpapers
     mkdir -p $HOME/Screenshots
     mkdir -p $HOME/Videos

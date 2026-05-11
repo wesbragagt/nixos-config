@@ -32,33 +32,93 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nixpkgs-unstable,
+      home-manager,
+      ...
+    }@inputs:
     let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in {
-      nixosConfigurations.nixos-hp = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./hosts/nixos-hp
-          inputs.sops-nix.nixosModules.sops
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "hm-bak";
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.wesbragagt = import ./home/wesbragagt.nix;
-          }
-        ];
+      lib = nixpkgs.lib;
+      defaultSystem = "x86_64-linux";
+
+      defaultHostProfile = {
+        isLaptop = false;
+        hasWireless = false;
+        graphics = "generic";
+      };
+
+      mkHost =
+        {
+          name,
+          system ? defaultSystem,
+          hostProfile ? { },
+        }:
+        let
+          resolvedHostProfile =
+            defaultHostProfile // { useSystemSopsSecrets = true; } // hostProfile // { inherit name; };
+        in
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            hostProfile = resolvedHostProfile;
+          };
+          modules = [
+            (./hosts + "/${name}")
+            inputs.sops-nix.nixosModules.sops
+            home-manager.nixosModules.home-manager
+            {
+              wes.host = lib.removeAttrs resolvedHostProfile [
+                "name"
+                "useSystemSopsSecrets"
+              ];
+
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "hm-bak";
+              home-manager.extraSpecialArgs = {
+                inherit inputs;
+                hostProfile = resolvedHostProfile;
+              };
+              home-manager.users.wesbragagt = import ./home/wesbragagt.nix;
+            }
+          ];
+        };
+    in
+    {
+      nixosConfigurations = {
+        nixos-hp = mkHost {
+          name = "nixos-hp";
+          hostProfile = {
+            isLaptop = true;
+            hasWireless = true;
+            graphics = "intel";
+          };
+        };
+
+        nixos-icebox = mkHost {
+          name = "nixos-icebox";
+          hostProfile = {
+            isLaptop = false;
+            hasWireless = false;
+            graphics = "amd";
+          };
+        };
       };
 
       # Standalone home-manager for non-NixOS Linux machines.
       # Apply with: nix run home-manager/master -- switch --flake .#wesbragagt
       homeConfigurations.wesbragagt = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        extraSpecialArgs = { inherit inputs; };
+        pkgs = nixpkgs.legacyPackages.${defaultSystem};
+        extraSpecialArgs = {
+          inherit inputs;
+          hostProfile = defaultHostProfile // {
+            name = "standalone";
+          };
+        };
         modules = [
           ./home/standalone-policy.nix
           ./home/wesbragagt.nix
