@@ -11,6 +11,13 @@ let
   isLaptop = hostProfile.isLaptop or false;
   hasWireless = hostProfile.hasWireless or false;
   swapAltSuper = hostProfile.swapAltSuper or true;
+  hypridle = {
+    lockTimeout = 300;
+    dpmsTimeout = 330;
+    suspendTimeout = null;
+    suspendRequiresNoSsh = false;
+  }
+  // (hostProfile.hypridle or { });
   hyprlandConfig =
     if isLaptop && swapAltSuper then
       "hyprland.conf"
@@ -34,6 +41,31 @@ let
       fi
     )
   '';
+  suspendIfNoSsh = pkgs.writeShellScriptBin "suspend-if-no-ssh" ''
+    set -euo pipefail
+
+    has_ssh_session=0
+    while read -r session_id _; do
+      [[ -n "$session_id" ]] || continue
+      session_props="$(${pkgs.systemd}/bin/loginctl show-session "$session_id" -p Remote -p Service --no-pager 2>/dev/null || true)"
+      if grep -qx 'Remote=yes' <<< "$session_props" || grep -qx 'Service=sshd' <<< "$session_props"; then
+        has_ssh_session=1
+        break
+      fi
+    done < <(${pkgs.systemd}/bin/loginctl list-sessions --no-legend 2>/dev/null || true)
+
+    if [[ "$has_ssh_session" -eq 1 ]]; then
+      ${pkgs.systemd}/bin/systemd-cat -t hypridle-suspend-if-no-ssh echo "Skipping idle suspend: SSH session active"
+      exit 0
+    fi
+
+    ${pkgs.systemd}/bin/systemctl suspend
+  '';
+  suspendCommand =
+    if hypridle.suspendRequiresNoSsh then
+      "${suspendIfNoSsh}/bin/suspend-if-no-ssh"
+    else
+      "systemctl suspend";
 in
 {
   home.packages = with pkgs; [ hyprlock ];
@@ -59,13 +91,19 @@ in
 
       listener = [
         {
-          timeout = 300;
+          timeout = hypridle.lockTimeout;
           on-timeout = "loginctl lock-session";
         }
         {
-          timeout = 330;
+          timeout = hypridle.dpmsTimeout;
           on-timeout = "hyprctl dispatch dpms off";
           on-resume = "hyprctl dispatch dpms on";
+        }
+      ]
+      ++ lib.optionals (hypridle.suspendTimeout != null) [
+        {
+          timeout = hypridle.suspendTimeout;
+          on-timeout = suspendCommand;
         }
       ];
     };
