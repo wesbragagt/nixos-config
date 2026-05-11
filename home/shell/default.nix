@@ -101,9 +101,7 @@ in
 
   programs.bash = {
     enable = true;
-    shellAliases = {
-      nvimh = "nvim --headless";
-    };
+    shellAliases = {};
     initExtra = shellBootstrap;
   };
 
@@ -121,9 +119,13 @@ in
     };
     shellAliases = {
       gs = "git status";
-      sg = "sgrep";
       gitd = "lazygit";
-      nvimh = "nvim --headless";
+      # git add all changes and commit
+      gg = "git add -A && git commit";
+      # github cli command to push current branch to origin
+      gpr = "git push -u origin HEAD";
+      # github cli command to open pull request in browser
+      got = "gh pr view";
     };
     initContent = shellBootstrap + ''
       autoload -Uz edit-command-line

@@ -45,7 +45,7 @@ require("blink.cmp").setup({
 
 require("supermaven-nvim").setup({
   keymaps = {
-    accept_suggestion = "<C-l>",
+    accept_suggestion = "<C-y>",
     clear_suggestion = "<C-]>",
     accept_word = "<C-j>",
   },
