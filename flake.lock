@@ -97,6 +97,22 @@
         "type": "github"
       }
     },
+    "kanagawa-yazi": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767367243,
+        "narHash": "sha256-Yz0zRVzmgbrk0m7OkItxIK6W0WkPze/t09pWFgziNrw=",
+        "owner": "dangooddd",
+        "repo": "kanagawa.yazi",
+        "rev": "04985d12842b06bdb3ad5f1b3d7abc631059b7f5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dangooddd",
+        "repo": "kanagawa.yazi",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1777673416,
@@ -135,6 +151,7 @@
         "exacli": "exacli",
         "firefox-addons": "firefox-addons",
         "home-manager": "home-manager",
+        "kanagawa-yazi": "kanagawa-yazi",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "sops-nix": "sops-nix",

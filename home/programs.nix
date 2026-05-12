@@ -6,5 +6,6 @@
     ./git
     ./apps
     ./ssh
+    ./yazi
   ];
 }
