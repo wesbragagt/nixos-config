@@ -57,11 +57,11 @@ choice=$(awk -F= '
   }
   { printf "%d\t%s\t%s\t%s\n", (counts[$1]?counts[$1]:0), $1, $2, $3 }
 ' | sort -t$'\t' -k1,1nr -k3,3 \
-  | awk -F'\t' -v ESC=$'\x1f' '{ printf "%s\t%s\0icon%s%s\n", $3, $2, ESC, $4 }' \
-  | rofi -dmenu -i -p "Apps" -display-column-separator $'\t' -display-columns 1 -format s)
+  | awk -F'\t' -v ESC=$'\x1f' '{ printf "%s\tApplication\t%s\0icon%s%s\n", $3, $2, ESC, $4 }' \
+  | rofi -dmenu -i -p "Apps" -display-column-separator $'\t' -display-columns 1,2 -format s)
 
 [ -z "$choice" ] && exit 0
-sel_id=$(printf '%s' "$choice" | cut -f2)
+sel_id=$(printf '%s' "$choice" | cut -f3)
 [ -z "$sel_id" ] && exit 0
 
 # Update cache: bump selected, rewrite atomically.
