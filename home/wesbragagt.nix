@@ -23,8 +23,8 @@
   gtk = {
     enable = true;
     theme = {
-      name = "Adwaita-dark";
-      package = pkgs.gnome-themes-extra;
+      name = "Orchis-Dark";
+      package = pkgs.orchis-theme;
     };
     iconTheme = {
       name = "Papirus";

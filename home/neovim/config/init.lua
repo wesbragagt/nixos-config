@@ -29,6 +29,7 @@ vim.pack.add({
   { src = "https://github.com/nvim-tree/nvim-web-devicons" },
   { src = "https://github.com/stevearc/oil.nvim" },
   { src = "https://github.com/tpope/vim-fugitive" },
+  { src = "https://github.com/norcalli/nvim-colorizer.lua" },
 })
 
 vim.pack.add({
@@ -59,6 +60,19 @@ require("supermaven-nvim").setup({
 })
 
 require("nvim-web-devicons").setup({})
+require("colorizer").setup({
+  "*",
+}, {
+  RGB = true,
+  RRGGBB = true,
+  RRGGBBAA = true,
+  names = false,
+  rgb_fn = true,
+  hsl_fn = true,
+  css = true,
+  css_fn = true,
+  mode = "background",
+})
 require("oil").setup({
   columns = { "icon" },
 })
