@@ -131,14 +131,19 @@ in
       extended = true;
     };
     shellAliases = commonAliases;
-    initContent = shellBootstrap + ''
-      autoload -Uz edit-command-line
-      zle -N edit-command-line
-      bindkey '^Y' autosuggest-accept
-      bindkey '^P' up-line-or-history
-      bindkey '^N' down-line-or-history
-      bindkey '^X^E' edit-command-line
-    '';
+    initContent = lib.mkMerge [
+      (shellBootstrap + ''
+        autoload -Uz edit-command-line
+        zle -N edit-command-line
+        bindkey '^Y' autosuggest-accept
+        bindkey '^P' up-line-or-history
+        bindkey '^N' down-line-or-history
+        bindkey '^X^E' edit-command-line
+      '')
+      (lib.mkOrder 2000 ''
+        eval "$(${lib.getExe config.programs.zoxide.package} init zsh --cmd cd)"
+      '')
+    ];
   };
 
   programs.starship = {
@@ -162,7 +167,7 @@ in
 
   programs.zoxide = {
     enable = true;
-    enableZshIntegration = true;
+    enableZshIntegration = false;
     enableBashIntegration = true;
     options = [ "--cmd cd" ];
   };
