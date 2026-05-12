@@ -61,12 +61,22 @@
     ],
     "modules-right": [
       "custom/notifications",
+      "network",
       "pulseaudio",
       "custom/battery",
       "clock",
       "tray"
     ],
     "position": "top",
+    "network": {
+      "format": "{ifname}",
+      "format-disconnected": "󰤮 offline",
+      "format-ethernet": "󰈀 connected",
+      "format-linked": "󰈀 no ip",
+      "format-wifi": "󰤨 {essid}",
+      "tooltip-format": "{ifname}: {ipaddr}/{cidr}\n{bandwidthUpBits} ↑  {bandwidthDownBits} ↓",
+      "tooltip-format-disconnected": "No network connection"
+    },
     "pulseaudio": {
       "format": "{icon} {volume}%",
       "format-bluetooth": "🎧 {volume}%",
