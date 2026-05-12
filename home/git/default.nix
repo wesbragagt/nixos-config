@@ -15,6 +15,8 @@
       gpg.format = "ssh";
       commit.gpgsign = true;
       tag.gpgsign = true;
+      # configure to use --rebase by default
+      pull.rebase = true;
     };
   };
 
