@@ -1,23 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-bookmarks_json="${XDG_CONFIG_HOME:-$HOME/.config}/zen/bookmarks.json"
+bookmarks_file="$HOME/notes-live-sync/areas/bookmarks/bookmarks.md"
 
-if [[ ! -f "$bookmarks_json" ]]; then
-  echo "Bookmarks file not found: $bookmarks_json" >&2
-  exit 1
+if [[ ! -f "$bookmarks_file" ]]; then
+  notify-send "Bookmarks" "File not found: $bookmarks_file"
+  exit 0
 fi
 
-entries="$(${JQ:-jq} -r '
-  def flatten($path):
-    .[] |
-    if (.url? != null) then
-      [($path + [.name] | join(" / ")), .url] | @tsv
-    else
-      (.bookmarks // []) | flatten($path + [.name])
-    end;
-  flatten([])
-' "$bookmarks_json")"
+entries="$(awk -F '|' '
+  /^[[:space:]]*$/ { next }
+  {
+    url = $1
+    label = $2
+    gsub(/^[[:space:]]+|[[:space:]]+$/, "", url)
+    gsub(/^[[:space:]]+|[[:space:]]+$/, "", label)
+    if (url ~ /^https?:\/\// && label != "") {
+      print label "\t" url
+    }
+  }
+' "$bookmarks_file")"
 
 [[ -n "$entries" ]] || exit 0
 
@@ -25,6 +27,6 @@ selection="$(printf '%s\n' "$entries" | rofi -dmenu -i -p 'Bookmarks')"
 [[ -n "$selection" ]] || exit 0
 
 url="$(printf '%s\n' "$selection" | awk -F '\t' '{print $2}')"
-[[ -n "$url" ]] || exit 1
+[[ -n "$url" ]] || exit 0
 
-exec zen-beta "$url"
+exec xdg-open "$url"

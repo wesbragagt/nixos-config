@@ -33,8 +33,8 @@ Operational checklist for this repo.
 - `modules/*.nix` — system features (graphics/audio/fonts/hyprland/login/keyboard/tailscale)
 - `hosts/<host>/default.nix` — host-specific settings
 - `home/wesbragagt.nix` — HM entrypoint
-- `home/hyprland/` — Hyprland Home Manager wiring + `hyprland.conf` / `hyprlock.conf`
-- `home/waybar/` — Waybar Home Manager wiring + `config.jsonc` / `style.css`
+- `home/hyprland/` — Hyprland Home Manager wiring; `default.nix` generates `hyprland.conf`, and `hyprlock.conf` is store-managed from the repo file
+- `home/waybar/` — Waybar Home Manager wiring; `default.nix` generates the Waybar config and CSS
 - `home/neovim/` — Neovim Home Manager wiring + config + `lsp-registry.json`
 - `home/tmux/` — tmux Home Manager wiring + `tmux.conf`
 - `home/programs.nix` — user programs, rofi wiring, ssh config
@@ -56,8 +56,8 @@ Operational checklist for this repo.
   - dotfiles and app config
   - launcher/theme/editor/user-session wiring
 - Organize by **feature/domain**, not by file type, once a feature has more than one file.
-  - Good: `home/hyprland/default.nix` + `home/hyprland/hyprland.conf`
-  - Good: `home/waybar/default.nix` + `home/waybar/config.jsonc` + `style.css`
+  - Good: `home/hyprland/default.nix` + nearby supporting files like `hyprlock.conf`
+  - Good: `home/waybar/default.nix` generating the runtime config/CSS from Nix
 - Use `default.nix` as the feature entrypoint when a module owns multiple related files.
 - Keep top-level entrypoints thin:
   - `common.nix` imports system modules

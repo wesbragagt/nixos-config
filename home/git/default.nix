@@ -1,4 +1,10 @@
-{ config, ... }:
+{ config, pkgs, ... }:
+let
+  gitSshSign = pkgs.writeShellScriptBin "git-ssh-sign" ''
+    export SSH_AUTH_SOCK="''${SSH_AUTH_SOCK:-$HOME/.bitwarden-ssh-agent.sock}"
+    exec ${pkgs.openssh}/bin/ssh-keygen "$@"
+  '';
+in
 {
   sops.secrets."github/ssh_sign_key_pub" = {
     path = "${config.home.homeDirectory}/.ssh/github_sign_key.pub";
@@ -13,6 +19,7 @@
         signingKey = config.sops.secrets."github/ssh_sign_key_pub".path;
       };
       gpg.format = "ssh";
+      gpg.ssh.program = "${gitSshSign}/bin/git-ssh-sign";
       commit.gpgsign = true;
       tag.gpgsign = true;
       # configure to use --rebase by default
