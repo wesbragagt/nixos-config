@@ -12,7 +12,6 @@
     ./modules/tailscale.nix
     ./modules/containers.nix
     ./modules/sops.nix
-    ./modules/nix-ld.nix
   ];
 
   networking.networkmanager.enable = true;
