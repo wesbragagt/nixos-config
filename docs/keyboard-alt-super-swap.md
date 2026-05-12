@@ -15,23 +15,18 @@ tags:
 
 Hosts opt into or out of the swap with `hostProfile.swapAltSuper` in `flake.nix`.
 
-When enabled, the selected Hyprland config contains:
+When enabled, the generated Hyprland config contains:
 
 ```ini
 kb_options = altwin:swap_lalt_lwin
 ```
 
-Swap-enabled configs:
+`home/hyprland/default.nix` now renders a single `~/.config/hypr/hyprland.conf`
+from shared config text plus a few host-profile conditionals:
 
-- `home/hyprland/hyprland.conf`
-- `home/hyprland/hyprland-desktop.conf`
-- `home/hyprland/hyprland-desktop-wireless.conf`
-
-No-swap configs:
-
-- `home/hyprland/hyprland-noswap.conf`
-- `home/hyprland/hyprland-desktop-noswap.conf`
-- `home/hyprland/hyprland-desktop-wireless-noswap.conf`
+- `swapAltSuper` controls whether `kb_options` is emitted
+- `isLaptop` controls the monitor line
+- `hasWireless` controls whether `nm-applet` autostarts
 
 ## Potential problem
 

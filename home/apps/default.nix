@@ -73,7 +73,7 @@ in
     [Desktop Entry]
     Type=Application
     Name=Bookmarks
-    Comment=Fuzzy search Zen bookmarks
+    Comment=Open a bookmark from bookmarks.md in the default browser
     Exec=rofi-bookmarks
     Icon=bookmarks-organize
     Terminal=false
