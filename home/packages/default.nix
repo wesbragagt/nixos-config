@@ -8,6 +8,20 @@
 let
   isLaptop = hostProfile.isLaptop or false;
   hasWireless = hostProfile.hasWireless or false;
+  # Python wheels loaded via the Nix-managed interpreter use dlopen(), so they
+  # need LD_LIBRARY_PATH directly; nix-ld alone only helps foreign executables.
+  wrappedPython = pkgs.symlinkJoin {
+    name = "python3-wrapped";
+    paths = [ pkgs.python3 ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      for bin in "$out"/bin/python*; do
+        if [ -f "$bin" ] && [ -x "$bin" ]; then
+          wrapProgram "$bin" --prefix LD_LIBRARY_PATH : /run/current-system/sw/share/nix-ld/lib
+        fi
+      done
+    '';
+  };
 in
 {
   home.packages =
@@ -34,7 +48,7 @@ in
       fd
       sesh
       uv
-      python3
+      wrappedPython
       stow
       tldr
 

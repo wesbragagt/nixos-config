@@ -2,6 +2,7 @@
 let
   rofiColorsDir = "${repoRoot}/rofi/colors";
   rofiLaunchersDir = "${repoRoot}/rofi/launchers";
+  footConfig = "${repoRoot}/home/apps/foot.ini";
 in
 {
   programs.kitty = {
@@ -16,15 +17,7 @@ in
     };
   };
 
-  programs.foot = {
-    enable = true;
-    settings = {
-      main = {
-        font = "JetBrainsMono Nerd Font:size=12";
-      };
-      colors.alpha = 0.8;
-    };
-  };
+  programs.foot.enable = true;
 
   programs.obsidian = {
     enable = true;
@@ -88,6 +81,7 @@ in
   '';
 
   xdg.configFile = {
+    "foot/foot.ini".source = config.lib.file.mkOutOfStoreSymlink footConfig;
     "rofi/colors".source = config.lib.file.mkOutOfStoreSymlink rofiColorsDir;
     "rofi/launchers".source = config.lib.file.mkOutOfStoreSymlink rofiLaunchersDir;
     "workmux/config.yaml".text = "nerdfont: true\n";

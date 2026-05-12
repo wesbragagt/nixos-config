@@ -26,8 +26,8 @@
     chromium-webapps = {
       url = "github:chobbledotcom/nix-chromium-webapps";
     };
-    kanagawa-yazi = {
-      url = "github:dangooddd/kanagawa.yazi";
+    tokyo-night-yazi = {
+      url = "github:BennyOe/tokyo-night.yazi";
       flake = false;
     };
     sops-nix = {
