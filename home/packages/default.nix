@@ -65,6 +65,7 @@ in
       slack
 
       # media
+      playerctl
       mpv
       imv
 
