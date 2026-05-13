@@ -6,13 +6,14 @@ Operational checklist for this repo.
 
 1. Make changes in the right place (`hosts/`, `modules/`, `home/`, `scripts/`, etc.).
 2. Stage everything: `git add -A`.
-3. Rebuild:
-   - Preferred: `rebuild` for a normal switch
-   - Dry run: `rebuild build`
+3. Rebuild **only with the documented `rebuild` command**:
+   - Normal switch: `rebuild`
+   - Dry run/build: `rebuild build`
    - Other actions: `rebuild test` / `rebuild boot` / `rebuild dry-activate`
-   - The `rebuild` shell alias auto-detects the current host, so do not hardcode `.#<host>` unless you specifically need to target a different machine.
-   - Home Manager build: `nix build .#homeConfigurations.wesbragagt.activationPackage`
-   - Shortcut: `./scripts/validate-config.sh` (add `--switch` for final activation)
+   - `rebuild` auto-detects the current host. Do **not** hardcode `.#<host>` in `nixos-rebuild`, `nix build`, validation scripts, or aliases unless the user explicitly asks to target a different machine.
+   - Do **not** use scripts or commands that default to a host name (for example `nixos-hp`). Running the wrong NixOS host configuration can be destructive.
+   - If `rebuild` is unavailable, stop and ask the user instead of guessing a host or falling back to `nixos-rebuild --flake .#<host>`.
+   - Home Manager build only when specifically needed: `nix build .#homeConfigurations.wesbragagt.activationPackage`
 4. If it fails, scroll to the **last `error:`** line first.
 
 ## High-value reminders
@@ -99,7 +100,7 @@ Follow `docs/add-another-machine.md` for the full multi-host + secrets workflow.
 
 ## Environment-specific notes
 
-- Host currently configured: `nixos-hp`
+- Do not assume the active host from this file. Check `hostname` if needed, but still use only `rebuild` so host selection follows the repo's documented command.
 - `allowUnfree = true` is enabled
 - Passwordless sudo for `wheel` is enabled
 - SSH authorized key for `wesbragagt` is pinned in `common.nix`
