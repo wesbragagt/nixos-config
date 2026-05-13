@@ -5,6 +5,7 @@
     ./claude
     ./hyprland
     ./waybar
+    ./wallpaper
     ./zen
     ./programs.nix
     ./tmux

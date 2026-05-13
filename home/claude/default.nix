@@ -41,6 +41,7 @@ in
     home.file.".claude/agents".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/agents";
     home.file.".claude/skills".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/skills";
     home.file.".claude/commands".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/commands";
+    home.file.".claude/rules".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/rules";
 
     programs.bash.shellAliases = cfg.aliases;
     programs.zsh.shellAliases = cfg.aliases;
