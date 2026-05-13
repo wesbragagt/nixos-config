@@ -51,6 +51,7 @@ in
       wrappedPython
       stow
       tldr
+      (pkgs.callPackage ../../pkgs/agent-browser { })
 
       # secrets / auth
       bitwarden-desktop

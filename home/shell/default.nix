@@ -115,7 +115,13 @@ in
   programs.bash = {
     enable = true;
     shellAliases = commonAliases;
-    initExtra = shellBootstrap;
+    initExtra = lib.mkMerge [
+      shellBootstrap
+      # zoxide's doctor expects its hook to be installed after other shell hooks.
+      (lib.mkOrder 9999 ''
+        eval "$(${lib.getExe config.programs.zoxide.package} init bash --cmd cd)"
+      '')
+    ];
   };
 
   programs.zsh = {
@@ -140,7 +146,8 @@ in
         bindkey '^N' down-line-or-history
         bindkey '^X^E' edit-command-line
       '')
-      (lib.mkOrder 2000 ''
+      # Keep zoxide last so later integrations cannot clobber its chpwd hook.
+      (lib.mkOrder 9999 ''
         eval "$(${lib.getExe config.programs.zoxide.package} init zsh --cmd cd)"
       '')
     ];
@@ -168,7 +175,7 @@ in
   programs.zoxide = {
     enable = true;
     enableZshIntegration = false;
-    enableBashIntegration = true;
+    enableBashIntegration = false;
     options = [ "--cmd cd" ];
   };
 

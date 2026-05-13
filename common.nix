@@ -11,6 +11,7 @@
     ./modules/keyboard.nix
     ./modules/tailscale.nix
     ./modules/containers.nix
+    ./modules/onepassword.nix
     ./modules/sops.nix
   ];
 
@@ -79,7 +80,15 @@
     wget
     curl
     git
+    cacert
   ];
+
+  # Make the system CA bundle discoverable for tools that don't honour
+  # NixOS's NIX_SSL_CERT_FILE (e.g. DuckDB's `ui` extension fetching web
+  # assets from ui.duckdb.org).
+  environment.variables = {
+    SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
+  };
 
   programs.thunar = {
     enable = true;
