@@ -25,6 +25,7 @@ let
     "modules-center" = [ "hyprland/workspaces" ];
     "modules-right" = [
       "custom/notifications"
+      "mpris"
       "network"
       "pulseaudio"
     ]
@@ -73,6 +74,17 @@ let
       on-click = "swaync-client -t -sw";
       on-click-right = "swaync-client -d -sw";
       "return-type" = "json";
+    };
+
+    mpris = {
+      player = "playerctld";
+      format = "🎵 {artist} - {title}";
+      format-paused = "⏸ {artist} - {title}";
+      format-stopped = "";
+      artist-len = 24;
+      title-len = 36;
+      dynamic-len = 54;
+      tooltip-format = "{player} ({status})\n{artist} - {title}\n{album}";
     };
 
     network = {
@@ -144,6 +156,7 @@ let
     #pulseaudio,
     #custom-battery,
     #custom-notifications,
+    #mpris,
     #clock,
     #tray {
       background: rgba(17, 17, 27, 0.85);
@@ -194,6 +207,9 @@ let
 
     #custom-notifications { padding: 1px 10px; color: #cdd6f4; }
     #custom-notifications.dnd { color: #6c7086; }
+
+    #mpris.paused { color: #6c7086; }
+    #mpris.stopped { opacity: 0; padding: 0; margin: 0; }
 
     #tray { padding: 4px 10px; }
     #tray > .passive { -gtk-icon-effect: dim; }
