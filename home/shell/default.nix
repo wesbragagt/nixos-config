@@ -32,10 +32,6 @@ let
       "";
   exaApiKeyPath = secretPath "/run/secrets/exa_api_key" config.sops.secrets.exa_api_key.path;
   shellBootstrap = ''
-    export NPM_GLOBAL="$HOME/.npm-global"
-    export NPM_CONFIG_PREFIX="$NPM_GLOBAL"
-    export PATH="$NPM_GLOBAL/bin:$PATH"
-
     if [[ -z "$SSH_AUTH_SOCK" && -S "$HOME/.bitwarden-ssh-agent.sock" ]]; then
       export SSH_AUTH_SOCK="$HOME/.bitwarden-ssh-agent.sock"
     fi
@@ -101,16 +97,10 @@ in
   };
 
   home.sessionVariables = {
-    NPM_GLOBAL = "$HOME/.npm-global";
-    NPM_CONFIG_PREFIX = "$HOME/.npm-global";
     EDITOR = "nvim";
     VISUAL = "nvim";
     MANPAGER = "nvim +Man!";
   };
-
-  home.sessionPath = [
-    "$HOME/.npm-global/bin"
-  ];
 
   programs.bash = {
     enable = true;

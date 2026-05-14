@@ -20,6 +20,7 @@ in
       gpg.ssh.program = "${gitSshSign}/bin/git-ssh-sign";
       commit.gpgsign = true;
       tag.gpgsign = true;
+      init.defaultBranch = "main";
       # configure to use --rebase by default
       pull.rebase = true;
     };
