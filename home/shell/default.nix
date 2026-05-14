@@ -59,7 +59,9 @@ let
 
       case "$action" in
         boot|build|dry-build|dry-activate|switch|test)
-          shift
+          if [[ $# -gt 0 ]]; then
+            shift
+          fi
           ;;
         *)
           action="switch"
@@ -129,12 +131,15 @@ in
     shellAliases = commonAliases;
     initContent = lib.mkMerge [
       (shellBootstrap + ''
-        autoload -Uz edit-command-line
-        zle -N edit-command-line
-        bindkey '^Y' autosuggest-accept
-        bindkey '^P' up-line-or-history
-        bindkey '^N' down-line-or-history
-        bindkey '^X^E' edit-command-line
+        if [[ $options[zle] = on && -t 0 && -t 1 ]]; then
+          source <(${lib.getExe config.programs.fzf.package} --zsh)
+          autoload -Uz edit-command-line
+          zle -N edit-command-line
+          bindkey '^Y' autosuggest-accept
+          bindkey '^P' up-line-or-history
+          bindkey '^N' down-line-or-history
+          bindkey '^X^E' edit-command-line
+        fi
       '')
       # Keep zoxide last so later integrations cannot clobber its chpwd hook.
       (lib.mkOrder 9999 ''
@@ -152,7 +157,7 @@ in
 
   programs.fzf = {
     enable = true;
-    enableZshIntegration = true;
+    enableZshIntegration = false;
     enableBashIntegration = true;
     defaultCommand = "rg --files --hidden --follow --glob '!.git'";
     defaultOptions = [

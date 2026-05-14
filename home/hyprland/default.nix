@@ -47,6 +47,16 @@ let
     }
 
     decoration {
+      active_opacity = 0.96
+      inactive_opacity = 0.82
+
+      blur {
+        enabled = true
+        size = 6
+        passes = 3
+        ignore_opacity = true
+      }
+
       shadow {
         color = rgba(00000066)
         color_inactive = rgba(00000022)

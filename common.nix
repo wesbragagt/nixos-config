@@ -1,5 +1,33 @@
 { config, pkgs, ... }:
 
+let
+  rebuild = pkgs.writeShellScriptBin "rebuild" ''
+    set -euo pipefail
+
+    action="''${1:-switch}"
+    case "$action" in
+      boot|build|dry-build|dry-activate|switch|test)
+        if [[ $# -gt 0 ]]; then
+          shift
+        fi
+        ;;
+      *)
+        action="switch"
+        ;;
+    esac
+
+    host="$(hostname -s 2>/dev/null || hostname)"
+    host="''${host%%.*}"
+
+    if [[ -z "$host" ]]; then
+      echo "Unable to determine current hostname for NixOS rebuild" >&2
+      exit 1
+    fi
+
+    echo "Rebuilding host '$host' with action '$action'..." >&2
+    sudo nixos-rebuild "$action" --impure --flake /home/wesbragagt/nixos-config#"$host" "$@"
+  '';
+in
 {
   imports = [
     ./modules/host-profile.nix
@@ -81,7 +109,23 @@
     curl
     git
     cacert
+    rebuild
   ];
+
+  # Provide common shared libraries for foreign binaries and Python wheels that
+  # dlopen C/C++ dependencies (for example Arrow/Parquet wheels requiring
+  # libstdc++.so.6). The Home Manager Python wrapper exposes this path through
+  # LD_LIBRARY_PATH because nix-ld itself only helps executable startup.
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      stdenv.cc.cc.lib
+      zlib
+      zstd
+      openssl
+      libffi
+    ];
+  };
 
   # Make the system CA bundle discoverable for tools that don't honour
   # NixOS's NIX_SSL_CERT_FILE (e.g. DuckDB's `ui` extension fetching web
