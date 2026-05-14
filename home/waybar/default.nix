@@ -131,7 +131,7 @@ let
   };
   waybarStyle = ''
     * {
-      font-family: "Maple Mono NF", "Noto Color Emoji";
+      font-family: "Maple Mono NL NF", "Noto Color Emoji";
       font-size: 12px;
       font-weight: 500;
       min-height: 0;
