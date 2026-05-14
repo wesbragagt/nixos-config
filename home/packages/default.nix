@@ -45,6 +45,7 @@ in
       gh
       jq
       yq-go
+      go
       fd
       sesh
       uv
@@ -52,6 +53,7 @@ in
       stow
       tldr
       (pkgs.callPackage ../../pkgs/agent-browser { })
+      (pkgs.callPackage ../../pkgs/excalidraw-cli { })
 
       # secrets / auth
       bitwarden-desktop

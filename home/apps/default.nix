@@ -8,7 +8,7 @@ in
   programs.kitty = {
     enable = true;
     font = {
-      name = "JetBrainsMono Nerd Font";
+      name = "Maple Mono NF";
       size = 12;
     };
     settings = {

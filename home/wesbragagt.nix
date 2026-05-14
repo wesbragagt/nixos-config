@@ -70,6 +70,11 @@
             hash = "sha256-XxZBH+r0tk1FDL9LTNuJIAka8UUVJeOYTovWCKEMC6Y=";
           };
         }
+        {
+          name = "Excalidraw";
+          url = "https://excalidraw.com";
+          icon = papirusIcon "excalidraw";
+        }
       ];
   };
 }

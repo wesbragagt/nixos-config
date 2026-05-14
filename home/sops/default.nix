@@ -30,8 +30,10 @@ in
     defaultSopsFile = repoSecretsFile;
   };
 
-  programs.bash.initExtra = lib.mkAfter sopsShellExport;
-  programs.zsh.initContent = lib.mkAfter sopsShellExport;
+  # Keep these exports before shell integration hooks; zoxide's doctor expects
+  # its initialization to remain at the very end of shell startup files.
+  programs.bash.initExtra = lib.mkBefore sopsShellExport;
+  programs.zsh.initContent = lib.mkBefore sopsShellExport;
 
   home.activation.ensureSopsAgeKeyDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
     mkdir -p "$HOME/.config/sops/age"
