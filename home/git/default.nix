@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 let
   gitSshSign = pkgs.writeShellScriptBin "git-ssh-sign" ''
     export SSH_AUTH_SOCK="''${SSH_AUTH_SOCK:-$HOME/.bitwarden-ssh-agent.sock}"
@@ -6,9 +6,7 @@ let
   '';
 in
 {
-  sops.secrets."github/ssh_sign_key_pub" = {
-    path = "${config.home.homeDirectory}/.ssh/github_sign_key.pub";
-  };
+  home.file.".ssh/github_sign_key.pub".source = ../ssh/github_sign_key.pub;
 
   programs.git = {
     enable = true;
@@ -16,7 +14,7 @@ in
       user = {
         name = "wesbragagt";
         email = "40429790+wesbragagt@users.noreply.github.com";
-        signingKey = config.sops.secrets."github/ssh_sign_key_pub".path;
+        signingKey = "~/.ssh/github_sign_key.pub";
       };
       gpg.format = "ssh";
       gpg.ssh.program = "${gitSshSign}/bin/git-ssh-sign";

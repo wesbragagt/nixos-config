@@ -1,12 +1,10 @@
-{ config, ... }:
+{ ... }:
 {
-  sops.secrets."github/ssh_key_pub" = {
-    path = "${config.home.homeDirectory}/.ssh/github_key.pub";
-  };
-
   home.sessionVariables = {
     SSH_AUTH_SOCK = "$HOME/.bitwarden-ssh-agent.sock";
   };
+
+  home.file.".ssh/github_key.pub".source = ./github_key.pub;
 
   programs.ssh = {
     enable = true;
@@ -16,7 +14,7 @@
         hostname = "github.com";
         user = "git";
         # Public key stub used to select the matching Bitwarden-managed agent key.
-        identityFile = config.sops.secrets."github/ssh_key_pub".path;
+        identityFile = "~/.ssh/github_key.pub";
         identityAgent = "~/.bitwarden-ssh-agent.sock";
         identitiesOnly = true;
       };
