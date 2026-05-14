@@ -2,6 +2,7 @@
 {
   imports = [
     ./packages
+    ./npm
     ./shell
     ./git
     ./apps
