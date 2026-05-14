@@ -32,6 +32,11 @@ let
       "";
   exaApiKeyPath = secretPath "/run/secrets/exa_api_key" config.sops.secrets.exa_api_key.path;
   shellBootstrap = ''
+    # Non-interactive bash (for example Claude/bash tool invocations) does not
+    # read ~/.bashrc, so point it at a small BASH_ENV that imports direnv for
+    # the current working directory before running the requested command.
+    export BASH_ENV="$HOME/.config/bash/bash_env"
+
     if [[ -z "$SSH_AUTH_SOCK" && -S "$HOME/.bitwarden-ssh-agent.sock" ]]; then
       export SSH_AUTH_SOCK="$HOME/.bitwarden-ssh-agent.sock"
     fi
@@ -102,7 +107,16 @@ in
     EDITOR = "nvim";
     VISUAL = "nvim";
     MANPAGER = "nvim +Man!";
+    BASH_ENV = "$HOME/.config/bash/bash_env";
   };
+
+  home.file.".config/bash/bash_env".text = ''
+    if [[ -z "''${__HM_DIRENV_BASH_ENV_ACTIVE:-}" ]] && command -v direnv >/dev/null 2>&1; then
+      export __HM_DIRENV_BASH_ENV_ACTIVE=1
+      eval "$(direnv export bash)"
+      unset __HM_DIRENV_BASH_ENV_ACTIVE
+    fi
+  '';
 
   programs.bash = {
     enable = true;
