@@ -38,7 +38,8 @@ Operational checklist for this repo.
 - `home/waybar/` — Waybar Home Manager wiring; `default.nix` generates the Waybar config and CSS
 - `home/neovim/` — Neovim Home Manager wiring + config + `lsp-registry.json`
 - `home/tmux/` — tmux Home Manager wiring + `tmux.conf`
-- `home/programs.nix` — user programs, rofi wiring, ssh config
+- `home/programs.nix` — user program module imports
+- `home/npm/` — npm global prefix/session wiring for `~/.npm-global`
 - `scripts/` + `rofi/` — launcher scripts and themes
 - `secrets/README.md` — canonical secrets setup and GitOps workflow
 - `docs/sops-yubikey.md` — add/update YubiKey recipients for SOPS
@@ -83,6 +84,12 @@ Follow `docs/add-another-machine.md` for the full multi-host + secrets workflow.
 
 - User package first: `home/programs.nix`
 - System package only when system integration is needed
+
+### npm global packages
+
+- npm global CLI installs are intentionally routed to `~/.npm-global`
+- Session variables and PATH wiring live in `home/npm/default.nix`
+- Keep npm global prefix setup there instead of duplicating it in shell modules
 
 ### Use flake inputs in `home/`
 

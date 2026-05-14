@@ -57,6 +57,7 @@ flake.nix                  # nixosConfigurations + homeConfigurations
 common.nix                 # shared NixOS base (user, locale, packages, services)
 modules/                   # NixOS system modules (graphics, audio, hyprland, ...)
 home/                      # home-manager (wesbragagt.nix entry, programs, hyprland, waybar)
+  npm/                     # npm global prefix/session wiring for ~/.npm-global
 hosts/
   nixos-hp/
     default.nix            # host-specific (hostname, boot, hardware import)
@@ -72,6 +73,19 @@ cd ~/nixos-config
 git add -A   # flake reads from the git tree; untracked files are invisible
 sudo nixos-rebuild switch --flake .#nixos-hp
 ```
+
+## npm global packages
+
+npm global installs are routed into `~/.npm-global` by the dedicated Home Manager
+module at `home/npm/default.nix`.
+
+It sets:
+- `NPM_GLOBAL=$HOME/.npm-global`
+- `NPM_CONFIG_PREFIX=$HOME/.npm-global`
+- `PATH+=~/.npm-global/bin`
+
+This keeps ad-hoc npm-installed CLIs in a user-owned prefix instead of mixing them
+into the system or relying on distro defaults.
 
 ## Use on non-NixOS Linux (home-manager standalone)
 
