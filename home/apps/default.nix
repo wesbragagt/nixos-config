@@ -8,7 +8,7 @@ in
   programs.kitty = {
     enable = true;
     font = {
-      name = "Maple Mono NF";
+      name = "Maple Mono NL NF";
       size = 12;
     };
     settings = {
