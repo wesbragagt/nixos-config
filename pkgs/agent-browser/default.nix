@@ -19,6 +19,7 @@ buildNpmPackage (finalAttrs: {
   };
 
   npmDepsHash = "sha256-PboVmg7v7ObncE285cX5rM//PvV62DGOwr/1krO22zM=";
+  forceEmptyCache = true;
 
   strictDeps = true;
 

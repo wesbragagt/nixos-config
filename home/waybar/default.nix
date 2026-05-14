@@ -24,14 +24,13 @@ let
     ];
     "modules-center" = [ "hyprland/workspaces" ];
     "modules-right" = [
-      "custom/notifications"
       "mpris"
-      "network"
       "pulseaudio"
     ]
     ++ lib.optionals isLaptop [ "custom/battery" ]
     ++ [
       "clock"
+      "custom/notifications"
       "tray"
     ];
 
