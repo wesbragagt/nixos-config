@@ -4,7 +4,10 @@
     SSH_AUTH_SOCK = "$HOME/.bitwarden-ssh-agent.sock";
   };
 
-  home.file.".ssh/github_key.pub".source = ./github_key.pub;
+  home.file.".ssh/github_key.pub" = {
+    source = ./github_key.pub;
+    force = true;
+  };
 
   programs.ssh = {
     enable = true;

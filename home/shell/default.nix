@@ -59,7 +59,7 @@ let
 
       case "$action" in
         boot|build|dry-build|dry-activate|switch|test)
-          if [[ $# -gt 0 ]]; then
+          if (( ''${#argv} > 0 )); then
             shift
           fi
           ;;

@@ -6,7 +6,10 @@ let
   '';
 in
 {
-  home.file.".ssh/github_sign_key.pub".source = ../ssh/github_sign_key.pub;
+  home.file.".ssh/github_sign_key.pub" = {
+    source = ../ssh/github_sign_key.pub;
+    force = true;
+  };
 
   programs.git = {
     enable = true;
