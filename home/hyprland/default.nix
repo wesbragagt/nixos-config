@@ -215,6 +215,27 @@ in
     onChange = reloadHyprland;
   };
 
+  services.hyprsunset = {
+    enable = true;
+    systemdTarget = "hyprland-session.target";
+    settings = {
+      profile = [
+        {
+          time = "7:30";
+          identity = true;
+        }
+        {
+          time = "19:00";
+          temperature = 5000;
+        }
+        {
+          time = "21:00";
+          temperature = 3800;
+        }
+      ];
+    };
+  };
+
   services.hypridle = {
     enable = true;
     settings = {
