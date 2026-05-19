@@ -5,18 +5,6 @@ let
   footConfig = "${repoRoot}/home/apps/foot.ini";
 in
 {
-  programs.kitty = {
-    enable = true;
-    font = {
-      name = "Maple Mono NL NF";
-      size = 12;
-    };
-    settings = {
-      confirm_os_window_close = 0;
-      enable_audio_bell = false;
-    };
-  };
-
   programs.foot.enable = true;
 
   programs.obsidian = {

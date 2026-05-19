@@ -47,8 +47,8 @@ let
     }
 
     decoration {
-      active_opacity = 0.96
-      inactive_opacity = 0.82
+      active_opacity = 1.0
+      inactive_opacity = 1.0
 
       blur {
         enabled = true
@@ -69,8 +69,8 @@ let
     }
 
     general {
-      border_size = 0
-      col.active_border = rgba(00000000)
+      border_size = 2
+      col.active_border = rgba(cba6f755)
       col.inactive_border = rgba(00000000)
       gaps_in = 5
       gaps_out = 10

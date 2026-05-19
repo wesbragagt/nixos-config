@@ -49,9 +49,15 @@ in
       fd
       sesh
       uv
+      pnpm
       wrappedPython
       stow
       tldr
+      ((pkgs.callPackage "${inputs.nur-combined}/repos/sikmir/pkgs/by-name/re/revdiff/package.nix" {
+        buildGoModule = pkgs.buildGo126Module;
+      }).overrideAttrs (_old: {
+        allowGoReference = true;
+      }))
       (pkgs.callPackage ../../pkgs/agent-browser { })
       (pkgs.callPackage ../../pkgs/excalidraw-cli { })
 
@@ -65,6 +71,7 @@ in
       waypaper
       swww
       slack
+      signal-desktop
 
       # media
       playerctl

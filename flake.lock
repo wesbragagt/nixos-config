@@ -129,6 +129,22 @@
         "type": "github"
       }
     },
+    "nur-combined": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1778782420,
+        "narHash": "sha256-IT86E3HrM1aemMN0Vn2Cg+nOlIVGVKEygdD9d3kqFvo=",
+        "owner": "nix-community",
+        "repo": "nur-combined",
+        "rev": "9fc5da5fdc330e209ab83cdf2f55830069b95b3e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nur-combined",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "chromium-webapps": "chromium-webapps",
@@ -137,6 +153,7 @@
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "nur-combined": "nur-combined",
         "sops-nix": "sops-nix",
         "tokyo-night-yazi": "tokyo-night-yazi",
         "zen-browser": "zen-browser"

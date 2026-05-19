@@ -45,6 +45,12 @@ let
       export EXA_API_KEY="$(< "${exaApiKeyPath}")"
     fi
 
+    # uv-managed venv pythons are downloaded standalone builds that don't get the
+    # wrappedPython LD_LIBRARY_PATH prefix, so wheels that dlopen libstdc++ (duckdb,
+    # pyarrow, ...) fail to import. Expose the nix-ld library path here so uv's
+    # spawned interpreters inherit it.
+    export LD_LIBRARY_PATH="/run/current-system/sw/share/nix-ld/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
     __nixos_flake_host() {
       local host
       host="$(hostname -s 2>/dev/null || hostname)"
@@ -96,6 +102,12 @@ let
       echo "Changing directory to $dir"
       cd "$dir"
     }
+
+    __tmux_rename_session_for_cwd() {
+      if [[ -n "''${TMUX:-}" ]] && command -v tmux-rename-session-for-cwd >/dev/null 2>&1; then
+        tmux-rename-session-for-cwd "$PWD" >/dev/null 2>&1 || true
+      fi
+    }
   '';
 in
 {
@@ -111,7 +123,14 @@ in
   };
 
   home.file.".config/bash/bash_env".text = ''
-    if [[ -z "''${__HM_DIRENV_BASH_ENV_ACTIVE:-}" ]] && command -v direnv >/dev/null 2>&1; then
+    # BASH_ENV is sourced by every non-interactive bash, including shellHook
+    # helper scripts spawned while direnv/nix-direnv is already evaluating an
+    # environment. Re-entering direnv there can recursively load the same dev
+    # shell many times.
+    if [[ -z "''${__HM_DIRENV_BASH_ENV_ACTIVE:-}" \
+       && -z "''${DIRENV_FILE:-}" \
+       && -z "''${DIRENV_DIR:-}" ]] \
+       && command -v direnv >/dev/null 2>&1; then
       export __HM_DIRENV_BASH_ENV_ACTIVE=1
       eval "$(direnv export bash)"
       unset __HM_DIRENV_BASH_ENV_ACTIVE
@@ -126,6 +145,10 @@ in
       # zoxide's doctor expects its hook to be installed after other shell hooks.
       (lib.mkOrder 9999 ''
         eval "$(${lib.getExe config.programs.zoxide.package} init bash --cmd cd)"
+      '')
+      (lib.mkOrder 10000 ''
+        __tmux_rename_session_for_cwd
+        PROMPT_COMMAND="__tmux_rename_session_for_cwd''${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
       '')
     ];
   };
@@ -155,9 +178,14 @@ in
           bindkey '^X^E' edit-command-line
         fi
       '')
-      # Keep zoxide last so later integrations cannot clobber its chpwd hook.
+      # Keep zoxide late so later integrations cannot clobber its chpwd hook.
       (lib.mkOrder 9999 ''
         eval "$(${lib.getExe config.programs.zoxide.package} init zsh --cmd cd)"
+      '')
+      (lib.mkOrder 10000 ''
+        autoload -Uz add-zsh-hook
+        add-zsh-hook chpwd __tmux_rename_session_for_cwd
+        __tmux_rename_session_for_cwd
       '')
     ];
   };

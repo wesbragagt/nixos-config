@@ -34,6 +34,10 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nur-combined = {
+      url = "github:nix-community/nur-combined";
+      flake = false;
+    };
   };
 
   outputs =

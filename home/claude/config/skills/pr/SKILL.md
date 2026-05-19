@@ -86,6 +86,15 @@ git diff origin/<base>..HEAD --stat
 
 Keep it factual. Do not pad with filler. If the user provided a description, incorporate it into the Summary section rather than replacing the template entirely.
 
+**Do not reference review tooling, AI agents, or internal review steps.** The PR body is for reviewers and project history — it must describe the *change* and the *reasoning behind the code*, not the process that led to it. Concretely:
+
+- No mentions of `pi`, `pi /review`, `claude`, `Claude Code`, `gpt`, `Copilot`, `ultrareview`, sibling-agent reviews, or any AI/code-assist tool by name.
+- No "Follow-up from <review>" / "Addressed in this PR per <review>" / "<reviewer> flagged …" sections — re-attribute the finding to the code (e.g. "ties on `update_time` are not deterministic, switched to …") and write it as if you arrived at it yourself.
+- No reference to internal files produced by review tooling (`reviews/*.md`, transcripts, scratch notes).
+- Bare technical reasoning is welcome; the *source* of that reasoning is not.
+
+If a finding is worth keeping, describe the *technical* problem and fix. If it's only worth keeping because a reviewer raised it, leave it for a separate PR or an inline comment.
+
 ## Step 6: Create the PR
 
 ```bash
