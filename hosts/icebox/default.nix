@@ -25,5 +25,26 @@ in
   # Identity
   networking.hostName = "icebox";
 
+  # Wake-on-LAN for the wired NIC. BIOS enables platform support, but Linux
+  # still needs to allow the PCI device as a wake source and arm magic-packet
+  # wake after each boot.
+  environment.systemPackages = with pkgs; [ ethtool ];
+  systemd.services.wake-on-lan = {
+    description = "Enable Wake-on-LAN for enp9s0";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      iface=enp9s0
+      if [ -e "/sys/class/net/$iface/device/power/wakeup" ]; then
+        echo enabled > "/sys/class/net/$iface/device/power/wakeup"
+      fi
+      ${pkgs.ethtool}/bin/ethtool -s "$iface" wol g
+    '';
+  };
+
   system.stateVersion = "25.11";
 }

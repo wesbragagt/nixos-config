@@ -103,11 +103,6 @@ let
       cd "$dir"
     }
 
-    __tmux_rename_session_for_cwd() {
-      if [[ -n "''${TMUX:-}" ]] && command -v tmux-rename-session-for-cwd >/dev/null 2>&1; then
-        tmux-rename-session-for-cwd "$PWD" >/dev/null 2>&1 || true
-      fi
-    }
   '';
 in
 {
@@ -146,10 +141,6 @@ in
       (lib.mkOrder 9999 ''
         eval "$(${lib.getExe config.programs.zoxide.package} init bash --cmd cd)"
       '')
-      (lib.mkOrder 10000 ''
-        __tmux_rename_session_for_cwd
-        PROMPT_COMMAND="__tmux_rename_session_for_cwd''${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
-      '')
     ];
   };
 
@@ -179,13 +170,15 @@ in
         fi
       '')
       # Keep zoxide late so later integrations cannot clobber its chpwd hook.
+      # Some interactive tools can still reset chpwd_functions after startup;
+      # make zoxide's doctor repair the hook instead of printing a warning.
       (lib.mkOrder 9999 ''
         eval "$(${lib.getExe config.programs.zoxide.package} init zsh --cmd cd)"
-      '')
-      (lib.mkOrder 10000 ''
-        autoload -Uz add-zsh-hook
-        add-zsh-hook chpwd __tmux_rename_session_for_cwd
-        __tmux_rename_session_for_cwd
+
+        __zoxide_doctor() {
+          [[ ''${_ZO_DOCTOR:-1} -ne 0 ]] || return 0
+          [[ ''${chpwd_functions[(Ie)__zoxide_hook]:-0} -ne 0 ]] || chpwd_functions+=(__zoxide_hook)
+        }
       '')
     ];
   };

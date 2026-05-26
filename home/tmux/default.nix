@@ -42,33 +42,6 @@
         fi
       '';
     })
-    (pkgs.writeShellApplication {
-      name = "tmux-rename-session-for-cwd";
-      runtimeInputs = [
-        pkgs.coreutils
-        pkgs.tmux
-      ];
-      text = ''
-        if [[ -z "''${TMUX:-}" ]]; then
-          exit 0
-        fi
-
-        path="$(realpath -m "''${1:-$PWD}")"
-        base="$(basename "$path")"
-        parent="$(basename "$(dirname "$path")")"
-
-        if [[ "$path" == "$HOME" || -z "$parent" || "$parent" == "/" ]]; then
-          session="$base"
-        else
-          session="$parent/$base"
-        fi
-
-        current="$(tmux display-message -p '#S')"
-        if [[ "$current" != "$session" ]]; then
-          tmux rename-session "$session" 2>/dev/null || true
-        fi
-      '';
-    })
   ];
 
   programs.tmux = {
