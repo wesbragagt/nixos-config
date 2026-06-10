@@ -41,6 +41,7 @@ in
     ./modules/containers.nix
     ./modules/onepassword.nix
     ./modules/sops.nix
+    ./modules/responsiveness.nix
   ];
 
   networking.networkmanager.enable = true;
@@ -147,14 +148,4 @@ in
   services.openssh.enable = true;
   security.sudo.wheelNeedsPassword = false;
 
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-    memoryPercent = 50;
-  };
-
-  boot.tmp = {
-    useTmpfs = true;
-    tmpfsSize = "50%";
-  };
 }
