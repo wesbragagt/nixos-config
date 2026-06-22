@@ -30,12 +30,26 @@ in
   };
 
   programs.delta = {
-    enable = true;
-    enableGitIntegration = true;
+    enable = false;
+    enableGitIntegration = false;
     options = {
       navigate = true;
       side-by-side = true;
       line-numbers = true;
+    };
+  };
+
+  programs.hunk = {
+    enable = true;
+    enableGitIntegration = true;
+    settings = {
+      theme = "tokyo-night";
+      mode = "stack";
+      line_numbers = true;
+      wrap_lines = true;
+      hunk_headers = true;
+      color_moved = true;
+      transparent_background = false;
     };
   };
 

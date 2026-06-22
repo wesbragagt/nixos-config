@@ -1,7 +1,14 @@
-{ lib, pkgs, config, repoRoot, ... }:
+{ lib, pkgs, config, repoRoot, inputs, ... }:
 let
   cfg = config.wes.claudeCode;
   claudeCodePackage = pkgs.callPackage ../../pkgs/claude-code { };
+  repoSkillEntries = lib.removeAttrs (builtins.readDir ./config/skills) [ "hunk" ];
+  repoSkillLinks = lib.mapAttrs'
+    (name: _:
+      lib.nameValuePair ".claude/skills/${name}" {
+        source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/skills/${name}";
+      })
+    repoSkillEntries;
 in
 {
   options.wes.claudeCode = {
@@ -38,10 +45,18 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = [ cfg.package ];
 
-    home.file.".claude/agents".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/agents";
-    home.file.".claude/skills".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/skills";
-    home.file.".claude/commands".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/commands";
-    home.file.".claude/rules".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/rules";
+    home.file = {
+      ".claude/agents".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/agents";
+      ".claude/commands".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/commands";
+      ".claude/rules".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/rules";
+      ".claude/skills/hunk".source = inputs.hunk + "/skills/hunk-review";
+    } // repoSkillLinks;
+
+    home.activation.removeLegacyClaudeSkillsLink = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+      if [ -L "$HOME/.claude/skills" ]; then
+        $DRY_RUN_CMD rm "$HOME/.claude/skills"
+      fi
+    '';
 
     programs.bash.shellAliases = cfg.aliases;
     programs.zsh.shellAliases = cfg.aliases;
