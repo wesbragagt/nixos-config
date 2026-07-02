@@ -23,9 +23,10 @@
   },
   "tofu_ls": {
     "packageAttrPath": ["tofu-ls"],
+    "extraPackageAttrPaths": [["opentofu"]],
     "cmd": ["tofu-ls", "serve"],
     "filetypes": ["terraform", "opentofu", "opentofu-vars", "terraform-vars"],
-    "root_markers": [".terraform", ".git", "*.tf"]
+    "override": "tofu_ls"
   },
   "ts_ls": {
     "packageAttrPath": ["nodePackages", "typescript-language-server"],

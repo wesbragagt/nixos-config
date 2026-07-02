@@ -87,7 +87,12 @@ let
         scroll_factor = 0.7
       }
 
-      follow_mouse = 1
+      # DBeaver/Eclipse SWT dialogs can close when Hyprland moves focus on hover.
+      # Keep focus click-driven so modal dialogs do not lose focus just because
+      # the pointer crosses back to the parent window.
+      follow_mouse = 0
+      float_switch_override_focus = 0
+      mouse_refocus = 0
       kb_layout = us
 ${kbOptionsLine}      repeat_delay = 250
       repeat_rate = 40

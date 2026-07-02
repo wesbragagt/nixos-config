@@ -1,0 +1,615 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "excalidraw-cli",
+  "elements": [
+    {
+      "type": "rectangle",
+      "id": "darkbg",
+      "x": -4000,
+      "y": -3000,
+      "width": 10000,
+      "height": 7500,
+      "backgroundColor": "#1e1e2e",
+      "fillStyle": "solid",
+      "strokeColor": "transparent",
+      "strokeWidth": 0,
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "x": 360,
+      "y": 90,
+      "text": "PROPOSAL: load-logistics transformation",
+      "fontSize": 28,
+      "strokeColor": "#e5e5e5",
+      "fontFamily": 1
+    },
+    {
+      "type": "rectangle",
+      "id": "snow",
+      "x": 60,
+      "y": 230,
+      "width": 200,
+      "height": 90,
+      "backgroundColor": "#1a4d4d",
+      "fillStyle": "solid",
+      "strokeColor": "#06b6d4",
+      "boundElements": [
+        {
+          "id": "a1",
+          "type": "arrow"
+        },
+        {
+          "id": "snow_label",
+          "type": "text"
+        }
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "snow_label",
+      "x": 70,
+      "y": 240,
+      "width": 180,
+      "height": 70,
+      "text": "Snowflake",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "snow",
+      "strokeColor": "#e5e5e5"
+    },
+    {
+      "type": "arrow",
+      "id": "a1",
+      "x": 260,
+      "y": 275,
+      "width": 150,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          150,
+          0
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "strokeColor": "#8b5cf6",
+      "startBinding": {
+        "elementId": "snow",
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "proc",
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "boundElements": [
+        {
+          "id": "a1_label",
+          "type": "text"
+        }
+      ],
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "a1_label",
+      "x": 270,
+      "y": 285,
+      "width": 130,
+      "height": 40,
+      "text": "extract",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "a1",
+      "strokeColor": "#a0a0a0"
+    },
+    {
+      "type": "rectangle",
+      "id": "proc",
+      "x": 410,
+      "y": 220,
+      "width": 260,
+      "height": 110,
+      "backgroundColor": "#2d1b69",
+      "fillStyle": "solid",
+      "strokeColor": "#8b5cf6",
+      "boundElements": [
+        {
+          "id": "a1",
+          "type": "arrow"
+        },
+        {
+          "id": "a2",
+          "type": "arrow"
+        },
+        {
+          "id": "proc_label",
+          "type": "text"
+        }
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "proc_label",
+      "x": 420,
+      "y": 230,
+      "width": 240,
+      "height": 90,
+      "text": "recon-v2-parcel-\nfull-brand-processing",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "proc",
+      "strokeColor": "#e5e5e5"
+    },
+    {
+      "type": "arrow",
+      "id": "a2",
+      "x": 670,
+      "y": 275,
+      "width": 130,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          130,
+          0
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "strokeColor": "#8b5cf6",
+      "startBinding": {
+        "elementId": "proc",
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "reconzone",
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "boundElements": [
+        {
+          "id": "a2_label",
+          "type": "text"
+        }
+      ],
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "a2_label",
+      "x": 680,
+      "y": 285,
+      "width": 110,
+      "height": 40,
+      "text": "write",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "a2",
+      "strokeColor": "#a0a0a0"
+    },
+    {
+      "type": "rectangle",
+      "id": "reconzone",
+      "x": 800,
+      "y": 150,
+      "width": 560,
+      "height": 320,
+      "backgroundColor": "#1a4d2e",
+      "fillStyle": "solid",
+      "opacity": 22,
+      "strokeColor": "#22c55e",
+      "strokeWidth": 2,
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "reconzone_t",
+      "x": 825,
+      "y": 165,
+      "text": "Postgres - recon schema",
+      "fontSize": 18,
+      "strokeColor": "#22c55e",
+      "fontFamily": 1
+    },
+    {
+      "type": "rectangle",
+      "id": "t1",
+      "x": 830,
+      "y": 205,
+      "width": 500,
+      "height": 70,
+      "backgroundColor": "#1a4d2e",
+      "fillStyle": "solid",
+      "strokeColor": "#22c55e",
+      "boundElements": [
+        {
+          "id": "a3",
+          "type": "arrow"
+        },
+        {
+          "id": "t1_label",
+          "type": "text"
+        }
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "t1_label",
+      "x": 840,
+      "y": 215,
+      "width": 480,
+      "height": 50,
+      "text": "service_charge",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "t1",
+      "strokeColor": "#e5e5e5"
+    },
+    {
+      "type": "rectangle",
+      "id": "t2",
+      "x": 830,
+      "y": 290,
+      "width": 500,
+      "height": 70,
+      "backgroundColor": "#1a4d2e",
+      "fillStyle": "solid",
+      "strokeColor": "#22c55e",
+      "boundElements": [
+        {
+          "id": "t2_label",
+          "type": "text"
+        }
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "t2_label",
+      "x": 840,
+      "y": 300,
+      "width": 480,
+      "height": 50,
+      "text": "synthetic_service_charge",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "t2",
+      "strokeColor": "#e5e5e5"
+    },
+    {
+      "type": "rectangle",
+      "id": "t3",
+      "x": 830,
+      "y": 375,
+      "width": 500,
+      "height": 70,
+      "backgroundColor": "#1a4d2e",
+      "fillStyle": "solid",
+      "strokeColor": "#22c55e",
+      "boundElements": [
+        {
+          "id": "t3_label",
+          "type": "text"
+        }
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "t3_label",
+      "x": 840,
+      "y": 385,
+      "width": 480,
+      "height": 50,
+      "text": "reconciled_service_charge",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "t3",
+      "strokeColor": "#e5e5e5"
+    },
+    {
+      "type": "arrow",
+      "id": "a3",
+      "x": 1080,
+      "y": 470,
+      "width": 0,
+      "height": 150,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          150
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "strokeColor": "#4a9eed",
+      "strokeWidth": 3,
+      "startBinding": {
+        "elementId": "reconzone",
+        "fixedPoint": [
+          0.5,
+          1
+        ]
+      },
+      "endBinding": {
+        "elementId": "loadlog",
+        "fixedPoint": [
+          0.5,
+          0
+        ]
+      },
+      "boundElements": [
+        {
+          "id": "a3_label",
+          "type": "text"
+        }
+      ],
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "a3_label",
+      "x": 1090,
+      "y": 480,
+      "width": 80,
+      "height": 130,
+      "text": "read recon-parcel-full-brand",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "a3",
+      "strokeColor": "#4a9eed"
+    },
+    {
+      "type": "rectangle",
+      "id": "loadlog",
+      "x": 880,
+      "y": 620,
+      "width": 400,
+      "height": 130,
+      "backgroundColor": "#1e3a5f",
+      "fillStyle": "solid",
+      "strokeColor": "#4a9eed",
+      "strokeWidth": 3,
+      "boundElements": [
+        {
+          "id": "a3",
+          "type": "arrow"
+        },
+        {
+          "id": "a4",
+          "type": "arrow"
+        },
+        {
+          "id": "loadlog_label",
+          "type": "text"
+        }
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "loadlog_label",
+      "x": 890,
+      "y": 630,
+      "width": 380,
+      "height": 110,
+      "text": "load-logistics\n(NEW)",
+      "fontSize": 20,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "loadlog",
+      "strokeColor": "#e5e5e5"
+    },
+    {
+      "type": "text",
+      "id": "loadlog_note",
+      "x": 880,
+      "y": 765,
+      "text": "transforms recon data into client-facing shape",
+      "fontSize": 14,
+      "strokeColor": "#a0a0a0",
+      "fontFamily": 1
+    },
+    {
+      "type": "arrow",
+      "id": "a4",
+      "x": 1080,
+      "y": 750,
+      "width": 0,
+      "height": 130,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          130
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "strokeColor": "#4a9eed",
+      "strokeWidth": 3,
+      "startBinding": {
+        "elementId": "loadlog",
+        "fixedPoint": [
+          0.5,
+          1
+        ]
+      },
+      "endBinding": {
+        "elementId": "clientzone",
+        "fixedPoint": [
+          0.5,
+          0
+        ]
+      },
+      "boundElements": [
+        {
+          "id": "a4_label",
+          "type": "text"
+        }
+      ],
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "a4_label",
+      "x": 1090,
+      "y": 760,
+      "width": 80,
+      "height": 110,
+      "text": "write transforms",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "a4",
+      "strokeColor": "#4a9eed"
+    },
+    {
+      "type": "rectangle",
+      "id": "clientzone",
+      "x": 800,
+      "y": 880,
+      "width": 560,
+      "height": 230,
+      "backgroundColor": "#1e3a5f",
+      "fillStyle": "solid",
+      "opacity": 22,
+      "strokeColor": "#4a9eed",
+      "strokeWidth": 2,
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "clientzone_t",
+      "x": 825,
+      "y": 895,
+      "text": "Postgres - client schema",
+      "fontSize": 18,
+      "strokeColor": "#4a9eed",
+      "fontFamily": 1
+    },
+    {
+      "type": "rectangle",
+      "id": "ct1",
+      "x": 830,
+      "y": 935,
+      "width": 500,
+      "height": 70,
+      "backgroundColor": "#1e3a5f",
+      "fillStyle": "solid",
+      "strokeColor": "#4a9eed",
+      "boundElements": [
+        {
+          "id": "ct1_label",
+          "type": "text"
+        }
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "ct1_label",
+      "x": 840,
+      "y": 945,
+      "width": 480,
+      "height": 50,
+      "text": "transformed / client tables",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "ct1",
+      "strokeColor": "#e5e5e5"
+    },
+    {
+      "type": "text",
+      "id": "ct_note",
+      "x": 830,
+      "y": 1025,
+      "text": "client-ready views derived from recon service charges",
+      "fontSize": 14,
+      "strokeColor": "#a0a0a0",
+      "fontFamily": 1
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff",
+    "gridSize": null
+  },
+  "files": {}
+}

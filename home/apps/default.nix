@@ -68,6 +68,18 @@ in
     Categories=Utility;
   '';
 
+  xdg.dataFile."applications/calculator.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Calculator
+    Comment=Type expressions in rofi and get results
+    Exec=env ROFI_PLUGIN_PATH=${pkgs.rofi-calc}/lib/rofi rofi -show calc -modi calc -display-calc Calculator -window-title Calculator -p Calculator -no-show-match -no-sort
+    Icon=accessories-calculator
+    Terminal=false
+    Categories=Utility;Calculator;
+    Keywords=calc;calculator;math;
+  '';
+
   xdg.configFile = {
     "foot/foot.ini".source = config.lib.file.mkOutOfStoreSymlink footConfig;
     "rofi/colors".source = config.lib.file.mkOutOfStoreSymlink rofiColorsDir;

@@ -22,6 +22,22 @@ let
       done
     '';
   };
+  roamShareAudio = pkgs.writeShellScriptBin "roam-share-audio" ''
+    set -euo pipefail
+
+    service="roam-share-audio.service"
+    action="''${1:-status}"
+
+    case "$action" in
+      start|stop|restart|status)
+        ${pkgs.systemd}/bin/systemctl --user "$action" "$service"
+        ;;
+      *)
+        echo "Usage: roam-share-audio [start|stop|restart|status]" >&2
+        exit 2
+        ;;
+    esac
+  '';
 in
 {
   home.packages =
@@ -29,6 +45,7 @@ in
     [
       # wayland / audio
       pavucontrol
+      roamShareAudio
       wl-clipboard
       cliphist
       wlr-randr
@@ -53,11 +70,14 @@ in
       wrappedPython
       stow
       tldr
-      ((pkgs.callPackage "${inputs.nur-combined}/repos/sikmir/pkgs/by-name/re/revdiff/package.nix" {
-        buildGoModule = pkgs.buildGo126Module;
-      }).overrideAttrs (_old: {
-        allowGoReference = true;
-      }))
+      (
+        (pkgs.callPackage "${inputs.nur-combined}/repos/sikmir/pkgs/by-name/re/revdiff/package.nix" {
+          buildGoModule = pkgs.buildGo126Module;
+        }).overrideAttrs
+        (_old: {
+          allowGoReference = true;
+        })
+      )
       (pkgs.callPackage ../../pkgs/agent-browser { })
       (pkgs.callPackage ../../pkgs/excalidraw-cli { })
 
@@ -68,12 +88,15 @@ in
       # desktop / ui
       gtk3
       nwg-dock-hyprland
+      rofi-calc
       waypaper
       swww
       slack
       signal-desktop
+      (pkgs.callPackage ../../pkgs/roam { })
       (pkgs.callPackage ../../pkgs/openpencil { })
       (pkgs.callPackage ../../pkgs/openpencil-cli { })
+      libreoffice-fresh
 
       # media
       playerctl
@@ -82,8 +105,18 @@ in
 
       # data
       csvlens # interactive CSV viewer
-      duckdb # in-process analytical SQL
+      (pkgs.callPackage ../../pkgs/duckdb-bin-1_5_3 { }) # in-process analytical SQL
       harlequin # terminal database UI
+      (symlinkJoin {
+        name = "dbeaver-bin-x11";
+        paths = [ dbeaver-bin ];
+        nativeBuildInputs = [ makeWrapper ];
+        postBuild = ''
+          wrapProgram "$out/bin/dbeaver" \
+            --set GDK_BACKEND x11 \
+            --set SWT_GTK3 1
+        '';
+      }) # desktop database client; force XWayland to avoid SWT dialog issues on Hyprland
 
       # git
       lazygit
@@ -109,4 +142,23 @@ in
     ++ lib.optionals isLaptop [
       (pkgs.writeShellScriptBin "battery-estimate" (builtins.readFile ../../scripts/battery-estimate.sh))
     ];
+
+  systemd.user.services.roam-share-audio = {
+    Unit = {
+      Description = "Roam desktop audio virtual microphone";
+      After = [ "pipewire.service" ];
+      Requires = [ "pipewire.service" ];
+    };
+    Service = {
+      ExecStart = ''
+        ${pkgs.pipewire}/bin/pw-loopback \
+          --name roam-desktop-audio \
+          --capture @DEFAULT_AUDIO_SINK@ \
+          --playback-props='media.class=Audio/Source node.name=roam-desktop-audio node.description="Roam Desktop Audio"'
+      '';
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
 }

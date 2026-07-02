@@ -104,6 +104,13 @@ in
     })
   ];
 
+  environment.etc."chromium/policies/managed/roam-media-capture.json".text = builtins.toJSON {
+    AudioCaptureAllowedUrls = [ "https://ro.am/*" ];
+    VideoCaptureAllowedUrls = [ "https://ro.am/*" ];
+    ScreenCaptureAllowedByOrigins = [ "https://ro.am" ];
+    ScreenCaptureWithoutGestureAllowedForOrigins = [ "https://ro.am" ];
+  };
+
   environment.systemPackages = with pkgs; [
     vim
     wget

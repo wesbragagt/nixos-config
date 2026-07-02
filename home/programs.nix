@@ -3,6 +3,7 @@
   imports = [
     ./packages
     ./npm
+    ./bun
     ./shell
     ./git
     ./apps

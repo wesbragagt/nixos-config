@@ -23,6 +23,10 @@
       url = "github:wesbragagt/exacli";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    hunk = {
+      url = "github:modem-dev/hunk";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     chromium-webapps = {
       url = "github:chobbledotcom/nix-chromium-webapps";
     };

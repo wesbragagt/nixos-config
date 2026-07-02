@@ -15,6 +15,7 @@
     inputs.zen-browser.homeModules.beta
     inputs.chromium-webapps.homeManagerModules.default
     inputs.sops-nix.homeManagerModules.sops
+    inputs.hunk.homeManagerModules.default
   ];
 
   home.username = "wesbragagt";
@@ -54,21 +55,13 @@
     enable = true;
     webApps =
       let
-        papirusIcon = name:
-          "${pkgs.papirus-icon-theme}/share/icons/Papirus/64x64/apps/${name}.svg";
-      in [
+        papirusIcon = name: "${pkgs.papirus-icon-theme}/share/icons/Papirus/64x64/apps/${name}.svg";
+      in
+      [
         {
           name = "Spotify";
           url = "https://open.spotify.com";
           icon = papirusIcon "com.spotify.Client";
-        }
-        {
-          name = "ro.am";
-          url = "https://ro.am";
-          icon = pkgs.fetchurl {
-            url = "https://ro.am/website/android-chrome-512x512.png";
-            hash = "sha256-XxZBH+r0tk1FDL9LTNuJIAka8UUVJeOYTovWCKEMC6Y=";
-          };
         }
         {
           name = "Excalidraw";

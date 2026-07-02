@@ -1,7 +1,7 @@
 ---
 name: prd-planner
 description: Plan proper product requirement documents with refined tasks. Use proactively when planning features.
-model: sonnet
+model: opus
 tools:
   - Read
   - Glob

@@ -161,6 +161,9 @@ in
       (shellBootstrap + ''
         if [[ $options[zle] = on && -t 0 && -t 1 ]]; then
           source <(${lib.getExe config.programs.fzf.package} --zsh)
+          # fzf binds Ctrl-R in emacs/vi keymaps; bind main explicitly so the
+          # active keymap always opens fzf history search instead of redisplay.
+          bindkey '^R' fzf-history-widget
           autoload -Uz edit-command-line
           zle -N edit-command-line
           bindkey '^Y' autosuggest-accept

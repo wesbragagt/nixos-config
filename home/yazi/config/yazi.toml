@@ -1,1 +1,12 @@
 # Keep Yazi config editable directly from the repo.
+
+[opener]
+browser = [
+  { run = 'xdg-open "$@"', desc = "Open in Browser" },
+]
+
+[open]
+prepend_rules = [
+  { name = "*.html", use = "browser" },
+  { name = "*.htm", use = "browser" },
+]

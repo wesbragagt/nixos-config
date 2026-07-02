@@ -26,6 +26,14 @@ in
       init.defaultBranch = "main";
       # configure to use --rebase by default
       pull.rebase = true;
+      alias = {
+        hdiff = "!hunk diff";
+        hdiffs = "!hunk diff --staged";
+        hshow = "!hunk show";
+      };
+      diff.tool = "hunk";
+      difftool.prompt = false;
+      "difftool \"hunk\"".cmd = "hunk difftool \"$LOCAL\" \"$REMOTE\" \"$MERGED\"";
     };
   };
 
@@ -41,7 +49,7 @@ in
 
   programs.hunk = {
     enable = true;
-    enableGitIntegration = true;
+    enableGitIntegration = false;
     settings = {
       theme = "tokyo-night";
       mode = "stack";

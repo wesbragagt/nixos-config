@@ -1,0 +1,390 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "excalidraw-cli",
+  "elements": [
+    {
+      "type": "rectangle",
+      "id": "darkbg",
+      "x": -4000,
+      "y": -3000,
+      "width": 10000,
+      "height": 7500,
+      "backgroundColor": "#1e1e2e",
+      "fillStyle": "solid",
+      "strokeColor": "transparent",
+      "strokeWidth": 0,
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "x": 240,
+      "y": 180,
+      "text": "Parcel Full Brand Processing - Write Bottleneck",
+      "fontSize": 28,
+      "strokeColor": "#e5e5e5",
+      "fontFamily": 1
+    },
+    {
+      "type": "rectangle",
+      "id": "snow",
+      "x": 40,
+      "y": 480,
+      "width": 220,
+      "height": 100,
+      "backgroundColor": "#1a4d4d",
+      "fillStyle": "solid",
+      "strokeColor": "#06b6d4",
+      "boundElements": [
+        {
+          "id": "a1",
+          "type": "arrow"
+        },
+        {
+          "id": "snow_label",
+          "type": "text"
+        }
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "snow_label",
+      "x": 50,
+      "y": 490,
+      "width": 200,
+      "height": 80,
+      "text": "Snowflake",
+      "fontSize": 20,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "snow",
+      "strokeColor": "#e5e5e5"
+    },
+    {
+      "type": "arrow",
+      "id": "a1",
+      "x": 260,
+      "y": 530,
+      "width": 160,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          160,
+          0
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "strokeColor": "#8b5cf6",
+      "startBinding": {
+        "elementId": "snow",
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "proc",
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "boundElements": [
+        {
+          "id": "a1_label",
+          "type": "text"
+        }
+      ],
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "a1_label",
+      "x": 270,
+      "y": 540,
+      "width": 140,
+      "height": 40,
+      "text": "extract",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "a1",
+      "strokeColor": "#a0a0a0"
+    },
+    {
+      "type": "rectangle",
+      "id": "proc",
+      "x": 420,
+      "y": 470,
+      "width": 280,
+      "height": 120,
+      "backgroundColor": "#2d1b69",
+      "fillStyle": "solid",
+      "strokeColor": "#8b5cf6",
+      "boundElements": [
+        {
+          "id": "a1",
+          "type": "arrow"
+        },
+        {
+          "id": "a2",
+          "type": "arrow"
+        },
+        {
+          "id": "proc_label",
+          "type": "text"
+        }
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "proc_label",
+      "x": 430,
+      "y": 480,
+      "width": 260,
+      "height": 100,
+      "text": "recon-v2-parcel-\nfull-brand-processing",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "proc",
+      "strokeColor": "#e5e5e5"
+    },
+    {
+      "type": "arrow",
+      "id": "a2",
+      "x": 700,
+      "y": 530,
+      "width": 180,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          180,
+          0
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "strokeColor": "#ef4444",
+      "strokeWidth": 4,
+      "startBinding": {
+        "elementId": "proc",
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "pgzone",
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      },
+      "boundElements": [
+        {
+          "id": "a2_label",
+          "type": "text"
+        }
+      ],
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "a2_label",
+      "x": 710,
+      "y": 540,
+      "width": 160,
+      "height": 40,
+      "text": "bulk writes",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "a2",
+      "strokeColor": "#ef4444"
+    },
+    {
+      "type": "rectangle",
+      "id": "pgzone",
+      "x": 920,
+      "y": 250,
+      "width": 620,
+      "height": 760,
+      "backgroundColor": "#1a4d2e",
+      "fillStyle": "solid",
+      "opacity": 25,
+      "strokeColor": "#22c55e",
+      "strokeWidth": 2,
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "pgzone_t",
+      "x": 945,
+      "y": 265,
+      "text": "Postgres",
+      "fontSize": 22,
+      "strokeColor": "#22c55e",
+      "fontFamily": 1
+    },
+    {
+      "type": "text",
+      "id": "warn1",
+      "x": 945,
+      "y": 308,
+      "text": "BOTTLENECK 1: every INSERT updates all indexes",
+      "fontSize": 15,
+      "strokeColor": "#ef4444",
+      "fontFamily": 1
+    },
+    {
+      "type": "text",
+      "id": "warn2",
+      "x": 945,
+      "y": 332,
+      "text": "BOTTLENECK 2: UUID PK = random inserts, B-tree page splits",
+      "fontSize": 15,
+      "strokeColor": "#f59e0b",
+      "fontFamily": 1
+    },
+    {
+      "type": "rectangle",
+      "id": "t1",
+      "x": 970,
+      "y": 380,
+      "width": 520,
+      "height": 180,
+      "backgroundColor": "#5c1a1a",
+      "fillStyle": "solid",
+      "strokeColor": "#ef4444",
+      "boundElements": [
+        {
+          "id": "t1_label",
+          "type": "text"
+        }
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "t1_label",
+      "x": 980,
+      "y": 390,
+      "width": 500,
+      "height": 160,
+      "text": "service_charge\nPK: uuid  +  many indexes",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "t1",
+      "strokeColor": "#e5e5e5"
+    },
+    {
+      "type": "rectangle",
+      "id": "t2",
+      "x": 970,
+      "y": 580,
+      "width": 520,
+      "height": 180,
+      "backgroundColor": "#5c1a1a",
+      "fillStyle": "solid",
+      "strokeColor": "#ef4444",
+      "boundElements": [
+        {
+          "id": "t2_label",
+          "type": "text"
+        }
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "t2_label",
+      "x": 980,
+      "y": 590,
+      "width": 500,
+      "height": 160,
+      "text": "synthetic_service_charge\nPK: uuid  +  many indexes",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "t2",
+      "strokeColor": "#e5e5e5"
+    },
+    {
+      "type": "rectangle",
+      "id": "t3",
+      "x": 970,
+      "y": 780,
+      "width": 520,
+      "height": 180,
+      "backgroundColor": "#5c1a1a",
+      "fillStyle": "solid",
+      "strokeColor": "#ef4444",
+      "boundElements": [
+        {
+          "id": "t3_label",
+          "type": "text"
+        }
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "roughness": 2
+    },
+    {
+      "type": "text",
+      "id": "t3_label",
+      "x": 980,
+      "y": 790,
+      "width": 500,
+      "height": 160,
+      "text": "reconciled_service_charge\nPK: uuid  +  many indexes",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "t3",
+      "strokeColor": "#e5e5e5"
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff",
+    "gridSize": null
+  },
+  "files": {}
+}
