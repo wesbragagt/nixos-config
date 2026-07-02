@@ -72,6 +72,8 @@ in
       swww
       slack
       signal-desktop
+      (pkgs.callPackage ../../pkgs/openpencil { })
+      (pkgs.callPackage ../../pkgs/openpencil-cli { })
 
       # media
       playerctl
