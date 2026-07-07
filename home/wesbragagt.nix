@@ -68,6 +68,11 @@
           url = "https://excalidraw.com";
           icon = papirusIcon "excalidraw";
         }
+        {
+          name = "TIDAL";
+          url = "https://listen.tidal.com";
+          icon = papirusIcon "tidal";
+        }
       ];
   };
 }
