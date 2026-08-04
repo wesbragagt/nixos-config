@@ -2,6 +2,82 @@
 {
   home.packages = [
     (pkgs.writeShellApplication {
+      name = "tmux-new-session-prompt";
+      runtimeInputs = [
+        pkgs.coreutils
+        pkgs.tmux
+      ];
+      text = ''
+        cwd="''${1:-$PWD}"
+
+        old_tty="$(stty -g 2>/dev/null || true)"
+        restore_tty() {
+          if [[ -n "$old_tty" ]]; then
+            stty "$old_tty" 2>/dev/null || true
+          fi
+        }
+
+        trap 'restore_tty; exit 0' INT TERM
+        trap restore_tty EXIT
+
+        printf '\033[1mNew tmux session\033[0m\n\n'
+        printf 'Name: '
+
+        session=""
+        stty -echo -icanon min 1 time 0 2>/dev/null || true
+
+        while IFS= read -rsn1 key; do
+          case "$key" in
+            $'\e')
+              exit 0
+              ;;
+            "")
+              break
+              ;;
+            $'\177' | $'\b')
+              if [[ "''${#session}" -gt 0 ]]; then
+                session="''${session%?}"
+                printf '\b \b'
+              fi
+              ;;
+            $'\003' | $'\004')
+              exit 0
+              ;;
+            *)
+              if [[ "$key" =~ [[:print:]] ]]; then
+                session+="$key"
+                printf '%s' "$key"
+              fi
+              ;;
+          esac
+        done
+
+        printf '\n'
+        restore_tty
+        trap - EXIT
+
+        session="''${session#"''${session%%[![:space:]]*}"}"
+        session="''${session%"''${session##*[![:space:]]}"}"
+
+        if [[ -z "$session" ]]; then
+          exit 0
+        fi
+
+        if [[ "$session" == *:* ]]; then
+          tmux display-message "Session names cannot contain ':'"
+          exit 1
+        fi
+
+        if tmux has-session -t "=$session" 2>/dev/null; then
+          tmux switch-client -t "=$session"
+          exit 0
+        fi
+
+        tmux new-session -d -s "$session" -c "$cwd"
+        tmux switch-client -t "=$session"
+      '';
+    })
+    (pkgs.writeShellApplication {
       name = "tmux-session-for-path";
       runtimeInputs = [
         pkgs.coreutils

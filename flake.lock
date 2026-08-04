@@ -119,6 +119,24 @@
         "type": "github"
       }
     },
+    "flake-utils_2": {
+      "inputs": {
+        "systems": "systems_3"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -209,11 +227,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1777578337,
-        "narHash": "sha256-Ad49moKWeXtKBJNy2ebiTQUEgdLyvGmTeykAQ9xM+Z4=",
+        "lastModified": 1785318670,
+        "narHash": "sha256-dN6Ou5x/+23FZLEpYP3IffO+NyJFzUlGumt1uu3MMaY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "15f4ee454b1dce334612fa6843b3e05cf546efab",
+        "rev": "0954f7ee2f6bb3dc7d4e3d0d8bcb8fd4bde4cfc5",
         "type": "github"
       },
       "original": {
@@ -239,6 +257,27 @@
         "type": "github"
       }
     },
+    "qmd": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1782276828,
+        "narHash": "sha256-LLkrANLLR+2QgOpSdrjbwvzgP7dpOzayy9nCVqFUzeI=",
+        "owner": "tobi",
+        "repo": "qmd",
+        "rev": "e428df76bc0274d9e93eb7ca3e95673315c42e90",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tobi",
+        "repo": "qmd",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "chromium-webapps": "chromium-webapps",
@@ -249,6 +288,7 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nur-combined": "nur-combined",
+        "qmd": "qmd",
         "sops-nix": "sops-nix",
         "tokyo-night-yazi": "tokyo-night-yazi",
         "zen-browser": "zen-browser"
@@ -290,6 +330,21 @@
       }
     },
     "systems_2": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_3": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",

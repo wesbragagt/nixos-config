@@ -135,6 +135,7 @@ ${kbOptionsLine}      repeat_delay = 250
     bind = $mod SHIFT, BackSpace, exec, waypaper
     bind = $mod SHIFT, P, exec, grim -g "$(slurp -d)" - | swappy -f -
     bind = $mod SHIFT, R, exec, wf-record
+    bind = $mod SHIFT, I, exec, idle-control toggle
     bind = $mod SHIFT, l, exec, kill -35 $(pgrep -fo nwg-dock)
 
     bindel = , XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
@@ -182,6 +183,59 @@ ${wirelessAutostartLine}    exec-once = nwg-dock-hyprland -p bottom -lp end -i 3
       fi
     )
   '';
+  idleControl = pkgs.writeShellScriptBin "idle-control" ''
+    set -euo pipefail
+
+    service="hypridle.service"
+
+    is_active() {
+      ${pkgs.systemd}/bin/systemctl --user is-active --quiet "$service"
+    }
+
+    print_status() {
+      if is_active; then
+        text="💤 idle"
+        class="enabled"
+        tooltip=$'Idle enabled\nLock, screen-off, and suspend timers can run.\nClick or press Super+Shift+I to keep awake.'
+      else
+        text="☕ awake"
+        class="inhibited"
+        tooltip=$'Idle disabled\nThis computer will stay awake until idle is re-enabled.\nClick or press Super+Shift+I to allow idle again.'
+      fi
+
+      ${pkgs.jq}/bin/jq -cn \
+        --arg text "$text" \
+        --arg class "$class" \
+        --arg tooltip "$tooltip" \
+        '{ text: $text, class: $class, tooltip: $tooltip }'
+    }
+
+    refresh_waybar() {
+      ${pkgs.procps}/bin/pkill -RTMIN+8 waybar 2>/dev/null || true
+    }
+
+    case "''${1:-status}" in
+      status)
+        print_status
+        ;;
+      toggle)
+        if is_active; then
+          ${pkgs.systemd}/bin/systemctl --user stop "$service"
+          ${config.wayland.windowManager.hyprland.finalPackage}/bin/hyprctl dispatch dpms on >/dev/null 2>&1 || true
+          ${pkgs.libnotify}/bin/notify-send "Idle disabled" "This computer will stay awake." || true
+        else
+          ${pkgs.systemd}/bin/systemctl --user start "$service"
+          ${pkgs.libnotify}/bin/notify-send "Idle enabled" "Lock, screen-off, and suspend timers are active." || true
+        fi
+        refresh_waybar
+        print_status
+        ;;
+      *)
+        echo "Usage: idle-control [status|toggle]" >&2
+        exit 2
+        ;;
+    esac
+  '';
   suspendIfNoSsh = pkgs.writeShellScriptBin "suspend-if-no-ssh" ''
     set -euo pipefail
 
@@ -209,7 +263,10 @@ ${wirelessAutostartLine}    exec-once = nwg-dock-hyprland -p bottom -lp end -i 3
       "systemctl suspend";
 in
 {
-  home.packages = with pkgs; [ hyprlock ];
+  home.packages = with pkgs; [
+    hyprlock
+    idleControl
+  ];
 
   xdg.configFile."hypr/hyprlock.conf" = {
     text = builtins.readFile ./hyprlock.conf;

@@ -26,6 +26,7 @@ let
     "modules-right" = [
       "mpris"
       "pulseaudio"
+      "custom/idle"
     ]
     ++ lib.optionals isLaptop [ "custom/battery" ]
     ++ [
@@ -73,6 +74,14 @@ let
       on-click = "swaync-client -t -sw";
       on-click-right = "swaync-client -d -sw";
       "return-type" = "json";
+    };
+
+    "custom/idle" = {
+      exec = "idle-control status";
+      interval = 5;
+      on-click = "idle-control toggle";
+      "return-type" = "json";
+      signal = 8;
     };
 
     mpris = {
@@ -155,6 +164,7 @@ let
     #pulseaudio,
     #custom-battery,
     #custom-notifications,
+    #custom-idle,
     #mpris,
     #clock,
     #tray {
@@ -206,6 +216,9 @@ let
 
     #custom-notifications { padding: 1px 10px; color: #cdd6f4; }
     #custom-notifications.dnd { color: #6c7086; }
+
+    #custom-idle.enabled { color: #89b4fa; }
+    #custom-idle.inhibited { color: #f9e2af; }
 
     #mpris.paused { color: #6c7086; }
     #mpris.stopped { opacity: 0; padding: 0; margin: 0; }

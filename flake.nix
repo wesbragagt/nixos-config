@@ -27,6 +27,10 @@
       url = "github:modem-dev/hunk";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    qmd = {
+      url = "github:tobi/qmd";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     chromium-webapps = {
       url = "github:chobbledotcom/nix-chromium-webapps";
     };

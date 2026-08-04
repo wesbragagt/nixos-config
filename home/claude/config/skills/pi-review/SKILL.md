@@ -23,32 +23,32 @@ Work from the repo's current directory. The pi `review` skill writes to `reviews
 mkdir -p reviews
 ls reviews/ > /tmp/pi-review-before.txt 2>/dev/null || : > /tmp/pi-review-before.txt
 
-# Detached window, kept alive after pi exits so output stays capturable.
+# Run pi INTERACTIVELY so its live TUI (tool calls, progress, findings) streams
+# into the pane. Do NOT use -p: print mode emits only the final assistant message,
+# so the pane stays blank for the minutes the review is actually running.
 tmux new-window -d -n pi-review -c "$PWD" \
-  'pi -p "/skill:review '"$ARGUMENTS"'"; echo "PI-REVIEW-DONE"; exec sleep 600'
-tmux set-option -w -t pi-review remain-on-exit on 2>/dev/null || :
+  'pi "/skill:review '"$ARGUMENTS"'"'
 ```
 
-- `-p` runs pi non-interactively and exits when the review is written.
 - `$ARGUMENTS` carries an optional target (PR number, branch, file paths). When empty, pi infers the target from the workspace (staged → unstaged → branch diff).
-- The trailing `echo PI-REVIEW-DONE; sleep 600` keeps the pane alive so you can read final output and confirm completion.
+- Interactive pi runs the review autonomously (tools auto-approve) and, when done, returns to an idle prompt rather than exiting — so the window stays alive and capturable on its own. Detect completion by the new `reviews/` file, not by process exit.
+- To watch live, the user can `tmux select-window -t pi-review` (or attach the session). You (the orchestrator) poll with `capture-pane` instead of attaching.
 
 ## Step 2 — Wait for completion
 
 Poll the pane; do not attach. pi review can take a few minutes on a large diff.
 
 ```bash
-# Repeat until the sentinel appears or a new reviews/ file shows up.
+# New review file that appeared since launch:
+comm -13 <(sort /tmp/pi-review-before.txt) <(ls reviews/ | sort)
+
+# And confirm pi is idle (the "Working..." spinner is gone):
 tmux capture-pane -t pi-review -p -S -200
 ```
 
-Completion signal: `PI-REVIEW-DONE` in the pane **and** a new file in `reviews/`:
+Completion signal: a new `reviews/review-*.md` file exists **and** the pane shows pi back at an idle prompt (no `Working...` spinner). Take the newest matching file as the review file.
 
-```bash
-comm -13 <(sort /tmp/pi-review-before.txt) <(ls reviews/ | sort)
-```
-
-Take the newest matching `reviews/review-*.md` as the review file. If the pane shows an error (auth, missing skill, no reviewable target) instead of finishing, surface it to the user and stop — don't guess.
+If the pane shows an error (auth, missing skill, no reviewable target) or pi is blocked waiting on a prompt instead of progressing, surface it to the user and stop — don't guess.
 
 ## Step 3 — Read and parse findings
 
@@ -96,6 +96,6 @@ Do not commit unless the user asks — defer to the `commit` skill.
 
 ## Notes
 
-- Never `tmux kill-server`. Clean up only the `pi-review` window you created (`tmux kill-window -t pi-review`) once you've read the file.
-- The review file is the contract between pi and the subagents — read it from disk, don't rely on scraping the tmux pane for findings (the pane is only for progress/completion signals).
+- Never `tmux kill-server`. Clean up only the `pi-review` window you created (`tmux kill-window -t pi-review`) once you've read the file — interactive pi won't exit on its own, so this window must be killed explicitly.
+- The review file is the contract between pi and the subagents — read it from disk, don't rely on scraping the tmux pane for findings (the pane is only for live progress and the idle/error completion signal).
 - If pi isn't installed or the `review` skill isn't discoverable (`pi list`), say so and stop.

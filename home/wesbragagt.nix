@@ -16,6 +16,7 @@
     inputs.chromium-webapps.homeManagerModules.default
     inputs.sops-nix.homeManagerModules.sops
     inputs.hunk.homeManagerModules.default
+    inputs.qmd.homeModules.default
   ];
 
   home.username = "wesbragagt";
@@ -43,6 +44,7 @@
   };
 
   programs.home-manager.enable = true;
+  programs.qmd.enable = true;
 
   wes.claudeCode = {
     enable = true;

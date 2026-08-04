@@ -101,7 +101,7 @@ Document findings in `$PRD_DIR/research.md`.
 
 Verify tasks.yaml follows schema:
 ```bash
-uv run ~/.claude/skills/w-tasks/tasks.py $PRD_DIR/tasks.yaml summary
+uv run ~/.claude/skills/tasks/tasks.py $PRD_DIR/tasks.yaml summary
 ```
 All tasks should show `open` status.
 
@@ -125,11 +125,11 @@ All tasks should show `open` status.
 Manage tasks.yaml with tasks.py:
 
 ```bash
-uv run ~/.claude/skills/w-tasks/tasks.py $PRD_DIR/tasks.yaml summary
-uv run ~/.claude/skills/w-tasks/tasks.py $PRD_DIR/tasks.yaml list --status open
-uv run ~/.claude/skills/w-tasks/tasks.py $PRD_DIR/tasks.yaml ready
-uv run ~/.claude/skills/w-tasks/tasks.py $PRD_DIR/tasks.yaml set <key> progress
-uv run ~/.claude/skills/w-tasks/tasks.py $PRD_DIR/tasks.yaml set <key> done
+uv run ~/.claude/skills/tasks/tasks.py $PRD_DIR/tasks.yaml summary
+uv run ~/.claude/skills/tasks/tasks.py $PRD_DIR/tasks.yaml list --status open
+uv run ~/.claude/skills/tasks/tasks.py $PRD_DIR/tasks.yaml ready
+uv run ~/.claude/skills/tasks/tasks.py $PRD_DIR/tasks.yaml set <key> progress
+uv run ~/.claude/skills/tasks/tasks.py $PRD_DIR/tasks.yaml set <key> done
 ```
 
 ## Return Format

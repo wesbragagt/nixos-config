@@ -8,6 +8,10 @@
 let
   isLaptop = hostProfile.isLaptop or false;
   hasWireless = hostProfile.hasWireless or false;
+  unstable = import inputs.nixpkgs-unstable {
+    inherit (pkgs.stdenv.hostPlatform) system;
+    config.allowUnfree = true;
+  };
   # Python wheels loaded via the Nix-managed interpreter use dlopen(), so they
   # need LD_LIBRARY_PATH directly; nix-ld alone only helps foreign executables.
   wrappedPython = pkgs.symlinkJoin {
@@ -60,6 +64,7 @@ in
       # cli tools
       inputs.exacli.packages.${pkgs.stdenv.hostPlatform.system}.default
       gh
+      (pkgs.callPackage ../../pkgs/tuicr { })
       jq
       yq-go
       go
@@ -92,7 +97,7 @@ in
       waypaper
       swww
       slack
-      signal-desktop
+      unstable.signal-desktop
       (pkgs.callPackage ../../pkgs/roam { })
       (pkgs.callPackage ../../pkgs/openpencil { })
       (pkgs.callPackage ../../pkgs/openpencil-cli { })
