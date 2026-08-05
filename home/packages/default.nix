@@ -42,6 +42,69 @@ let
         ;;
     esac
   '';
+  clipboardSelector = pkgs.writeShellScriptBin "clipboard-selector" ''
+    set -euo pipefail
+
+    export PATH=${
+      lib.makeBinPath [
+        pkgs.cliphist
+        pkgs.coreutils
+        pkgs.gnugrep
+        pkgs.rofi
+        pkgs.wl-clipboard
+      ]
+    }:$PATH
+
+    cache_dir="''${XDG_CACHE_HOME:-$HOME/.cache}/clipboard-selector"
+    mkdir -p "$cache_dir"
+
+    list_entries() {
+      cliphist list | while IFS= read -r entry; do
+        if grep -Eq '\[\[ binary data .* (png|jpe?g|gif|webp|bmp|tiff|svg)' <<<"$entry"; then
+          id="''${entry%%$'\t'*}"
+          format="$(grep -Eo '(png|jpe?g|gif|webp|bmp|tiff|svg)' <<<"$entry" | head -n1)"
+          case "$format" in
+            jpg|jpeg) mime="image/jpeg"; extension="jpg" ;;
+            svg) mime="image/svg+xml"; extension="svg" ;;
+            *) mime="image/$format"; extension="$format" ;;
+          esac
+          thumbnail="$cache_dir/$id.$extension"
+
+          if [ ! -s "$thumbnail" ]; then
+            printf '%s' "$id" | cliphist decode >"$thumbnail" || rm -f "$thumbnail"
+          fi
+
+          image_details="$(grep -Eo '[0-9]+ KiB [^]]+' <<<"$entry" | head -n1)"
+          label="$id	🖼 $image_details"
+
+          if [ -s "$thumbnail" ]; then
+            printf '%s\0icon\x1f%s\n' "$label" "$thumbnail"
+          else
+            printf '%s\n' "$label"
+          fi
+        else
+          printf '%s\n' "$entry"
+        fi
+      done
+    }
+
+    selection="$(list_entries | rofi -dmenu -i -show-icons -p clipboard -no-custom -theme-str 'element-icon { size: 96px; }')"
+    [ -n "$selection" ] || exit 0
+
+    id="''${selection%%$'\t'*}"
+
+    if grep -Eq '^[0-9]+$' <<<"$id" && grep -Eq '🖼 .*(png|jpe?g|gif|webp|bmp|tiff|svg)' <<<"$selection"; then
+      format="$(grep -Eo '(png|jpe?g|gif|webp|bmp|tiff|svg)' <<<"$selection" | head -n1)"
+      case "$format" in
+        jpg|jpeg) mime="image/jpeg" ;;
+        svg) mime="image/svg+xml" ;;
+        *) mime="image/$format" ;;
+      esac
+      printf '%s' "$id" | cliphist decode | wl-copy --type "$mime"
+    else
+      printf '%s\n' "$selection" | cliphist decode | wl-copy
+    fi
+  '';
 in
 {
   home.packages =
@@ -50,6 +113,7 @@ in
       # wayland / audio
       pavucontrol
       roamShareAudio
+      clipboardSelector
       wl-clipboard
       cliphist
       wlr-randr
