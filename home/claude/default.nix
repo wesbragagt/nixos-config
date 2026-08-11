@@ -1,14 +1,33 @@
-{ lib, pkgs, config, repoRoot, inputs, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  repoRoot,
+  inputs,
+  ...
+}:
 let
   cfg = config.wes.claudeCode;
   claudeCodePackage = pkgs.callPackage ../../pkgs/claude-code { };
   repoSkillEntries = lib.removeAttrs (builtins.readDir ./config/skills) [ "hunk" ];
-  repoSkillLinks = lib.mapAttrs'
-    (name: _:
-      lib.nameValuePair ".claude/skills/${name}" {
-        source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/skills/${name}";
-      })
-    repoSkillEntries;
+  repoSkillLinks = lib.mapAttrs' (
+    name: _:
+    lib.nameValuePair ".claude/skills/${name}" {
+      source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/skills/${name}";
+    }
+  ) repoSkillEntries;
+  shellAliases = lib.removeAttrs cfg.aliases [ "ccd" ];
+  ccdFunction = ''
+    ccd() {
+      local project_dir="$HOME/.claude/projects/$(printf '%s' "$PWD" | tr '/' '-')"
+
+      if [ -d "$project_dir" ] && find "$project_dir" -maxdepth 1 -type f -name '*.jsonl' -print -quit | grep -q .; then
+        command claude --dangerously-skip-permissions --continue "$@"
+      else
+        command claude --dangerously-skip-permissions "$@"
+      fi
+    }
+  '';
 in
 {
   options.wes.claudeCode = {
@@ -49,8 +68,11 @@ in
       ".claude/agents".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/agents";
       ".claude/commands".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/commands";
       ".claude/rules".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/rules";
+      ".claude/output-styles/asd-ste100.md".source =
+        config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/output-styles/asd-ste100.md";
       ".claude/skills/hunk".source = inputs.hunk + "/skills/hunk-review";
-    } // repoSkillLinks;
+    }
+    // repoSkillLinks;
 
     home.activation.removeLegacyClaudeSkillsLink = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
       if [ -L "$HOME/.claude/skills" ]; then
@@ -58,7 +80,21 @@ in
       fi
     '';
 
-    programs.bash.shellAliases = cfg.aliases;
-    programs.zsh.shellAliases = cfg.aliases;
+    home.activation.setClaudeOutputStyle = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      settings="$HOME/.claude/settings.json"
+      tmp="$settings.tmp"
+      $DRY_RUN_CMD mkdir -p "$HOME/.claude"
+      if [ -f "$settings" ]; then
+        $DRY_RUN_CMD ${pkgs.jq}/bin/jq '.outputStyle = "ASD-STE100"' "$settings" > "$tmp"
+      else
+        $DRY_RUN_CMD printf '%s\n' '{"outputStyle":"ASD-STE100"}' > "$tmp"
+      fi
+      $DRY_RUN_CMD mv "$tmp" "$settings"
+    '';
+
+    programs.bash.shellAliases = shellAliases;
+    programs.zsh.shellAliases = shellAliases;
+    programs.bash.initExtra = lib.mkIf (cfg.aliases ? ccd) ccdFunction;
+    programs.zsh.initContent = lib.mkIf (cfg.aliases ? ccd) ccdFunction;
   };
 }
