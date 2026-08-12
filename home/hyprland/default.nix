@@ -109,6 +109,7 @@ ${kbOptionsLine}      repeat_delay = 250
     bind = $mod, Escape, exec, loginctl lock-session
     bind = $mod, F, fullscreen,
     bind = $mod, V, exec, clipboard-selector
+    bind = $mod, N, exec, agent-notify --open-latest
     bind = $mod SHIFT, V, togglefloating,
     bind = $mod, H, movefocus, l
     bind = $mod, L, movefocus, r

@@ -199,6 +199,7 @@ in
       (pkgs.writeShellScriptBin "file-fzf" (builtins.readFile ../../scripts/sf.sh))
       (pkgs.writeShellScriptBin "grep-fzf" (builtins.readFile ../../scripts/sg.sh))
       (pkgs.writeShellScriptBin "wf-record" (builtins.readFile ../../scripts/wf-recorder.sh))
+      (pkgs.writeShellScriptBin "agent-notify" (builtins.readFile ../../scripts/agent-notify.sh))
       (pkgs.callPackage ../../pkgs/workmux { })
     ]
     ++ lib.optionals hasWireless [

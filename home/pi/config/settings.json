@@ -1,0 +1,13 @@
+{
+  "lastChangelogVersion": "0.83.0",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.5",
+  "defaultThinkingLevel": "low",
+  "enableSkillCommands": true,
+  "extensions": [
+    "~/nixos-config/home/pi/config/extensions",
+    "~/nixos-config/home/pi/config/extensions/prd-agents"
+  ],
+  "hideThinkingBlock": true,
+  "theme": "dark"
+}

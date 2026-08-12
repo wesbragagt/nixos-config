@@ -3,6 +3,7 @@
   imports = [
     ./repo-root.nix
     ./claude
+    ./pi
     ./hyprland
     ./waybar
     ./wallpaper
@@ -52,6 +53,8 @@
       ccd = "claude --dangerously-skip-permissions";
     };
   };
+
+  wes.pi.enable = true;
 
   programs.chromium-webapps = {
     enable = true;
