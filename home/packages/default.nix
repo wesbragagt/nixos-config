@@ -163,8 +163,6 @@ in
       slack
       unstable.signal-desktop
       (pkgs.callPackage ../../pkgs/roam { })
-      (pkgs.callPackage ../../pkgs/openpencil { })
-      (pkgs.callPackage ../../pkgs/openpencil-cli { })
       libreoffice-fresh
 
       # media
