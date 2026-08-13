@@ -18,13 +18,7 @@ let
   shellAliases = lib.removeAttrs cfg.aliases [ "ccd" ];
   ccdFunction = ''
     ccd() {
-      local project_dir="$HOME/.claude/projects/$(printf '%s' "$PWD" | tr '/' '-')"
-
-      if [ -d "$project_dir" ] && find "$project_dir" -maxdepth 1 -type f -name '*.jsonl' -print -quit | grep -q .; then
-        command claude --dangerously-skip-permissions --continue "$@"
-      else
-        command claude --dangerously-skip-permissions "$@"
-      fi
+      command claude --dangerously-skip-permissions "$@"
     }
   '';
 in
