@@ -1,11 +1,12 @@
 { lib, pkgs, config, repoRoot, ... }:
 let
   cfg = config.wes.pi;
-  repoSkillEntries = builtins.attrNames (builtins.readDir ./config/skills);
-  linkSkillCommands = lib.concatMapStringsSep "\n" (name: ''
-    $DRY_RUN_CMD rm -rf "$HOME/.pi/agent/skills/${name}"
-    $DRY_RUN_CMD ln -s "${cfg.configRoot}/skills/${name}" "$HOME/.pi/agent/skills/${name}"
-  '') repoSkillEntries;
+  mkSkillLinks = import ../lib/mk-skill-links.nix { inherit lib; };
+  repoSkillLinks = mkSkillLinks {
+    inherit (config.lib.file) mkOutOfStoreSymlink;
+    skillsRoot = cfg.skillsRoot;
+    targetPrefix = ".pi/agent/skills";
+  };
 in
 {
   options.wes.pi = {
@@ -15,6 +16,12 @@ in
       type = lib.types.str;
       default = "${repoRoot}/home/pi/config";
       description = "Repo-managed pi agent config root.";
+    };
+
+    skillsRoot = lib.mkOption {
+      type = lib.types.str;
+      default = "${repoRoot}/home/skills";
+      description = "Shared skills source root, linked into ~/.pi/agent/skills.";
     };
 
     packageName = lib.mkOption {
@@ -31,6 +38,17 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home.file = repoSkillLinks;
+
+    # Skills used to be linked by the activation script below. Drop those
+    # unmanaged symlinks so home-manager can take the paths over without a
+    # checkLinkTargets clobber error.
+    home.activation.removeLegacyPiSkillLinks = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+      if [ -d "$HOME/.pi/agent/skills" ]; then
+        find "$HOME/.pi/agent/skills" -maxdepth 1 -type l -exec $DRY_RUN_CMD rm -f {} +
+      fi
+    '';
+
     home.activation.installPinnedPi = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       export NPM_CONFIG_PREFIX="$HOME/.npm-global"
       export PATH="${pkgs.nodejs}/bin:$NPM_CONFIG_PREFIX/bin:$PATH"
@@ -47,7 +65,7 @@ in
     '';
 
     home.activation.linkPiConfig = lib.hm.dag.entryAfter [ "installPinnedPi" ] ''
-      $DRY_RUN_CMD mkdir -p "$HOME/.pi/agent/skills"
+      $DRY_RUN_CMD mkdir -p "$HOME/.pi/agent"
 
       $DRY_RUN_CMD rm -rf "$HOME/.pi/agent/agents"
       $DRY_RUN_CMD ln -s "${cfg.configRoot}/agents" "$HOME/.pi/agent/agents"
@@ -57,8 +75,6 @@ in
 
       $DRY_RUN_CMD rm -f "$HOME/.pi/agent/AGENTS.md"
       $DRY_RUN_CMD ln -s "${cfg.configRoot}/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
-
-      ${linkSkillCommands}
     '';
   };
 }
