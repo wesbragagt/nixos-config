@@ -9,13 +9,12 @@
 let
   cfg = config.wes.claudeCode;
   claudeCodePackage = pkgs.callPackage ../../pkgs/claude-code { };
-  repoSkillEntries = lib.removeAttrs (builtins.readDir ./config/skills) [ "hunk" ];
-  repoSkillLinks = lib.mapAttrs' (
-    name: _:
-    lib.nameValuePair ".claude/skills/${name}" {
-      source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/skills/${name}";
-    }
-  ) repoSkillEntries;
+  mkSkillLinks = import ../lib/mk-skill-links.nix { inherit lib; };
+  repoSkillLinks = mkSkillLinks {
+    inherit (config.lib.file) mkOutOfStoreSymlink;
+    skillsRoot = cfg.skillsRoot;
+    targetPrefix = ".claude/skills";
+  };
   shellAliases = lib.removeAttrs cfg.aliases [ "ccd" ];
   ccdFunction = ''
     ccd() {
@@ -54,6 +53,12 @@ in
       type = lib.types.str;
       default = "${repoRoot}/home/claude/config";
       description = "Repo-managed Claude Code config root.";
+    };
+
+    skillsRoot = lib.mkOption {
+      type = lib.types.str;
+      default = "${repoRoot}/home/skills";
+      description = "Shared skills source root, linked into ~/.claude/skills.";
     };
 
     sandbox = {
