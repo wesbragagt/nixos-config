@@ -63,6 +63,7 @@
       defaultHostProfile = {
         isLaptop = false;
         hasWireless = false;
+        headless = false;
         graphics = "generic";
         swapAltSuper = true;
         hypridle = {
@@ -157,6 +158,24 @@
           inherit inputs;
           hostProfile = defaultHostProfile // {
             name = "standalone";
+            useHomeSopsSecrets = true;
+          };
+        };
+        modules = [
+          ./home/standalone-policy.nix
+          ./home/wesbragagt.nix
+        ];
+      };
+
+      # Standalone home-manager for headless Linux servers.
+      # Apply with: nix run home-manager/master -- switch --flake .#wesbragagt-server
+      homeConfigurations.wesbragagt-server = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.${defaultSystem};
+        extraSpecialArgs = {
+          inherit inputs;
+          hostProfile = defaultHostProfile // {
+            name = "standalone-server";
+            headless = true;
             useHomeSopsSecrets = true;
           };
         };

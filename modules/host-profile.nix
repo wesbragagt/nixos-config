@@ -14,6 +14,12 @@
       description = "Whether to install and launch Wi-Fi-oriented desktop UI helpers.";
     };
 
+    headless = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Whether this host runs without a local graphical display.";
+    };
+
     graphics = lib.mkOption {
       type = lib.types.enum [
         "generic"

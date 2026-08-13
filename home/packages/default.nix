@@ -8,6 +8,7 @@
 let
   isLaptop = hostProfile.isLaptop or false;
   hasWireless = hostProfile.hasWireless or false;
+  isHeadless = hostProfile.headless or false;
   unstable = import inputs.nixpkgs-unstable {
     inherit (pkgs.stdenv.hostPlatform) system;
     config.allowUnfree = true;
@@ -110,21 +111,6 @@ in
   home.packages =
     with pkgs;
     [
-      # wayland / audio
-      pavucontrol
-      roamShareAudio
-      clipboardSelector
-      wl-clipboard
-      cliphist
-      wlr-randr
-      libnotify
-
-      # screenshot / recording
-      grim
-      slurp
-      swappy
-      wf-recorder
-
       # cli tools
       inputs.exacli.packages.${pkgs.stdenv.hostPlatform.system}.default
       gh
@@ -139,6 +125,7 @@ in
       wrappedPython
       stow
       tldr
+      libnotify
       (
         (pkgs.callPackage "${inputs.nur-combined}/repos/sikmir/pkgs/by-name/re/revdiff/package.nix" {
           buildGoModule = pkgs.buildGo126Module;
@@ -151,8 +138,43 @@ in
       (pkgs.callPackage ../../pkgs/excalidraw-cli { })
 
       # secrets / auth
-      bitwarden-desktop
       libsecret
+
+      # data
+      csvlens # interactive CSV viewer
+      (pkgs.callPackage ../../pkgs/duckdb-bin-1_5_3 { }) # in-process analytical SQL
+      harlequin # terminal database UI
+
+      # git
+      lazygit
+      delta
+
+      # markdown viewing
+      glow
+
+      # scripts
+      (pkgs.writeShellScriptBin "file-fzf" (builtins.readFile ../../scripts/sf.sh))
+      (pkgs.writeShellScriptBin "grep-fzf" (builtins.readFile ../../scripts/sg.sh))
+      (pkgs.writeShellScriptBin "agent-notify" (builtins.readFile ../../scripts/agent-notify.sh))
+      (pkgs.callPackage ../../pkgs/workmux { })
+    ]
+    ++ lib.optionals (!isHeadless) [
+      # wayland / audio
+      pavucontrol
+      roamShareAudio
+      clipboardSelector
+      wl-clipboard
+      cliphist
+      wlr-randr
+
+      # screenshot / recording
+      grim
+      slurp
+      swappy
+      wf-recorder
+
+      # secrets / auth
+      bitwarden-desktop
 
       # desktop / ui
       gtk3
@@ -164,16 +186,6 @@ in
       unstable.signal-desktop
       (pkgs.callPackage ../../pkgs/roam { })
       libreoffice-fresh
-
-      # media
-      playerctl
-      mpv
-      imv
-
-      # data
-      csvlens # interactive CSV viewer
-      (pkgs.callPackage ../../pkgs/duckdb-bin-1_5_3 { }) # in-process analytical SQL
-      harlequin # terminal database UI
       (symlinkJoin {
         name = "dbeaver-bin-x11";
         paths = [ dbeaver-bin ];
@@ -185,24 +197,18 @@ in
         '';
       }) # desktop database client; force XWayland to avoid SWT dialog issues on Hyprland
 
-      # git
-      lazygit
-      delta
-
-      # markdown viewing
-      glow
+      # media
+      playerctl
+      mpv
+      imv
 
       # scripts
       (pkgs.writeShellScriptBin "rofi-bookmarks" (builtins.readFile ../../scripts/rofi-bookmarks.sh))
       (pkgs.writeShellScriptBin "edit-bookmarks" (builtins.readFile ../../scripts/edit-bookmarks.sh))
       (pkgs.writeShellScriptBin "rofi-freq" (builtins.readFile ../../scripts/rofi-freq.sh))
-      (pkgs.writeShellScriptBin "file-fzf" (builtins.readFile ../../scripts/sf.sh))
-      (pkgs.writeShellScriptBin "grep-fzf" (builtins.readFile ../../scripts/sg.sh))
       (pkgs.writeShellScriptBin "wf-record" (builtins.readFile ../../scripts/wf-recorder.sh))
-      (pkgs.writeShellScriptBin "agent-notify" (builtins.readFile ../../scripts/agent-notify.sh))
-      (pkgs.callPackage ../../pkgs/workmux { })
     ]
-    ++ lib.optionals hasWireless [
+    ++ lib.optionals (hasWireless && !isHeadless) [
       # network / Wi-Fi tray helpers
       networkmanagerapplet
       iwgtk
@@ -211,7 +217,7 @@ in
       (pkgs.writeShellScriptBin "battery-estimate" (builtins.readFile ../../scripts/battery-estimate.sh))
     ];
 
-  systemd.user.services.roam-share-audio = {
+  systemd.user.services.roam-share-audio = lib.mkIf (!isHeadless) {
     Unit = {
       Description = "Roam desktop audio virtual microphone";
       After = [ "pipewire.service" ];

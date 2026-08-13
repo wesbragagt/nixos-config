@@ -1,6 +1,13 @@
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  hostProfile ? { },
+  ...
+}:
 
 let
+  isHeadless = hostProfile.headless or false;
   rebuild = pkgs.writeShellScriptBin "rebuild" ''
     set -euo pipefail
 
@@ -31,17 +38,19 @@ in
 {
   imports = [
     ./modules/host-profile.nix
+    ./modules/keyboard.nix
+    ./modules/tailscale.nix
+    ./modules/containers.nix
+    ./modules/sops.nix
+    ./modules/responsiveness.nix
+  ]
+  ++ lib.optionals (!isHeadless) [
     ./modules/graphics.nix
     ./modules/audio.nix
     ./modules/fonts.nix
     ./modules/hyprland.nix
     ./modules/login.nix
-    ./modules/keyboard.nix
-    ./modules/tailscale.nix
-    ./modules/containers.nix
     ./modules/onepassword.nix
-    ./modules/sops.nix
-    ./modules/responsiveness.nix
   ];
 
   networking.networkmanager.enable = true;

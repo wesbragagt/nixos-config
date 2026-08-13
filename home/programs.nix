@@ -1,4 +1,7 @@
-{ ... }:
+{ lib, hostProfile ? { }, ... }:
+let
+  isHeadless = hostProfile.headless or false;
+in
 {
   imports = [
     ./packages
@@ -6,8 +9,10 @@
     ./bun
     ./shell
     ./git
-    ./apps
     ./ssh
     ./yazi
+  ]
+  ++ lib.optionals (!isHeadless) [
+    ./apps
   ];
 }
