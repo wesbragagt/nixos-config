@@ -7,6 +7,7 @@ in
   imports = (lib.optional (builtins.pathExists hardwareConfig) hardwareConfig) ++ [
     ../../common.nix
     ../../modules/better-ccflare.nix
+    ../../modules/caddy.nix
   ];
   services.better-ccflare.enable = hostProfile.features.better-ccflare or false;
 

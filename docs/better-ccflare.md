@@ -51,3 +51,56 @@ API base:  http://127.0.0.1:35550/v1
 
 The service persists `/var/lib/better-ccflare:/data`.
 The host directory uses `root:root` ownership and mode `0700`.
+
+## Local HTTPS reverse proxy
+
+`icebox` runs Caddy as the shared local reverse-proxy service.
+The better-ccflare route is:
+
+```text
+https://ccflare.localhost  →  127.0.0.1:35550
+```
+
+Use these client endpoints:
+
+```text
+Dashboard: https://ccflare.localhost/
+Health:    https://ccflare.localhost/health
+API base:  https://ccflare.localhost/v1
+```
+
+Caddy uses `tls internal` for local HTTPS.
+Trust Caddy's local root certificate to remove browser warnings.
+Use `curl --insecure` only for local testing before installing that certificate.
+
+Test the route:
+
+```bash
+curl --insecure --fail https://ccflare.localhost/health
+```
+
+An HTTP `503` response with `accounts: 0` means Caddy reached better-ccflare,
+but no provider accounts are configured yet.
+
+## Adding local services
+
+Keep local services behind the same Caddy instance.
+Add another virtual host to `modules/caddy.nix`:
+
+```nix
+services.caddy.virtualHosts = {
+  "https://ccflare.localhost".extraConfig = ''
+    tls internal
+    reverse_proxy 127.0.0.1:35550
+  '';
+
+  "https://grafana.localhost".extraConfig = ''
+    tls internal
+    reverse_proxy 127.0.0.1:3000
+  '';
+};
+```
+
+Each service must use a unique `.localhost` hostname and an unused local upstream port.
+Do not expose the upstream port publicly.
+Apply route changes with `rebuild build` followed by `rebuild`.
