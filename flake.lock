@@ -48,11 +48,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776099549,
-        "narHash": "sha256-Os5tGSfAiThjELvuSIcVeUdT7WSz2RU4FjXsn6KHLMg=",
+        "lastModified": 1786991192,
+        "narHash": "sha256-4tR6dhF/DUJdtyfXKxmPY81O2+HdvqedLBokegSRGbQ=",
         "owner": "wesbragagt",
         "repo": "exacli",
-        "rev": "d0a3de9fc3c495af5affa431b6ac340b21c44da5",
+        "rev": "2d8c0cd7c00f55e5a94f657ce244f0d37391fa18",
         "type": "github"
       },
       "original": {

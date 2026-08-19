@@ -1,0 +1,28 @@
+nerdfont: true
+
+# Keep each repository's worktrees in its local worktrees/ directory.
+worktree_dir: ./worktrees
+mode: session
+worktree_naming: basename
+
+# Workmux does not expand {project} for window_prefix.
+# Add window_prefix: "<project>/" in the project .workmux.yaml.
+window_prefix: ""
+
+agent: omp
+windows:
+  - name: agent
+    panes:
+      - command: '<agent>'
+        focus: true
+  - name: shell
+    panes:
+      - command: 'zsh'
+
+post_create:
+  - direnv allow
+
+files:
+  copy: []
+  symlink:
+    - node_modules

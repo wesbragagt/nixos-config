@@ -6,294 +6,104 @@ argument-hint: "[optional PR title, base branch, or description context]"
 
 # pr
 
-Create or update a GitHub pull request from the current branch.
+Create or update a GitHub pull request (PR) from the current branch.
 
-Always commit first, then push, then create or update the PR.
+Always commit, then push, then create or update the PR.
 
-The PR description should be written for reviewers who need to quickly understand:
+## Steps
 
-- what problem changed
-- why the change matters
-- what behavior is different
-- how the implementation works
-- how it was verified
+1. Invoke the `/commit` skill if the working tree has changes. Skip if it is clean.
+2. Check for an existing PR: `gh pr view --json number,title,body,baseRefName,url 2>/dev/null`
+3. Find the branch and the base. Use `git branch --show-current`.
+4. Push the branch: `git push -u origin HEAD`
+5. Read the change: `git log origin/<base>..HEAD --oneline` and `git diff origin/<base>..HEAD --stat`
+6. Write the title and the body.
+7. Create or update the PR.
 
-Avoid implementation-first descriptions.
+## Base branch
 
-## Step 1: Commit any uncommitted changes
+Select the base in this order:
 
-Invoke the `/commit` skill to stage and commit any pending changes before creating or updating the PR.
+1. The base the user gives.
+2. `main`, if it exists.
+3. `master`, if `main` does not exist.
+4. The remote default branch: `git remote show origin | grep 'HEAD branch'`
 
-If the working tree is clean, skip this step and proceed.
+Stop if the current branch is the base. Tell the user to create a feature branch.
 
-## Step 2: Check for an existing PR
+## Push failures
 
-```bash
-gh pr view --json number,title,body,baseRefName,url 2>/dev/null
-```
+Do not force-push after a rejected push. Tell the user the branch diverged. Ask how to continue.
 
-If a PR already exists for this branch:
+## Existing PR
 
-* Commit any new changes first
-* Push the branch
-* Regenerate the PR body using the full current diff against the base branch
-* Do not describe only the latest commits
-* Update the existing PR description:
+If a PR exists:
 
-```bash
-gh pr edit --body "<updated body>"
-```
+1. Commit new changes.
+2. Push the branch.
+3. Write the body again from the full diff against the base, not only the new commits.
+4. Run `gh pr edit --body "<updated body>"`.
+5. Print the PR URL. Say that you updated the description.
 
-* Output the PR URL
-* Say that the existing PR description was updated
-* Skip PR creation
+## Title
 
-Only proceed to Step 3 if no PR exists yet.
+Write a title of 72 characters or less. Use sentence case. Do not use a final period. Name the behavior, not the code.
 
-## Step 3: Identify branch and base
+Good: `Skip handoff when required support docs are not processed`
 
-Get the current branch:
+## Body
 
-```bash
-git branch --show-current
-```
-
-Determine the base branch in this order:
-
-1. If the user specified a base branch, use it.
-2. Prefer `main` if it exists.
-3. Use `master` if `main` does not exist.
-4. Fall back to the remote default branch:
-
-```bash
-git remote show origin | grep 'HEAD branch'
-```
-
-If the current branch is the base branch, stop and tell the user they need to create a feature branch before opening a PR.
-
-## Step 4: Push the branch
-
-```bash
-git push -u origin HEAD
-```
-
-If the push is rejected because of a non-fast-forward update, do not force-push.
-
-Tell the user the branch is behind or diverged and ask how they want to proceed.
-
-## Step 5: Understand the change before writing
-
-Inspect the branch relative to the base:
-
-```bash
-git log origin/<base>..HEAD --oneline
-git diff origin/<base>..HEAD --stat
-git diff origin/<base>..HEAD --name-only
-```
-
-When needed, inspect relevant diffs:
-
-```bash
-git diff origin/<base>..HEAD -- <file>
-```
-
-Before writing the PR body, identify:
-
-* the user-facing or operator-facing problem
-* the behavior change
-* any config or API changes
-* important implementation decisions
-* migration/backward compatibility impact
-* verification and test coverage
-* any risks, rollout notes, or follow-ups
-
-Do not simply summarize files changed.
-
-## Step 6: Generate the PR title
-
-Derive a clear title from the branch name, commits, and user-provided context.
-
-Rules:
-
-* Under 72 characters when possible
-* Sentence case
-* No trailing period
-* Prefer behavior/value over implementation detail
-* Avoid vague titles like `Update handoff logic`
-
-Good examples:
-
-```text
-Gate Invoice Tracker handoff on support ingestion readiness
-```
-
-```text
-Add per-rule readiness check for invoice support docs
-```
-
-```text
-Skip handoff when required support docs are not processed
-```
-
-## Step 7: Generate the PR body
-
-Write the body using this structure.
-
-Use optional sections only when they add value.
+Use this structure. Remove an optional section that has no useful content.
 
 ```md
 ## Summary
 
-<Start with the behavior change in plain English. Explain the problem this PR solves and why it matters. Keep this section reviewer-friendly and avoid leading with internal implementation details.>
-
-<If relevant, explain who benefits: users, ops, downstream systems, maintainers, etc.>
+<The behavior change in plain words. The problem. Why it matters.>
 
 ## Behavior change
 
-<Describe what is different after this PR. Include defaults and backward compatibility when relevant.>
+<What is different after this PR. Include defaults and compatibility.>
 
 ## Implementation
 
-<Explain the important implementation details. Focus on decisions reviewers need to understand, not every file touched.>
+<Important decisions and tradeoffs. Not every file.>
 
 ## Testing
 
-<Describe meaningful test coverage or manual verification.>
+<Tests, dry-runs, or manual checks.>
 
 ## Notes
 
-<Optional. Include rollout notes, config examples, limitations, risks, or follow-ups only if useful.>
+<Optional: config examples, risks, rollout notes, follow-ups.>
 ```
 
-### PR writing rules
+## Body rules
 
 <rules>
-* Lead with behavior, not internals.
-* Explain the problem before the solution.
-* Prefer “what changed and why” over a raw changelog.
-* Do not dump every modified file unless each one matters to reviewer understanding.
-* Keep the Summary to 1–2 short paragraphs.
-* Use `Behavior change` when runtime behavior, config behavior, user behavior, or operational behavior changes.
-* Use `Implementation` for architecture decisions, non-obvious tradeoffs, or important mechanics.
-* Use `Testing` for tests, dry-runs, manual checks, or verification.
-* Use `Notes` only for useful extras like config examples, rollout details, risks, or compatibility.
-* If there is no meaningful content for an optional section, omit it.
-* Use bullets for scanability.
-* Avoid markdown tables unless they clearly improve readability.
-* Keep it factual. Do not pad with filler.
-* If the user provided context, incorporate it into the Summary or Notes section instead of replacing the template.
+* Write the body in Simplified Technical English (ASD-STE100).
+* Use the simplest correct word. Use one term for one thing.
+* Use active voice and present tense. Name the actor.
+* Keep each sentence to 25 words or less.
+* Do not use idioms, jokes, or figures of speech.
+* Keep the full body under 500 words.
+* Give the problem before the solution.
+* Keep the Summary to one or two short paragraphs.
+* Use bullets. Avoid tables.
+* Do not list every changed file.
+* Do not write a commit list.
+* Add a short config example when the PR adds config, flags, statuses, or state rules.
+* Explain a meaningful tradeoff in plain words.
+* Fold user-supplied context into Summary or Notes.
+* Never name an AI tool, a review tool, a reviewer, or a scratch file.
+* Never describe the process that made the change. Describe the change.
 </rules>
 
-### Config or status-rule changes
-
-If the PR adds config, flags, statuses, rules, or state transitions, include a simple example.
-
-Prefer:
-
-````md
-## Notes
-
-Example config:
-
-```json
-{
-  "require_support_ingestion_processed": true
-}
-```
-
-Default behavior:
-
-* omitted → current behavior
-* `false` → current behavior
-* `true` → enables the new readiness gate
-````
-
-For status handling, prefer clear bullets:
-
-````md
-A document is considered processed only when:
-
-- `auto_passed` → processed
-
-All other states are treated as not processed:
-
-- missing row
-- `needs_review`
-- `failed`
-````
-
-### Design rationale
-
-If the implementation involved a meaningful tradeoff, explain it plainly.
-
-Prefer:
-
-```md
-This check happens in application code instead of SQL so skipped records can still emit a decision explaining why they did not proceed.
-```
-
-Avoid:
-
-```md
-SQL projects, rules decide.
-```
-
-Clever phrasing is okay in comments, but PR descriptions should optimize for fast reviewer comprehension.
-
-## Step 8: Prohibited PR body content
+## Prohibited actions
 
 <rules>
-* Do not reference review tooling, AI agents, internal review steps, or scratch artifacts.
-* Do not mention `pi`, `pi /review`, `claude`, `Claude Code`, `gpt`, `Copilot`, `ultrareview`, sibling-agent reviews, or any AI/code-assist tool by name.
-* Do not include “Follow-up from <review>”, “Addressed per <review>”, or “<reviewer> flagged …”.
-* Re-attribute reasoning to the code itself.
-* Do not reference internal files from review tooling, such as `reviews/*.md`, transcripts, or scratch notes.
-* Do not describe the process that produced the change. Describe the change and the reasoning behind it.
-</rules>
-
-Good:
-
-```md
-Ties on `update_time` were not deterministic, so this now uses `(update_time, id)` for stable ordering.
-```
-
-Bad:
-
-```md
-Claude review flagged that ties on `update_time` were not deterministic.
-```
-
-## Step 9: Create or update the PR
-
-Create a new PR:
-
-```bash
-gh pr create \
-  --base <base-branch> \
-  --title "<title>" \
-  --body "<body>"
-```
-
-After creation, output the PR URL.
-
-If updating an existing PR:
-
-```bash
-gh pr edit --body "<updated body>"
-```
-
-
-After updating, output the PR URL.
-
-## What NOT to do
-
-<rules>
-* Do not force-push to fix a rejected push.
+* Do not force-push.
 * Do not open a PR from the default branch to itself.
-* Do not skip `/commit` when there are uncommitted changes.
-* Do not add `--draft` unless the user explicitly asks for a draft PR.
-* Do not mark the PR as ready for review unless the user asks.
-* Do not request reviewers unless the user asks.
-* Do not create a PR body that is just a commit list.
-* Do not lead with low-level implementation details when there is a clear product, ops, or behavior impact.
+* Do not skip `/commit`.
+* Do not use `--draft` unless the user asks.
+* Do not mark ready for review or request reviewers unless the user asks.
 </rules>

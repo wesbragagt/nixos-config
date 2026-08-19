@@ -1,10 +1,38 @@
-lastChangelogVersion: 15.10.8
 setupVersion: 1
-modelRoles:
-  default: anthropic/claude-opus-4-8:low
-  plan: openai-codex/gpt-5.6-terra:low
+providers: 
+  webSearchOrder: 
+    - exa
+    - codex
+modelRoles: 
+  default: openai-codex/gpt-5.6-terra:low
+  plan: openai-codex/gpt-5.6-sol:low
   slow: anthropic/claude-opus-5:high
-  smol: anthropic/claude-haiku-4-5-20251001:xhigh
+  smol: openai-codex/gpt-5.6-luna:low
   designer: anthropic/claude-sonnet-5:low
   task: anthropic/claude-sonnet-5:low
   vision: openai-codex/gpt-5.4:low
+statusLine: 
+  preset: custom
+  rightSegments: 
+    - model
+    - usage
+    - context_pct
+    - session_name
+dev: 
+  autoqaConsent: granted
+disabledExtensions: 
+  - skill:gif
+  - skill:grilldebug
+  - skill:merge
+  - skill:open-pr
+  - skill:pi-review
+  - skill:refine
+  - skill:tasks
+  - skill:worktree
+  - skill:code
+  - skill:ast-grep
+  - skill:openpencil
+  - slash-command:tasks
+  - slash-command:pr
+  - slash-command:pr-feedback
+  - slash-command:rebase

@@ -26,13 +26,10 @@ exacli answer "<topic or question>" --text
 
 For **deep-research**:
 ```bash
-exacli research "<topic or question>" --poll
+exacli search "<topic or question>" --type deep-reasoning --output-schema '{"type":"text","description":"Return key findings with source citations"}'
 ```
 
-If `exacli research` returns an error (e.g. 404), fall back to:
-```bash
-exacli answer "<topic or question>" --text
-```
+The output schema returns the synthesized answer in `output.content`. It does not need polling.
 
 For additional depth, supplement with:
 ```bash

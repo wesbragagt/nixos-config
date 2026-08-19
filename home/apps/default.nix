@@ -8,6 +8,7 @@ let
   rofiColorsDir = "${repoRoot}/rofi/colors";
   rofiLaunchersDir = "${repoRoot}/rofi/launchers";
   footConfig = "${repoRoot}/home/apps/foot.ini";
+  workmuxConfig = "${repoRoot}/home/apps/workmux.yaml";
 in
 {
   programs.foot.enable = true;
@@ -89,36 +90,7 @@ in
     "foot/foot.ini".source = config.lib.file.mkOutOfStoreSymlink footConfig;
     "rofi/colors".source = config.lib.file.mkOutOfStoreSymlink rofiColorsDir;
     "rofi/launchers".source = config.lib.file.mkOutOfStoreSymlink rofiLaunchersDir;
-    "workmux/config.yaml".text = ''
-      nerdfont: true
-
-      # Keep each repository's worktrees in its local worktrees/ directory.
-      worktree_dir: ./worktrees
-      mode: session
-      worktree_naming: basename
-
-      # Workmux does not expand {project} for window_prefix.
-      # Add window_prefix: "<project>/" in the project .workmux.yaml.
-      window_prefix: ""
-
-      agent: ccd
-      windows:
-        - name: agent
-          panes:
-            - command: '<agent>'
-              focus: true
-        - name: shell
-          panes:
-            - command: 'zsh'
-
-      post_create:
-        - direnv allow
-
-      files:
-        copy: []
-        symlink:
-          - node_modules
-    '';
+    "workmux/config.yaml".source = config.lib.file.mkOutOfStoreSymlink workmuxConfig;
     "swappy/config".text = ''
       [Default]
       early_exit=true

@@ -30,3 +30,9 @@ Do not apply these rules to code, identifiers, file paths, commands, logs, or qu
 - Use bullet lists for items with no order.
 - Put a warning or caution before the step it applies to.
 - Be concise, but do not remove necessary articles or context.
+
+## Web research
+
+- Use `exacli` as the default web research mechanism.
+- Select its command by task: `code`, `search`, `contents`, `similar`, `answer`, or `research`.
+- Use the built-in web search provider only when `exacli` cannot perform the requested operation.

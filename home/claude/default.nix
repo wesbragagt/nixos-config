@@ -15,12 +15,6 @@ let
     skillsRoot = cfg.skillsRoot;
     targetPrefix = ".claude/skills";
   };
-  shellAliases = lib.removeAttrs cfg.aliases [ "ccd" ];
-  ccdFunction = ''
-    ccd() {
-      command claude --dangerously-skip-permissions "$@"
-    }
-  '';
 in
 {
   options.wes.claudeCode = {
@@ -91,9 +85,7 @@ in
       $DRY_RUN_CMD mv "$tmp" "$settings"
     '';
 
-    programs.bash.shellAliases = shellAliases;
-    programs.zsh.shellAliases = shellAliases;
-    programs.bash.initExtra = lib.mkIf (cfg.aliases ? ccd) ccdFunction;
-    programs.zsh.initContent = lib.mkIf (cfg.aliases ? ccd) ccdFunction;
+    programs.bash.shellAliases = cfg.aliases;
+    programs.zsh.shellAliases = cfg.aliases;
   };
 }
