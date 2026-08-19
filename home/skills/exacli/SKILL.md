@@ -1,6 +1,6 @@
 ---
 name: exacli
-description: Exa AI search API via CLI. Activate when user wants to search the web, find code examples, extract content from websites, get AI answers with sources, or run deep multi-step research. Examples: "search for AI startups", "find rate limiter code in Go", "extract content from this URL", "research this topic", "find similar pages".
+description: 'Exa AI search API via CLI. Activate when user wants to search the web, find code examples, extract content from websites, get AI answers with sources, or run deep multi-step research. Examples: "search for AI startups", "find rate limiter code in Go", "extract content from this URL", "research this topic", "find similar pages".'
 ---
 
 # Exacli
