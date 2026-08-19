@@ -7,6 +7,9 @@
 }:
 let
   isHeadless = hostProfile.headless or false;
+  features = hostProfile.features or { };
+  claudeCodeEnabled = features.claude-code or false;
+  ompEnabled = features.omp or false;
   base = {
     imports = [
       ./repo-root.nix
@@ -36,10 +39,8 @@ let
     home.stateVersion = "25.11";
 
     programs.home-manager.enable = true;
-    programs.qmd.enable = true;
-
     wes.claudeCode = {
-      enable = true;
+      enable = claudeCodeEnabled;
       aliases = {
         ccd = "claude --dangerously-skip-permissions";
       };
@@ -47,7 +48,8 @@ let
 
     wes.pi.enable = true;
 
-    wes.omp.enable = true;
+    wes.omp.enable = ompEnabled;
+
   };
   desktop = {
     gtk = {

@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ hostProfile, lib, pkgs, ... }:
 
 let
   hardwareConfig = ./hardware-configuration.nix;
@@ -6,7 +6,9 @@ in
 {
   imports = (lib.optional (builtins.pathExists hardwareConfig) hardwareConfig) ++ [
     ../../common.nix
+    ../../modules/better-ccflare.nix
   ];
+  services.better-ccflare.enable = hostProfile.features.better-ccflare or false;
 
   assertions = lib.optional (!(builtins.pathExists hardwareConfig)) {
     assertion = false;

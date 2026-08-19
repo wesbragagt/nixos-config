@@ -59,8 +59,20 @@
     let
       lib = nixpkgs.lib;
       defaultSystem = "x86_64-linux";
+      featureConfigPath = /etc/nixos/features.yaml;
+      featureConfig =
+        if builtins.pathExists featureConfigPath then builtins.readFile featureConfigPath else "";
+      featureEnabled =
+        name: builtins.any (line: line == "  ${name}: true") (lib.splitString "\n" featureConfig);
+      defaultFeatures = {
+        claude-code = false;
+        omp = false;
+        better-ccflare = false;
+      };
+      machineFeatures = lib.mapAttrs (name: _: featureEnabled name) defaultFeatures;
 
       defaultHostProfile = {
+        features = machineFeatures;
         isLaptop = false;
         hasWireless = false;
         headless = false;
@@ -101,8 +113,8 @@
               wes.host = lib.removeAttrs resolvedHostProfile [
                 "name"
                 "useHomeSopsSecrets"
+                "features"
               ];
-
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "hm-bak";
