@@ -44,9 +44,12 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+
     home.file = {
       ".omp/agent/config.yml".source =
         config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/config.yml";
+      ".omp/agent/models.yml".source =
+        config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/models.yml";
       ".omp/agent/AGENTS.md".source =
         config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/AGENTS.md";
     }
@@ -57,7 +60,7 @@ in
     # Drop any pre-existing plain files so home-manager can take over the
     # mutable out-of-store symlinks without a checkLinkTargets clobber error.
     home.activation.removeLegacyOmpConfig = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
-      for f in config.yml AGENTS.md; do
+      for f in config.yml models.yml AGENTS.md; do
         target="$HOME/.omp/agent/$f"
         if [ -e "$target" ] && [ ! -L "$target" ]; then
           $DRY_RUN_CMD rm -f "$target"

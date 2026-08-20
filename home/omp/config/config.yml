@@ -1,21 +1,19 @@
 setupVersion: 1
-providers: 
-  webSearchOrder: 
+providers:
+  webSearchOrder:
     - exa
     - codex
-modelRoles: 
-  default: openai-codex/gpt-5.6-terra:low
-  plan: openai-codex/gpt-5.6-sol:low
-  slow: anthropic/claude-opus-5:high
-  smol: openai-codex/gpt-5.6-luna:low
-  designer: anthropic/claude-sonnet-5:low
-  task: anthropic/claude-sonnet-5:low
-  vision: openai-codex/gpt-5.4:low
-statusLine: 
+modelRoles:
+  plan: ccflare/claude-opus-4-8:high
+  slow: ccflare/gpt-5.6-sol:high
+  smol: ccflare/claude-haiku-4-5:low
+  designer: ccflare/gpt-5.6-luna:low
+  task: ccflare/gpt-5.6-terra:low
+  vision: ccflare/gpt-5.6-terra:low
+statusLine:
   preset: custom
-  rightSegments: 
+  rightSegments:
     - model
-    - usage
     - context_pct
     - session_name
 dev: 

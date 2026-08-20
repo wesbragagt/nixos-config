@@ -82,6 +82,77 @@ curl --insecure --fail https://ccflare.localhost/health
 An HTTP `503` response with `accounts: 0` means Caddy reached better-ccflare,
 but no provider accounts are configured yet.
 
+## Account pool
+
+Configure provider accounts from:
+
+```text
+https://ccflare.localhost/accounts
+```
+
+Account credentials are stored in `/var/lib/better-ccflare`.
+Do not add provider tokens or OAuth data to this repository.
+
+ccflare selects the highest-priority active account that supports the request.
+Pause personal accounts if they must not receive routed requests.
+Set a work or shared account to the highest priority.
+
+Use the Accounts page to:
+
+- Add or re-authenticate an OAuth account.
+- Set account priority.
+- Pause or resume an account.
+- Configure provider model mappings.
+- Refresh provider usage data.
+
+## OMP routing
+
+OMP uses the ccflare Anthropic Messages API.
+The configuration is in `home/omp/config/models.yml`.
+Home Manager links it to `~/.omp/agent/models.yml`.
+
+The current provider definition is:
+
+```yaml
+providers:
+  ccflare:
+    baseUrl: http://127.0.0.1:35550
+    apiKey: ccflare-local
+    api: anthropic-messages
+```
+
+The trailing `/v1` is not included here.
+OMP adds the Anthropic Messages API path.
+
+OMP only shows model IDs listed in `models.yml`.
+The active Codex OAuth account cannot provide a model catalog.
+Keep the model list explicit and test each new model before adding it.
+
+The configured model IDs are:
+
+- `claude-opus-4-8`
+- `claude-sonnet-5`
+- `claude-haiku-4-5`
+- `gpt-5.6-luna`
+- `gpt-5.6-terra`
+- `gpt-5.6-sol`
+
+Check the configured OMP models:
+
+```bash
+omp models ccflare --json
+```
+
+Test the default OMP route:
+
+```bash
+omp --print --no-session "Reply with exactly: ccflare verified"
+```
+
+The OMP `usage` status segment does not report ccflare usage.
+It reports local OMP provider credentials.
+Do not enable it when ccflare is the active route.
+
 ## Adding local services
 
 Keep local services behind the same Caddy instance.
