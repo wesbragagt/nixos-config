@@ -129,6 +129,10 @@ let
             icon = papirusIcon "tidal";
           }
           {
+            name = "Roam";
+            url = "https://ro.am";
+          }
+          {
             name = "CCFlare";
             url = "https://ccflare.localhost";
           }

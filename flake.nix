@@ -64,12 +64,17 @@
         if builtins.pathExists featureConfigPath then builtins.readFile featureConfigPath else "";
       featureEnabled =
         name: builtins.any (line: line == "  ${name}: true") (lib.splitString "\n" featureConfig);
+      featureDisabled =
+        name: builtins.any (line: line == "  ${name}: false") (lib.splitString "\n" featureConfig);
       defaultFeatures = {
         claude-code = false;
         omp = false;
         better-ccflare = false;
       };
       machineFeatures = lib.mapAttrs (name: _: featureEnabled name) defaultFeatures;
+      # sops defaults on (existing behaviour); set "sops: false" in
+      # /etc/nixos/features.yaml to opt a headless/no-yubikey box out of it.
+      sopsHomeSecretsEnabled = !(featureDisabled "sops");
 
       defaultHostProfile = {
         features = machineFeatures;
@@ -170,7 +175,7 @@
           inherit inputs;
           hostProfile = defaultHostProfile // {
             name = "standalone";
-            useHomeSopsSecrets = true;
+            useHomeSopsSecrets = sopsHomeSecretsEnabled;
           };
         };
         modules = [
@@ -188,7 +193,7 @@
           hostProfile = defaultHostProfile // {
             name = "standalone-server";
             headless = true;
-            useHomeSopsSecrets = true;
+            useHomeSopsSecrets = sopsHomeSecretsEnabled;
           };
         };
         modules = [
