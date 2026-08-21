@@ -38,7 +38,7 @@ in
 
     version = lib.mkOption {
       type = lib.types.str;
-      default = "17.3.5";
+      default = "17.4.1";
       description = "Pinned omp CLI version installed into the bun global prefix.";
     };
   };

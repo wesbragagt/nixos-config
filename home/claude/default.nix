@@ -55,9 +55,17 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # Route Claude Code through the local better-ccflare Anthropic endpoint.
+    home.sessionVariables = {
+      ANTHROPIC_BASE_URL = "http://127.0.0.1:35550";
+      ANTHROPIC_API_KEY = "ccflare-local";
+    };
+
     home.packages = [ cfg.package ];
 
     home.file = {
+      ".claude/CLAUDE.md".source =
+        config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/CLAUDE.md";
       ".claude/agents".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/agents";
       ".claude/commands".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/commands";
       ".claude/rules".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/rules";

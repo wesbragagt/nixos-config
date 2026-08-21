@@ -9,5 +9,8 @@
     "~/nixos-config/home/pi/config/extensions/prd-agents"
   ],
   "hideThinkingBlock": true,
-  "theme": "dark"
+  "theme": "dark",
+  "packages": [
+    "npm:pi-prewalk"
+  ]
 }

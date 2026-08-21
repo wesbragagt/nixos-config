@@ -1,6 +1,6 @@
 providers:
   ccflare:
-    baseUrl: http://127.0.0.1:35550
+    baseUrl: https://ccflare.dory-pentatonic.ts.net
     apiKey: ccflare-local
     api: anthropic-messages
     models:

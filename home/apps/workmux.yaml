@@ -11,10 +11,13 @@ window_prefix: ""
 
 agent: omp
 windows:
-  - name: agent
+  - name: omp
     panes:
       - command: '<agent>'
         focus: true
+  - name: claude
+    panes:
+      - command: 'zsh -ic ccd'
   - name: shell
     panes:
       - command: 'zsh'

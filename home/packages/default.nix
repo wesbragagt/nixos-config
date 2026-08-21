@@ -27,22 +27,6 @@ let
       done
     '';
   };
-  roamShareAudio = pkgs.writeShellScriptBin "roam-share-audio" ''
-    set -euo pipefail
-
-    service="roam-share-audio.service"
-    action="''${1:-status}"
-
-    case "$action" in
-      start|stop|restart|status)
-        ${pkgs.systemd}/bin/systemctl --user "$action" "$service"
-        ;;
-      *)
-        echo "Usage: roam-share-audio [start|stop|restart|status]" >&2
-        exit 2
-        ;;
-    esac
-  '';
   clipboardSelector = pkgs.writeShellScriptBin "clipboard-selector" ''
     set -euo pipefail
 
@@ -156,12 +140,12 @@ in
       (pkgs.writeShellScriptBin "file-fzf" (builtins.readFile ../../scripts/sf.sh))
       (pkgs.writeShellScriptBin "grep-fzf" (builtins.readFile ../../scripts/sg.sh))
       (pkgs.writeShellScriptBin "agent-notify" (builtins.readFile ../../scripts/agent-notify.sh))
+      (pkgs.writeShellScriptBin "omp-prewalk" (builtins.readFile ../../scripts/omp-prewalk.sh))
       (pkgs.callPackage ../../pkgs/workmux { })
     ]
     ++ lib.optionals (!isHeadless) [
       # wayland / audio
       pavucontrol
-      roamShareAudio
       clipboardSelector
       wl-clipboard
       cliphist
@@ -184,7 +168,6 @@ in
       swww
       slack
       unstable.signal-desktop
-      (pkgs.callPackage ../../pkgs/roam { })
       libreoffice-fresh
       (symlinkJoin {
         name = "dbeaver-bin-x11";
@@ -216,23 +199,4 @@ in
     ++ lib.optionals isLaptop [
       (pkgs.writeShellScriptBin "battery-estimate" (builtins.readFile ../../scripts/battery-estimate.sh))
     ];
-
-  systemd.user.services.roam-share-audio = lib.mkIf (!isHeadless) {
-    Unit = {
-      Description = "Roam desktop audio virtual microphone";
-      After = [ "pipewire.service" ];
-      Requires = [ "pipewire.service" ];
-    };
-    Service = {
-      ExecStart = ''
-        ${pkgs.pipewire}/bin/pw-loopback \
-          --name roam-desktop-audio \
-          --capture @DEFAULT_AUDIO_SINK@ \
-          --playback-props='media.class=Audio/Source node.name=roam-desktop-audio node.description="Roam Desktop Audio"'
-      '';
-      Restart = "on-failure";
-      RestartSec = 2;
-    };
-    Install.WantedBy = [ "default.target" ];
-  };
 }

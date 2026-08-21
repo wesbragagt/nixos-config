@@ -36,3 +36,15 @@ Do not apply these rules to code, identifiers, file paths, commands, logs, or qu
 - Use `exacli` as the default web research mechanism.
 - Select its command by task: `code`, `search`, `contents`, `similar`, `answer`, or `research`.
 - Use the built-in web search provider only when `exacli` cannot perform the requested operation.
+
+## Claude consultation in workmux
+
+- Use this route only when the user asks OMP to consult or communicate with Claude.
+- Do not replace OMP tool work or silently delegate implementation.
+- Resolve the current tmux session with `tmux display-message -p '#S'`.
+- Target the sibling Claude window as `${session}:claude`.
+- Send short prompts with literal tmux input. Send `Enter` in a separate command.
+- Use a tmux paste buffer for long or multiline prompts.
+- Wait until Claude returns to its prompt.
+- Read the result with `tmux capture-pane -t "${session}:claude" -p -S -2000`.
+- Report Claude's response as external model input, not as verified repository evidence.

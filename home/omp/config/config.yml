@@ -1,18 +1,20 @@
-setupVersion: 1
-providers:
-  webSearchOrder:
+setupVersion: 2
+providers: 
+  webSearchOrder: 
     - exa
     - codex
-modelRoles:
-  plan: ccflare/claude-opus-4-8:high
+modelRoles: 
   slow: ccflare/gpt-5.6-sol:high
-  smol: ccflare/claude-haiku-4-5:low
+  smol: ccflare/gpt-5.6-luna:medium
   designer: ccflare/gpt-5.6-luna:low
-  task: ccflare/gpt-5.6-terra:low
+  task: ccflare/claude-sonnet-5:low
   vision: ccflare/gpt-5.6-terra:low
-statusLine:
+  default: ccflare/claude-sonnet-5:low
+  advisor: ccflare/gpt-5.6-terra:low
+  plan: ccflare/claude-opus-4-8:high
+statusLine: 
   preset: custom
-  rightSegments:
+  rightSegments: 
     - model
     - context_pct
     - session_name
@@ -34,3 +36,5 @@ disabledExtensions:
   - slash-command:pr
   - slash-command:pr-feedback
   - slash-command:rebase
+composer: 
+  shape: box

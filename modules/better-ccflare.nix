@@ -28,6 +28,8 @@ in
           LB_STRATEGY = "session";
           DATA_RETENTION_DAYS = "30";
           REQUEST_RETENTION_DAYS = "30";
+          CCFLARE_CODEX_PROMPT_CACHE_KEY = "1";
+          CCFLARE_CODEX_CACHE_KEY_MODE = "conversation";
         };
       };
     };
