@@ -156,7 +156,6 @@
     enable = true;
     extraConfig = builtins.readFile ./tmux.conf;
     plugins = with pkgs.tmuxPlugins; [
-      nord
       {
         plugin = resurrect;
         extraConfig = ''
