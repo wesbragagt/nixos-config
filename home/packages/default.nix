@@ -203,5 +203,7 @@ in
     ++ lib.optionals (gamingEnabled && !isHeadless) [
       # gaming (feature-flagged; enable via /etc/nixos/features.yaml)
       lutris
+      wineWowPackages.stable
+      winetricks
     ];
 }
