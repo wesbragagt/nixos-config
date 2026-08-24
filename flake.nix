@@ -70,6 +70,8 @@
         claude-code = false;
         omp = false;
         better-ccflare = false;
+        gaming = false;
+        qbittorrent = false;
       };
       machineFeatures = lib.mapAttrs (name: _: featureEnabled name) defaultFeatures;
       # sops defaults on (existing behaviour); set "sops: false" in

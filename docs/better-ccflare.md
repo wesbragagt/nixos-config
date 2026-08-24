@@ -28,6 +28,7 @@ Set a feature to `false`, or remove the line, to disable it.
 - `better-ccflare` enables the Podman service on `icebox`.
 - `claude-code` enables the Claude Code Home Manager module.
 - `omp` enables the Open Model Platform (OMP) Home Manager module.
+- `gaming` installs Lutris on desktop hosts (skipped on headless hosts).
 
 The default for all listed features is disabled.
 Host-specific profile settings still control hardware, desktop, and secret behavior.

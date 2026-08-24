@@ -9,6 +9,7 @@ let
   isLaptop = hostProfile.isLaptop or false;
   hasWireless = hostProfile.hasWireless or false;
   isHeadless = hostProfile.headless or false;
+  gamingEnabled = (hostProfile.features or { }).gaming or false;
   unstable = import inputs.nixpkgs-unstable {
     inherit (pkgs.stdenv.hostPlatform) system;
     config.allowUnfree = true;
@@ -198,5 +199,9 @@ in
     ]
     ++ lib.optionals isLaptop [
       (pkgs.writeShellScriptBin "battery-estimate" (builtins.readFile ../../scripts/battery-estimate.sh))
+    ]
+    ++ lib.optionals (gamingEnabled && !isHeadless) [
+      # gaming (feature-flagged; enable via /etc/nixos/features.yaml)
+      lutris
     ];
 }
