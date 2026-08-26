@@ -10,6 +10,7 @@ let
   hasWireless = hostProfile.hasWireless or false;
   isHeadless = hostProfile.headless or false;
   gamingEnabled = (hostProfile.features or { }).gaming or false;
+  mnemosyneEnabled = (hostProfile.features or { }).mnemosyne or false;
   unstable = import inputs.nixpkgs-unstable {
     inherit (pkgs.stdenv.hostPlatform) system;
     config.allowUnfree = true;
@@ -206,5 +207,8 @@ in
       lutris
       wineWowPackages.stable
       winetricks
+    ]
+    ++ lib.optionals mnemosyneEnabled [
+      (pkgs.callPackage ../../pkgs/mnemosyne { })
     ];
 }

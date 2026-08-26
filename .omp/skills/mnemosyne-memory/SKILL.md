@@ -1,24 +1,28 @@
 ---
 name: mnemosyne-memory
-description: Persist and recall durable project facts (decisions, host quirks, gotchas, conventions) for this nixos-config repo using the Mnemosyne CLI. Use when the user says to remember/recall something, when starting work on a recurring task, or before repeating investigation already done in a prior session.
+description: Persist and recall durable facts, decisions, gotchas, and conventions using the Mnemosyne CLI. Use when the user asks to remember, recall, or manage memory, or when durable context can prevent repeated work.
 ---
 
-# Mnemosyne project memory
+# Mnemosyne memory
 
-This repo has a dedicated Mnemosyne memory bank, isolated from every other
-project. Use the CLI directly — no MCP server is configured.
+Mnemosyne is optional. Enable `mnemosyne: true` in
+`/etc/nixos/features.yaml`, then run `rebuild` before using this skill.
 
-Every command MUST use this exact environment:
+Use the installed `mnemosyne` CLI directly. No MCP server is configured.
+
+When this skill is used, display `🌳 Mnemosyne memory` before the first memory action.
+
+Every command MUST use this environment:
 
 ```bash
-export MNEMOSYNE_DATA_DIR=/home/wesbragagt/.local/share/mnemosyne/nixos-config
-export MNEMOSYNE_BANK=nixos-config
-uvx --from 'mnemosyne-memory[mcp]' mnemosyne <command> [args...]
+export MNEMOSYNE_DATA_DIR=/home/wesbragagt/.local/share/mnemosyne
+export MNEMOSYNE_BANK=default
+mnemosyne <command> [args...]
 ```
 
-`--bank` is a flag on `mnemosyne mcp` only; every other command (`store`,
-`recall`, `stats`, ...) reads the bank from `MNEMOSYNE_BANK`. Passing
-`--bank` to a data command fails — it is parsed as a positional argument.
+`--bank` is a flag on `mnemosyne mcp` only. Other commands (`store`, `recall`,
+`stats`, ...) read the bank from `MNEMOSYNE_BANK`. Passing `--bank` to a data
+command fails because it is parsed as a positional argument.
 
 ## When to store a memory
 
@@ -30,18 +34,17 @@ Store a fact after it is confirmed true, not speculative:
 - Corrections the user gives about how something in this repo actually works.
 
 ```bash
-uvx --from 'mnemosyne-memory[mcp]' mnemosyne store "<fact>" "<source>"
+mnemosyne store "<fact>" "<source>"
 ```
 
 `<source>` is a short label (e.g. `session`, `user-correction`, `debugging`).
 
 ## When to recall
 
-Before starting non-trivial work in this repo (new host setup, module
-refactor, recurring debugging), recall relevant memory first:
+Before recurring or non-trivial work, recall relevant memory first:
 
 ```bash
-uvx --from 'mnemosyne-memory[mcp]' mnemosyne recall "<topic>"
+mnemosyne recall "<topic>"
 ```
 
 Recalled memory is background context. Current user instructions and the
@@ -50,20 +53,19 @@ actual repo state on disk always take precedence over a stale memory.
 ## Other commands
 
 ```bash
-# list what is stored
-uvx --from 'mnemosyne-memory[mcp]' mnemosyne stats
+# list stored memories
+mnemosyne stats
 
-# fix/update an existing memory by id (id comes from recall output)
-uvx --from 'mnemosyne-memory[mcp]' mnemosyne update <id> "<new content>"
+# update a memory by ID from recall output
+mnemosyne update <id> "<new content>"
 
-# remove a stale/wrong memory
-uvx --from 'mnemosyne-memory[mcp]' mnemosyne delete <id>
+# delete a stale or wrong memory
+mnemosyne delete <id>
 ```
 
 ## Scope
 
-- `MNEMOSYNE_DATA_DIR` and `MNEMOSYNE_BANK=nixos-config` together pin this to
-  one project-local store. Never point these at a different directory/bank
-  for this repo's memories.
+- The default bank is shared across projects.
+- Use a separate data directory and bank only when the user requests isolated memory.
 - This is CLI-only by design so it works from any harness that can run shell
   commands, not just MCP-capable clients.

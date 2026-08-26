@@ -10,6 +10,7 @@ let
   features = hostProfile.features or { };
   claudeCodeEnabled = features.claude-code or false;
   ompEnabled = features.omp or false;
+  mnemosyneEnabled = features.mnemosyne or false;
   base = {
     imports = [
       ./repo-root.nix
@@ -50,6 +51,10 @@ let
 
     wes.omp.enable = ompEnabled;
     home.packages = [ pkgs.nssTools ];
+    home.sessionVariables = lib.optionalAttrs mnemosyneEnabled {
+      MNEMOSYNE_DATA_DIR = "/home/wesbragagt/.local/share/mnemosyne";
+      MNEMOSYNE_BANK = "default";
+    };
 
     systemd.user.services.caddy-local-trust = lib.mkIf (!isHeadless) {
       Unit = {

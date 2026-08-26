@@ -13,6 +13,7 @@ features:
   better-ccflare: true
   claude-code: true
   omp: true
+  mnemosyne: true
 ```
 
 Feature names are parsed from lines with this form:
@@ -29,6 +30,7 @@ Set a feature to `false`, or remove the line, to disable it.
 - `claude-code` enables the Claude Code Home Manager module.
 - `omp` enables the Open Model Platform (OMP) Home Manager module.
 - `gaming` installs Lutris on desktop hosts (skipped on headless hosts).
+- `mnemosyne` installs the Mnemosyne memory CLI and its default shared-bank environment.
 
 The default for all listed features is disabled.
 Host-specific profile settings still control hardware, desktop, and secret behavior.
