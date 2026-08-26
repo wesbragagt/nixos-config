@@ -25,7 +25,6 @@ disabledExtensions:
   - skill:grilldebug
   - skill:merge
   - skill:open-pr
-  - skill:pi-review
   - skill:refine
   - skill:tasks
   - skill:worktree

@@ -1,6 +1,6 @@
 ---
 name: pr
-description: Create or update a GitHub pull request for the current branch, committing pending changes first. Use when the user wants to open a PR, update an existing PR, or ship a branch for review.
+description: Create or update a GitHub pull request for the current branch, committing pending changes first, then monitor the CI checks until they finish and report any failure. Use when the user wants to open a PR, update an existing PR, ship a branch for review, or check PR CI status.
 argument-hint: "[optional PR title, base branch, or description context]"
 ---
 
@@ -19,6 +19,7 @@ Always commit, then push, then create or update the PR.
 5. Read the change: `git log origin/<base>..HEAD --oneline` and `git diff origin/<base>..HEAD --stat`
 6. Write the title and the body.
 7. Create or update the PR.
+8. Monitor the CI checks. See **CI checks**.
 
 ## Base branch
 
@@ -98,6 +99,66 @@ Use this structure. Remove an optional section that has no useful content.
 * Never describe the process that made the change. Describe the change.
 </rules>
 
+## CI checks
+
+Monitor the checks after you create or update the PR. Do not stop at the PR URL.
+
+Print the PR URL first. The user must have the link before the wait starts.
+
+### 1. Wait for the checks to register
+
+GitHub needs time to queue the workflows. An immediate query returns no checks.
+
+```bash
+sleep 20 && gh pr checks 2>&1
+```
+
+Report `No CI checks configured for this repository` and stop when the command says no checks exist. This is a normal result, not a failure.
+
+### 2. Watch until the checks finish
+
+```bash
+gh pr checks --watch --fail-fast
+```
+
+Run this in the background when the CI run takes more than 10 minutes. The foreground timeout is 10 minutes.
+
+`--fail-fast` stops at the first failure. Do not wait for a green job when another job already failed.
+
+### 3. Report the result
+
+Give the state of each check. Use one line for each.
+
+For a pass:
+
+```
+CI: all checks passed (<n> checks, <duration>).
+```
+
+For a failure, name the job, then the cause:
+
+```bash
+gh run view --log-failed
+```
+
+Read the failed log. Report:
+
+1. the job name;
+2. the failing step;
+3. the first real error line, quoted;
+4. the cause in one sentence;
+5. the fix in one sentence.
+
+Do not paste the full log. Quote the error line only.
+
+### 4. Stop
+
+Do not fix a CI failure without the user's approval. Report the cause and the proposed fix. Ask.
+
+Exception: the user gave an explicit instruction to fix failures in this session. Then apply the fix, commit, push, and watch the checks again.
+
+Stop after three failed attempts on the same check. Report what you tried. Ask the user.
+
 ## Prohibited actions
 
 <rules>
@@ -106,4 +167,7 @@ Use this structure. Remove an optional section that has no useful content.
 * Do not skip `/commit`.
 * Do not use `--draft` unless the user asks.
 * Do not mark ready for review or request reviewers unless the user asks.
+* Do not report the PR as done while the checks still run.
+* Do not merge the PR.
+* Do not re-run a failed check to see if it passes the second time. Find the cause.
 </rules>

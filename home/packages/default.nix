@@ -109,6 +109,7 @@ in
       pnpm
       wrappedPython
       stow
+      unzip
       tldr
       libnotify
       (
