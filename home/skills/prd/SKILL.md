@@ -97,7 +97,7 @@ Verify:
 
 Run:
 ```bash
-uv run ~/.pi/agent/skills/tasks/tasks.py <output-dir>/tasks.yaml summary
+uv run ~/.omp/agent/skills/tasks/tasks.py <output-dir>/tasks.yaml summary
 ```
 
 Should show only `open` tasks.
@@ -107,10 +107,10 @@ Should show only `open` tasks.
 After creation, manage tasks with:
 
 ```bash
-uv run ~/.pi/agent/skills/tasks/tasks.py <path>/tasks.yaml summary
-uv run ~/.pi/agent/skills/tasks/tasks.py <path>/tasks.yaml list --status open
-uv run ~/.pi/agent/skills/tasks/tasks.py <path>/tasks.yaml ready
-uv run ~/.pi/agent/skills/tasks/tasks.py <path>/tasks.yaml set <key> done
+uv run ~/.omp/agent/skills/tasks/tasks.py <path>/tasks.yaml summary
+uv run ~/.omp/agent/skills/tasks/tasks.py <path>/tasks.yaml list --status open
+uv run ~/.omp/agent/skills/tasks/tasks.py <path>/tasks.yaml ready
+uv run ~/.omp/agent/skills/tasks/tasks.py <path>/tasks.yaml set <key> done
 ```
 
 ## Output Format

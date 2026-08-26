@@ -1,5 +1,5 @@
 ---
-name: mnemosyne-memory
+name: memory
 description: Persist and recall durable facts, decisions, gotchas, and conventions using the Mnemosyne CLI. Use when the user asks to remember, recall, or manage memory, or when durable context can prevent repeated work.
 ---
 
@@ -28,16 +28,16 @@ command fails because it is parsed as a positional argument.
 
 Store a fact after it is confirmed true, not speculative:
 
-- A decision and its reason (e.g. "chose `chromium-webapps` module over `programs.chromium` because both add a duplicate Chromium derivation").
-- A host-specific quirk or gotcha discovered through debugging (e.g. Widevine override needed for Spotify Web DRM).
-- A repo convention not obvious from file layout alone.
-- Corrections the user gives about how something in this repo actually works.
+- A decision and its reason.
+- A host-specific quirk or gotcha discovered through debugging.
+- A convention not obvious from file layout alone.
+- A correction from the user about how something works.
 
 ```bash
 mnemosyne store "<fact>" "<source>"
 ```
 
-`<source>` is a short label (e.g. `session`, `user-correction`, `debugging`).
+`<source>` is a short label, such as `session`, `user-correction`, or `debugging`.
 
 ## When to recall
 
@@ -47,8 +47,8 @@ Before recurring or non-trivial work, recall relevant memory first:
 mnemosyne recall "<topic>"
 ```
 
-Recalled memory is background context. Current user instructions and the
-actual repo state on disk always take precedence over a stale memory.
+Recalled memory is background context. Current user instructions and the actual
+repository state take precedence over stale memory.
 
 ## Other commands
 
@@ -67,5 +67,4 @@ mnemosyne delete <id>
 
 - The default bank is shared across projects.
 - Use a separate data directory and bank only when the user requests isolated memory.
-- This is CLI-only by design so it works from any harness that can run shell
-  commands, not just MCP-capable clients.
+- This is CLI-only by design so it works from any harness that can run shell commands.

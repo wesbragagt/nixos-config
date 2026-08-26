@@ -17,7 +17,7 @@ Refine an existing PRD by incorporating user notes into a revised plan.
 - `prd-path`: Path to the PRD directory to refine (optional)
 
 If no path is given, infer the PRD from the current session:
-1. Check if the session has a `pi.appendEntry` or tool calls referencing `prd/` paths
+1. Check the conversation for tool calls or file writes referencing `prd/` paths
 2. Search `prd/*/prd.md` for the most recently modified PRD
 3. If no PRD is found, ask the user which one to refine
 

@@ -15,7 +15,6 @@ let
     imports = [
       ./repo-root.nix
       ./claude
-      ./pi
       ./omp
       ./programs.nix
       ./tmux
@@ -46,8 +45,6 @@ let
         ccd = "claude --dangerously-skip-permissions";
       };
     };
-
-    wes.pi.enable = true;
 
     wes.omp.enable = ompEnabled;
     home.packages = [ pkgs.nssTools ];

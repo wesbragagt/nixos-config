@@ -82,7 +82,7 @@ Break the PRD into tasks following the YAML schema above. For each task:
 ### Phase 4: Validate
 
 ```bash
-uv run ~/.pi/agent/skills/tasks/tasks.py <output-dir>/tasks.yaml summary
+uv run ~/.omp/agent/skills/tasks/tasks.py <output-dir>/tasks.yaml summary
 ```
 
 Should show only `open` tasks.
@@ -91,24 +91,24 @@ Should show only `open` tasks.
 
 ```bash
 # Summary of task statuses
-uv run ~/.pi/agent/skills/tasks/tasks.py <path>/tasks.yaml summary
+uv run ~/.omp/agent/skills/tasks/tasks.py <path>/tasks.yaml summary
 
 # List tasks (optionally filter by status)
-uv run ~/.pi/agent/skills/tasks/tasks.py <path>/tasks.yaml list
-uv run ~/.pi/agent/skills/tasks/tasks.py <path>/tasks.yaml list --status open
+uv run ~/.omp/agent/skills/tasks/tasks.py <path>/tasks.yaml list
+uv run ~/.omp/agent/skills/tasks/tasks.py <path>/tasks.yaml list --status open
 
 # View a single task
-uv run ~/.pi/agent/skills/tasks/tasks.py <path>/tasks.yaml get <key>
+uv run ~/.omp/agent/skills/tasks/tasks.py <path>/tasks.yaml get <key>
 
 # Update task status
-uv run ~/.pi/agent/skills/tasks/tasks.py <path>/tasks.yaml set <key> progress
-uv run ~/.pi/agent/skills/tasks/tasks.py <path>/tasks.yaml set <key> done
+uv run ~/.omp/agent/skills/tasks/tasks.py <path>/tasks.yaml set <key> progress
+uv run ~/.omp/agent/skills/tasks/tasks.py <path>/tasks.yaml set <key> done
 
 # Show tasks whose dependencies are all done
-uv run ~/.pi/agent/skills/tasks/tasks.py <path>/tasks.yaml ready
+uv run ~/.omp/agent/skills/tasks/tasks.py <path>/tasks.yaml ready
 
 # Verify all tasks are done (exit 0) or list incomplete (exit 1)
-uv run ~/.pi/agent/skills/tasks/tasks.py <path>/tasks.yaml verify
+uv run ~/.omp/agent/skills/tasks/tasks.py <path>/tasks.yaml verify
 ```
 
 ## Output Format
