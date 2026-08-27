@@ -31,6 +31,25 @@ Do not apply these rules to code, identifiers, file paths, commands, logs, or qu
 - Put a warning or caution before the step it applies to.
 - Be concise, but do not remove necessary articles or context.
 
+## Cut AI tells
+
+Apply this to every prose response, not only when a request looks like a writing task.
+
+- No puffery ("pivotal moment", "testament to", "evolving landscape").
+- No AI vocabulary: additionally, crucial, delve, enduring, fostering, garner, intricate, landscape (abstract), pivotal, showcase, tapestry, testament, underscore, vibrant.
+- No fancy "is": "serves as", "stands as", "boasts", "features". Use "is" or "has".
+- No "not just X, but Y." State the point directly.
+- No forced rule of three. Use the natural count.
+- No em dashes. Use a period or comma.
+- No mid-sentence colons as connectors. Colons only before a list or example.
+- No bold-label inline lists ("**Performance:** Performance improved..."). Write prose.
+- Sentence case in headings. No decorative emojis. Straight quotes only.
+- No chatbot phrases: "I hope this helps!", "Let me know if...", "Certainly!".
+- No filler: "in order to" becomes "to"; "due to the fact that" becomes "because"; delete "it is important to note that".
+- Name the mechanism or number, not the feeling ("`.toSQL()` returns the exact string sent", not "the database stays close at hand").
+- Active voice: name the actor instead of passive constructions.
+- Plain words: "utilize" becomes "use", "leverage" becomes "use", "facilitate" becomes "help".
+
 ## Web research
 
 - Use `exacli` as the default web research mechanism.
