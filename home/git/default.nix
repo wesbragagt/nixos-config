@@ -1,5 +1,11 @@
-{ pkgs, ... }:
+{
+  lib,
+  pkgs,
+  hostProfile ? { },
+  ...
+}:
 let
+  hunkEnabled = hostProfile.hunkEnabled or true;
   gitSshSign = pkgs.writeShellScriptBin "git-ssh-sign" ''
     export SSH_AUTH_SOCK="''${SSH_AUTH_SOCK:-$HOME/.bitwarden-ssh-agent.sock}"
     exec ${pkgs.openssh}/bin/ssh-keygen "$@"
@@ -26,11 +32,13 @@ in
       init.defaultBranch = "main";
       # configure to use --rebase by default
       pull.rebase = true;
-      alias = {
+      alias = lib.optionalAttrs hunkEnabled {
         hdiff = "!hunk diff";
         hdiffs = "!hunk diff --staged";
         hshow = "!hunk show";
       };
+    }
+    // lib.optionalAttrs hunkEnabled {
       diff.tool = "hunk";
       difftool.prompt = false;
       "difftool \"hunk\"".cmd = "hunk difftool \"$LOCAL\" \"$REMOTE\" \"$MERGED\"";
@@ -47,6 +55,14 @@ in
     };
   };
 
+  programs.lazygit = {
+    enable = true;
+    settings.git.pagers = [
+      { pager = "delta --dark --paging=never --line-numbers"; }
+    ];
+  };
+}
+// lib.optionalAttrs hunkEnabled {
   programs.hunk = {
     enable = true;
     enableGitIntegration = false;
@@ -59,12 +75,5 @@ in
       color_moved = true;
       transparent_background = false;
     };
-  };
-
-  programs.lazygit = {
-    enable = true;
-    settings.git.pagers = [
-      { pager = "delta --dark --paging=never --line-numbers"; }
-    ];
   };
 }

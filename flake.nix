@@ -122,6 +122,7 @@
                 "name"
                 "useHomeSopsSecrets"
                 "features"
+                "hunkEnabled"
               ];
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
@@ -149,6 +150,8 @@
               suspendTimeout = 1800;
             };
             sopsHostKeyPath = "/etc/ssh/ssh_host_ed25519_key";
+            # bun (via hunkdiff) needs AVX2; this host's Celeron N4120 lacks it.
+            hunkEnabled = false;
           };
         };
 

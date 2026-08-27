@@ -4,9 +4,11 @@
   config,
   repoRoot,
   inputs,
+  hostProfile ? { },
   ...
 }:
 let
+  hunkEnabled = hostProfile.hunkEnabled or true;
   cfg = config.wes.claudeCode;
   claudeCodePackage = pkgs.callPackage ../../pkgs/claude-code { };
   mkSkillLinks = import ../lib/mk-skill-links.nix { inherit lib; };
@@ -71,6 +73,8 @@ in
       ".claude/rules".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/rules";
       ".claude/output-styles/asd-ste100.md".source =
         config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/output-styles/asd-ste100.md";
+    }
+    // lib.optionalAttrs hunkEnabled {
       ".claude/skills/hunk".source = inputs.hunk + "/skills/hunk-review";
     }
     // repoSkillLinks;

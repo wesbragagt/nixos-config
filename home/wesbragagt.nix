@@ -11,6 +11,7 @@ let
   claudeCodeEnabled = features.claude-code or false;
   ompEnabled = features.omp or false;
   mnemosyneEnabled = features.mnemosyne or false;
+  hunkEnabled = hostProfile.hunkEnabled or true;
   base = {
     imports = [
       ./repo-root.nix
@@ -21,9 +22,9 @@ let
       ./neovim
       ./sops
       inputs.sops-nix.homeManagerModules.sops
-      inputs.hunk.homeManagerModules.default
       inputs.qmd.homeModules.default
     ]
+    ++ lib.optionals hunkEnabled [ inputs.hunk.homeManagerModules.default ]
     ++ lib.optionals (!isHeadless) [
       ./hyprland
       ./waybar
