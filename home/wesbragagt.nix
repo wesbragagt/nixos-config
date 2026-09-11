@@ -15,6 +15,7 @@ let
   base = {
     imports = [
       ./repo-root.nix
+      ./ccflare
       ./claude
       ./omp
       ./programs.nix
@@ -137,7 +138,7 @@ let
           }
           {
             name = "CCFlare";
-            url = "https://ccflare.localhost";
+            url = "https://ccflare.dory-pentatonic.ts.net";
           }
         ];
     };

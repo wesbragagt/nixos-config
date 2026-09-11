@@ -10,7 +10,6 @@ Example:
 
 ```yaml
 features:
-  better-ccflare: true
   claude-code: true
   omp: true
   mnemosyne: true
@@ -26,7 +25,6 @@ Set a feature to `false`, or remove the line, to disable it.
 
 ## Available features
 
-- `better-ccflare` enables the Podman service on `icebox`.
 - `claude-code` enables the Claude Code Home Manager module.
 - `omp` enables the Open Model Platform (OMP) Home Manager module.
 - `gaming` installs Lutris on desktop hosts (skipped on headless hosts).
@@ -44,101 +42,111 @@ rebuild
 
 ## better-ccflare
 
-When enabled, better-ccflare uses Podman and listens at:
+better-ccflare runs on a separate machine, `hostinger-kvm2`, not in this repository.
+It is a docker-compose deployment at `/home/wesbragagt/dev/stack/packages/better-ccflare/docker-compose.yml`,
+published over Tailscale as:
 
 ```text
-Dashboard: http://127.0.0.1:35550/
-Health:    http://127.0.0.1:35550/health
-API base:  http://127.0.0.1:35550/v1
+Dashboard: https://ccflare.dory-pentatonic.ts.net/
+Health:    https://ccflare.dory-pentatonic.ts.net/health
+API base:  https://ccflare.dory-pentatonic.ts.net/v1
 ```
 
-The service persists `/var/lib/better-ccflare:/data`.
-The host directory uses `root:root` ownership and mode `0700`.
+There is no local better-ccflare instance on any NixOS host managed by this repo.
 
-## Local HTTPS reverse proxy
-
-`icebox` runs Caddy as the shared local reverse-proxy service.
-The better-ccflare route is:
-
-```text
-https://ccflare.localhost  →  127.0.0.1:35550
-```
-
-Use these client endpoints:
-
-```text
-Dashboard: https://ccflare.localhost/
-Health:    https://ccflare.localhost/health
-API base:  https://ccflare.localhost/v1
-```
-
-Caddy uses `tls internal` for local HTTPS.
-Trust Caddy's local root certificate to remove browser warnings.
-Use `curl --insecure` only for local testing before installing that certificate.
-
-Test the route:
+### Updating better-ccflare
 
 ```bash
-curl --insecure --fail https://ccflare.localhost/health
+ssh hostinger-kvm2
+cd /home/wesbragagt/dev/stack/packages/better-ccflare
+sudo docker compose pull better-ccflare
+sudo docker compose up -d better-ccflare
 ```
 
-An HTTP `503` response with `accounts: 0` means Caddy reached better-ccflare,
-but no provider accounts are configured yet.
+The image tag is `latest`; this pulls and recreates only the `better-ccflare` service, not the `tailscale` sidecar.
 
-## Account pool
+### Managing accounts
 
-Configure provider accounts from:
-
-```text
-https://ccflare.localhost/accounts
+```bash
+ssh hostinger-kvm2
+sudo docker exec better-ccflare better-ccflare --list
+sudo docker exec better-ccflare better-ccflare --set-priority <name> <priority>
+sudo docker exec better-ccflare better-ccflare --pause <name>
+sudo docker exec better-ccflare better-ccflare --resume <name>
+sudo docker exec better-ccflare better-ccflare --reauthenticate <name>
 ```
-
-Account credentials are stored in `/var/lib/better-ccflare`.
-Do not add provider tokens or OAuth data to this repository.
 
 ccflare selects the highest-priority active account that supports the request.
-Pause personal accounts if they must not receive routed requests.
-Set a work or shared account to the highest priority.
+Auto-fallback and provider model mappings are dashboard-only settings, at
+`https://ccflare.dory-pentatonic.ts.net/accounts` — there is no CLI flag for them.
 
-Use the Accounts page to:
+Account credentials live in the `ccflare-data` docker volume on `hostinger-kvm2`.
+Do not add provider tokens or OAuth data to this repository.
 
-- Add or re-authenticate an OAuth account.
-- Set account priority.
-- Pause or resume an account.
-- Configure provider model mappings.
-- Refresh provider usage data.
+## Shared ccflare pointer
 
-## OMP routing
-
-OMP uses the ccflare Anthropic Messages API.
-The configuration is in `home/omp/config/models.yml`.
-Home Manager links it to `~/.omp/agent/models.yml`.
-
-The current provider definition is:
+Claude Code and OMP both route through the same ccflare endpoint.
+The single source of truth is `home/ccflare/config.yml`:
 
 ```yaml
-providers:
-  ccflare:
-    baseUrl: http://127.0.0.1:35550
-    apiKey: ccflare-local
-    api: anthropic-messages
+baseUrl: https://ccflare.dory-pentatonic.ts.net
+apiKey: ccflare-local
+models:
+  - claude-opus-4-8
+  - claude-sonnet-5
+  - claude-fable-5-1
+  - claude-haiku-4-5
+  - gpt-5.6-luna
+  - gpt-5.6-terra
+  - gpt-5.6-sol
+  - gpt-6-astra
 ```
 
-The trailing `/v1` is not included here.
-OMP adds the Anthropic Messages API path.
+Edit this file to change the base URL, API key, or model list.
+The trailing `/v1` is not included in `baseUrl`.
+Apply the change with `rebuild build` followed by `rebuild`.
 
-OMP only shows model IDs listed in `models.yml`.
+The `home/ccflare` module reads this file at evaluation time and exposes
+`config.wes.ccflare.baseUrl`, `apiKey`, and `models`.
+
+- `home/claude/default.nix` sets `ANTHROPIC_BASE_URL` and `ANTHROPIC_API_KEY`
+  from these values.
+- `home/omp/default.nix` generates `~/.omp/agent/models.yml` from these
+  values, in the provider format OMP expects.
+
+OMP only shows model IDs listed in `home/ccflare/config.yml`.
 The active Codex OAuth account cannot provide a model catalog.
-Keep the model list explicit and test each new model before adding it.
+Test each new model before adding it.
 
-The configured model IDs are:
+### Model metadata for models OMP does not know
 
-- `claude-opus-4-8`
-- `claude-sonnet-5`
-- `claude-haiku-4-5`
-- `gpt-5.6-luna`
-- `gpt-5.6-terra`
-- `gpt-5.6-sol`
+OMP builds model metadata from its bundled catalog. When a model ID is
+missing there, OMP falls back to `contextWindow 128000`,
+`maxTokens 16384`, `reasoning false` and zero cost. That breaks compaction
+and cost reporting.
+
+Add the real values to `modelMetadata` in `home/omp/default.nix`. The
+generator writes them into each `models.yml` entry. `gpt-6-astra` has such
+an entry.
+
+Get the values from the models.dev catalogue, the same source OMP builds
+from:
+
+```bash
+curl -s https://models.dev/api.json | jq '.openai.models["gpt-6-astra"]'
+```
+
+Check the result without a rebuild by pointing OMP at a copy:
+
+```bash
+PI_CODING_AGENT_DIR=/tmp/omp-test/agent omp models ccflare --json
+```
+
+A model requiring a newer Claude Code client version than OMP sends will fail
+with `claude_code_version_too_old`. OMP hardcodes the client-version string it
+impersonates for OAuth Anthropic requests; ccflare only reflects whatever
+version the calling client sends. Fix by upgrading `wes.omp.version` in
+`home/omp/default.nix`, not by touching ccflare.
 
 Check the configured OMP models:
 
@@ -156,25 +164,60 @@ The OMP `usage` status segment does not report ccflare usage.
 It reports local OMP provider credentials.
 Do not enable it when ccflare is the active route.
 
-## Adding local services
+### Codex (GPT) model access and force_account_model
 
-Keep local services behind the same Caddy instance.
-Add another virtual host to `modules/caddy.nix`:
+The `gpt-5.6-*` and `gpt-6-astra` models route through the Codex OAuth
+accounts (`codex-work`, `codex-personal`), not the Anthropic accounts.
+Keep at least one `codex` mode account active, or every GPT request fails.
 
-```nix
-services.caddy.virtualHosts = {
-  "https://ccflare.localhost".extraConfig = ''
-    tls internal
-    reverse_proxy 127.0.0.1:35550
-  '';
+By default, ccflare's `session` load-balancing strategy picks an account by
+session affinity and priority, not by which account can actually serve the
+requested model. A direct model request such as `gpt-5.6-luna` can land on
+the pinned Anthropic account first, which returns
+`{"type":"not_found_error","message":"model: gpt-5.6-luna"}` and does not
+fail over, because a 404 model error is not a retryable failure class.
 
-  "https://grafana.localhost".extraConfig = ''
-    tls internal
-    reverse_proxy 127.0.0.1:3000
-  '';
-};
+ccflare's dashboard-only `force_account_model` setting fixes this: with it
+on, account selection only considers accounts whose own model listing (or
+provider namespace) actually supports the literal requested model name. This
+setting is enabled on this instance (`POST /api/config/force-account-model`,
+`{"enabled": true}`).
+
+Trade-off: this also disables the default Claude-family-to-Codex silent
+fallback. Before this was enabled, a `claude-sonnet-5` request could quietly
+get served by `gpt-5.6-sol` if the Anthropic account was unavailable. With
+`force_account_model` on, that request now fails outright instead of
+silently switching model/vendor. This is intentional: Claude requests must
+not silently route to Codex.
+
+`gpt-5.4` (not `-mini`) is not usable on this ChatGPT plan and returns
+`"The 'gpt-5.4' model is not supported when using Codex with a ChatGPT
+account."` This is an OpenAI account entitlement limit, not a ccflare or
+repo config issue.
+
+`gpt-5.4-mini` is not in the `codex-work` model listing, so no active
+account serves it. It is removed from `home/ccflare/config.yml`.
+
+### Do not serve GPT models from an openai-compatible account
+
+An `openai-compatible` (console mode) account points at
+`https://api.openai.com/v1` and translates the Anthropic request to OpenAI
+chat completions. That adapter keeps `max_tokens`, which the GPT-5 family
+rejects:
+
+```text
+400 Unsupported parameter: 'max_tokens' is not supported with this model.
+Use 'max_completion_tokens' instead.
 ```
 
-Each service must use a unique `.localhost` hostname and an unused local upstream port.
-Do not expose the upstream port publicly.
-Apply route changes with `rebuild build` followed by `rebuild`.
+ccflare 3.5.79 still has this behaviour, so an image upgrade does not fix it.
+The `gpt-5.6-*` names are also ccflare aliases, not real OpenAI API model
+IDs. Confirm the routed account with:
+
+```bash
+ssh hostinger-kvm2 'sudo docker logs --since 5m better-ccflare 2>&1 | grep -iE "force account model|Attempting request with account"'
+```
+
+Then pause the `openai-compatible` account and resume a `codex` mode
+account.
+

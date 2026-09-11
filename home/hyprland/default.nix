@@ -136,6 +136,7 @@ ${kbOptionsLine}      repeat_delay = 250
     bind = $mod SHIFT, BackSpace, exec, waypaper
     bind = $mod SHIFT, P, exec, grim -g "$(slurp -d)" - | swappy -f -
     bind = $mod SHIFT, R, exec, wf-record
+    bind = $mod SHIFT, T, exec, wf-record-region
     bind = $mod SHIFT, I, exec, idle-control toggle
     bind = $mod SHIFT, l, exec, kill -35 $(pgrep -fo nwg-dock)
 

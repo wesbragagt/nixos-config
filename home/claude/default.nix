@@ -57,11 +57,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Route Claude Code through the local better-ccflare Anthropic endpoint.
-    home.sessionVariables = {
-      ANTHROPIC_BASE_URL = "http://127.0.0.1:35550";
-      ANTHROPIC_API_KEY = "ccflare-local";
-    };
+    # Route Claude Code through the shared ccflare endpoint (home/ccflare/config.yml).
+    home.sessionVariables = {};
 
     home.packages = [ cfg.package ];
 
@@ -90,9 +87,11 @@ in
       tmp="$settings.tmp"
       $DRY_RUN_CMD mkdir -p "$HOME/.claude"
       if [ -f "$settings" ]; then
-        $DRY_RUN_CMD ${pkgs.jq}/bin/jq '.outputStyle = "ASD-STE100"' "$settings" > "$tmp"
+        $DRY_RUN_CMD ${pkgs.jq}/bin/jq \
+          '.outputStyle = "ASD-STE100" | .permissions.deny = ((.permissions.deny // []) + ["WebSearch"] | unique)' \
+          "$settings" > "$tmp"
       else
-        $DRY_RUN_CMD printf '%s\n' '{"outputStyle":"ASD-STE100"}' > "$tmp"
+        $DRY_RUN_CMD printf '%s\n' '{"outputStyle":"ASD-STE100","permissions":{"deny":["WebSearch"]}}' > "$tmp"
       fi
       $DRY_RUN_CMD mv "$tmp" "$settings"
     '';

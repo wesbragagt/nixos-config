@@ -28,7 +28,7 @@ in this order:
    changes. Mark optional steps as optional.
 5. **Tests & verification** — exact commands to run and what "green" means.
 6. **Constraints** — carry over the house rules that apply: no `terragrunt apply`
-   / no cluster mutation, no AI attribution in commits, never commit `prd/`/`prds/`,
+   / no cluster mutation, no AI attribution in commits, never commit `.specs/`,
    stay surgical, match existing style. Whether to open a PR when done.
 
 Keep it surgical and unambiguous. A senior engineer with zero prior context should

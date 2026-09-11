@@ -1,17 +1,17 @@
 ---
 name: tasks
-description: "Break down a PRD into a tasks.yaml with dependencies using the task breakdown agent, creating or refining the PRD with the planner agent when needed. Use when given a PRD file path or feature description that needs to be decomposed into actionable, ordered tasks. Produces prd.md + tasks.yaml + per-task detail files."
+description: "Manage a spec.md + tasks.yaml task set: create it via the to-spec skill when missing, then list, inspect, and update task status. Use when given a spec path, PRD path, or feature description that needs task tracking."
 ---
 
-# Task Breakdown
+# Task Breakdown and Tracking
 
-Break down a PRD into actionable tasks with dependencies.
+Manage a `tasks.yaml` task set. Create it via the `to-spec` skill when one does not exist yet, then track status with the `tasks.py` CLI.
 
 ## Usage
 
 The user provides either:
-1. A **file path** to an existing PRD markdown file
-2. A **description string** for a new feature
+1. A **path** to an existing `spec.md`/`tasks.yaml` directory (or a legacy `prd.md`).
+2. A **description string** for a new feature.
 
 Optional: `--name <feature-name>` to override the auto-generated feature name.
 
@@ -19,13 +19,9 @@ If no name is provided, generate one from the first 4 words of the description, 
 
 Example: "Build user authentication system" → `build-user-auth-system`
 
-## Output Directory
+## Output Location
 
-```
-./prds/<feature-name>/
-```
-
-Create the `prds/` directory in the current working directory if it does not already exist.
+Specs live under `.specs/<feature-name>/`, resolved to the main checkout root when the current work is in a git worktree. See the `to-spec` skill for the exact resolution rule.
 
 ## Task YAML Spec
 
@@ -36,56 +32,27 @@ tasks:
     details: ./task-name.md # path to detail file with implementation notes
     status: open            # open, progress, or done
     depends: []             # list of task keys this depends on
+    requirements: []        # requirement IDs from spec.md
+    acceptance: []          # acceptance IDs from spec.md
 ```
 
 ## Execution
 
-**Delegation requirement:** if a PRD needs to be created or refined, use `planner_agent`. Use `task_breakdown_agent` to produce `tasks.yaml` and the task detail files.
+### Phase 1: Locate or create the spec
 
-### Phase 1: Research
+- Path given and it contains `spec.md` and `tasks.yaml`: use it as-is, skip to Phase 2.
+- Path given but only a legacy `prd.md` exists: treat it as input context for the `to-spec` skill and let it produce `spec.md`/`tasks.yaml` alongside it.
+- No existing spec: invoke the `to-spec` skill with the feature name and description to produce `spec.md`, `tasks.yaml`, and the task packets.
 
-Research best practices and patterns relevant to the feature. Use web search or codebase exploration.
+**Delegation requirement:** do not draft the spec or task breakdown directly in this skill. Delegate spec and task creation to `to-spec`.
 
-### Phase 2: Refine PRD
-
-If the input is a description (not an existing PRD file), use `planner_agent` to create the `prd.md` draft following the PRD structure below, then write that result to `./prds/<feature-name>/prd.md`:
-
-1. **Problem Statement** — what is broken or missing
-2. **Goals** — outcomes we want
-3. **Non-Goals** — explicit scope boundaries
-4. **Acceptance Criteria** — user-observable requirements
-5. **Out of Scope** — what this excludes
-
-**PRD constraints:**
-- WHAT and WHY only, never HOW
-- No code examples, class names, file paths, or implementation patterns
-- Acceptance criteria describe user-observable outcomes
-
-If the input is an existing PRD file, refine it with `planner_agent` only if needed.
-
-### Phase 3: Create Tasks
-
-Use `task_breakdown_agent` with the final PRD content and target directory. Write the returned `tasks.yaml` and each detail file into `./prds/<feature-name>/`.
-
-Break the PRD into tasks following the YAML schema above. For each task:
-
-1. Add an entry to `tasks.yaml` with `status: open`
-2. Create a detail file (`./task-name.md`) with implementation specifics
-3. Set `depends` based on actual ordering requirements
-
-**Task constraints:**
-- Descriptions are action-oriented ("Implement X", "Add Y")
-- Implementation specifics (patterns, file structure, migration steps) go in detail files
-- Keep scope minimal and focused
-- Dependencies reference existing task keys only
-
-### Phase 4: Validate
+### Phase 2: Validate
 
 ```bash
 uv run ~/.omp/agent/skills/tasks/tasks.py <output-dir>/tasks.yaml summary
 ```
 
-Should show only `open` tasks.
+Newly created task sets should show only `open` tasks.
 
 ## Task Management
 
@@ -114,15 +81,15 @@ uv run ~/.omp/agent/skills/tasks/tasks.py <path>/tasks.yaml verify
 ## Output Format
 
 ```
-✓ Tasks created: prds/<feature-name>/
-  - prd.md
+✓ Tasks: .specs/<feature-name>/
+  - spec.md
   - tasks.yaml (X tasks)
-  - {X} detail files
+  - {X} task packets
 
 Tasks:
   1. task-name-1 (no deps)
   2. task-name-2 (depends: task-name-1)
   ...
 
-Next: /skill:code prds/<feature-name>/tasks.yaml
+Next: /skill:code .specs/<feature-name>/tasks.yaml
 ```

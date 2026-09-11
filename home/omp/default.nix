@@ -13,6 +13,51 @@ let
   agentsLink = lib.optionalAttrs (builtins.pathExists ./config/agents) {
     ".omp/agent/agents".source = config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/agents";
   };
+
+  # Expose the shared verifier agent definition to OMP without duplicating it.
+  # Skipped when config/agents exists, since agentsLink already symlinks the
+  # whole ".omp/agent/agents" directory and would collide with a per-file link.
+  verifierAgentLink = lib.optionalAttrs (!builtins.pathExists ./config/agents) {
+    ".omp/agent/agents/verifier.md".source =
+      config.lib.file.mkOutOfStoreSymlink "${repoRoot}/home/claude/config/agents/verifier.md";
+  };
+
+  yamlFormat = pkgs.formats.yaml { };
+
+  # Metadata for models the bundled OMP catalog does not know. Without an entry
+  # here OMP falls back to contextWindow 128000, maxTokens 16384, reasoning
+  # false and zero cost, which breaks compaction and cost reporting.
+  # Values come from the models.dev `openai/gpt-6-astra` entry, the same
+  # catalogue OMP itself builds from.
+  modelMetadata = {
+    "gpt-6-astra" = {
+      name = "GPT-6 Astra";
+      reasoning = true;
+      supportsTools = true;
+      contextWindow = 1050000;
+      maxTokens = 128000;
+      input = [ "text" "image" ];
+      thinking = {
+        mode = "effort";
+        efforts = [ "low" "medium" "high" "xhigh" "max" ];
+      };
+      cost = {
+        input = 10;
+        output = 50;
+        cacheRead = 1;
+        cacheWrite = 12.5;
+      };
+    };
+  };
+
+  # Generated from home/ccflare/config.yml so OMP and Claude Code share one pointer.
+  modelsFile = yamlFormat.generate "omp-models.yml" {
+    providers.ccflare = {
+      inherit (config.wes.ccflare) baseUrl apiKey;
+      api = "anthropic-messages";
+      models = map (id: { inherit id; } // (modelMetadata.${id} or { })) config.wes.ccflare.models;
+    };
+  };
 in
 {
   options.wes.omp = {
@@ -38,7 +83,7 @@ in
 
     version = lib.mkOption {
       type = lib.types.str;
-      default = "17.4.1";
+      default = "18.1.6";
       description = "Pinned omp CLI version installed into the bun global prefix.";
     };
   };
@@ -48,12 +93,14 @@ in
     home.file = {
       ".omp/agent/config.yml".source =
         config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/config.yml";
-      ".omp/agent/models.yml".source =
-        config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/models.yml";
+      ".omp/agent/models.yml".source = modelsFile;
       ".omp/agent/AGENTS.md".source =
         config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/AGENTS.md";
+      ".omp/agent/rules/notai.md".source =
+        config.lib.file.mkOutOfStoreSymlink "${cfg.configRoot}/rules/notai.md";
     }
     // agentsLink
+    // verifierAgentLink
     // repoSkillLinks;
 
     # OMP writes runtime files (config.yml updates, dbs) into ~/.omp/agent.

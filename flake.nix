@@ -69,10 +69,10 @@
       defaultFeatures = {
         claude-code = false;
         omp = false;
-        better-ccflare = false;
         gaming = false;
         qbittorrent = false;
         mnemosyne = false;
+        ffmpeg = false;
       };
       machineFeatures = lib.mapAttrs (name: _: featureEnabled name) defaultFeatures;
       # sops defaults on (existing behaviour); set "sops: false" in

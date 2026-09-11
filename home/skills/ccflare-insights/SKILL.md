@@ -1,12 +1,13 @@
 ---
 name: ccflare-insights
-description: Analyze local better-ccflare usage, agent efficiency, token spend, cache use, and request anomalies. Use when the user asks about ccflare usage, agent efficiency, token cost, cache behavior, or request anomalies.
+description: Analyze better-ccflare usage, agent efficiency, token spend, cache use, and request anomalies, on the remote hostinger-kvm2 instance. Use when the user asks about ccflare usage, agent efficiency, token cost, cache behavior, or request anomalies.
 argument-hint: "[context] [range: 1h|6h|24h|7d|30d; default 7d]"
 ---
 
 # better-ccflare Insights
 
-Give advisory-only, evidence-based advice from the local better-ccflare Insights API.
+Give advisory-only, evidence-based advice from the better-ccflare Insights API.
+better-ccflare runs remotely on `hostinger-kvm2`, reached over Tailscale as `https://ccflare.dory-pentatonic.ts.net`. There is no local instance.
 
 Do not change proxy settings, headers, agent front matter, preferences, accounts, models, retention, or request records.
 
@@ -27,7 +28,7 @@ ccflare-insights [context] [1h|6h|24h|7d|30d]
 Set the endpoint and time window:
 
 ```bash
-BASE_URL=https://ccflare.localhost
+BASE_URL=https://ccflare.dory-pentatonic.ts.net
 case "$RANGE" in
   1h|6h|24h|7d|30d) ;;
   *) printf '%s\n' 'Accepted syntax: ccflare-insights [context] [1h|6h|24h|7d|30d]' >&2; exit 2 ;;
@@ -44,12 +45,14 @@ TMPDIR=$(mktemp -d)
 trap 'rm -rf "$TMPDIR"' EXIT
 ```
 
+`$BASE_URL` is reached over Tailscale HTTPS with a real cert. Do not pass `--insecure`.
+
 ## Check service health
 
 Run this command first. Do not send credentials.
 
 ```bash
-curl --insecure --fail --silent --show-error "$BASE_URL/health" >"$TMPDIR/health.json"
+curl --fail --silent --show-error "$BASE_URL/health" >"$TMPDIR/health.json"
 ```
 
 If curl fails, report its exact connection error and stop. If `.status` is not `"ok"`, report the returned health state and stop. Do not use another host or port.
@@ -59,15 +62,15 @@ If curl fails, report its exact connection error and stop. If `.status` is not `
 Use only read-only `GET` requests. Save response bodies in `$TMPDIR`; never print raw JSON.
 
 ```bash
-curl --insecure --fail --silent --show-error "$BASE_URL/api/requests?limit=1000" >"$TMPDIR/requests.json"
-curl --insecure --fail --silent --show-error "$BASE_URL/api/analytics?range=$RANGE" >"$TMPDIR/analytics.json"
+curl --fail --silent --show-error "$BASE_URL/api/requests?limit=1000" >"$TMPDIR/requests.json"
+curl --fail --silent --show-error "$BASE_URL/api/analytics?range=$RANGE" >"$TMPDIR/analytics.json"
 ```
 
 Then collect these independent Insight endpoints. Continue if either one is unavailable. Record its curl error as endpoint unavailability, not as a request failure metric.
 
 ```bash
-curl --insecure --fail --silent --show-error "$BASE_URL/api/insights/cache?range=$RANGE" >"$TMPDIR/cache.json"
-curl --insecure --fail --silent --show-error "$BASE_URL/api/insights/anomalies?range=$RANGE" >"$TMPDIR/anomalies.json"
+curl --fail --silent --show-error "$BASE_URL/api/insights/cache?range=$RANGE" >"$TMPDIR/cache.json"
+curl --fail --silent --show-error "$BASE_URL/api/insights/anomalies?range=$RANGE" >"$TMPDIR/anomalies.json"
 ```
 
 Never call `POST`, `PATCH`, `DELETE`, `/api/stats/reset`, `/api/requests/detail`, or any endpoint not listed here.
@@ -75,7 +78,7 @@ Never call `POST`, `PATCH`, `DELETE`, `/api/stats/reset`, `/api/requests/detail`
 Only when `CONTEXT=true`, explain before the request that stored request payloads can produce contributor labels or short content previews. Then collect:
 
 ```bash
-curl --insecure --fail --silent --show-error "$BASE_URL/api/insights/context?range=$RANGE" >"$TMPDIR/context.json"
+curl --fail --silent --show-error "$BASE_URL/api/insights/context?range=$RANGE" >"$TMPDIR/context.json"
 ```
 
 Do not call the context endpoint without that explicit opt-in.

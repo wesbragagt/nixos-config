@@ -11,6 +11,7 @@ let
   isHeadless = hostProfile.headless or false;
   gamingEnabled = (hostProfile.features or { }).gaming or false;
   mnemosyneEnabled = (hostProfile.features or { }).mnemosyne or false;
+  ffmpegEnabled = (hostProfile.features or { }).ffmpeg or false;
   unstable = import inputs.nixpkgs-unstable {
     inherit (pkgs.stdenv.hostPlatform) system;
     config.allowUnfree = true;
@@ -193,6 +194,7 @@ in
       (pkgs.writeShellScriptBin "edit-bookmarks" (builtins.readFile ../../scripts/edit-bookmarks.sh))
       (pkgs.writeShellScriptBin "rofi-freq" (builtins.readFile ../../scripts/rofi-freq.sh))
       (pkgs.writeShellScriptBin "wf-record" (builtins.readFile ../../scripts/wf-recorder.sh))
+      (pkgs.writeShellScriptBin "wf-record-region" ''exec wf-record region "$@"'')
     ]
     ++ lib.optionals (hasWireless && !isHeadless) [
       # network / Wi-Fi tray helpers
@@ -210,5 +212,8 @@ in
     ]
     ++ lib.optionals mnemosyneEnabled [
       (pkgs.callPackage ../../pkgs/mnemosyne { })
+    ]
+    ++ lib.optionals ffmpegEnabled [
+      ffmpeg
     ];
 }

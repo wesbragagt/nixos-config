@@ -83,6 +83,7 @@ in
       "video"
       "audio"
       "podman"
+      "docker"
     ];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [

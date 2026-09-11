@@ -20,9 +20,9 @@ Execute tasks from a tasks.yaml file by orchestrating code-writer agents. Automa
 ## Examples
 
 ```
-/code prd/auth-feature/tasks.yaml
+/code .specs/auth-feature/tasks.yaml
 /code ./tasks.yaml --task setup-database
-/code prd/search/tasks.yaml
+/code .specs/search/tasks.yaml
 ```
 
 ## Implementation
@@ -66,25 +66,25 @@ Execute tasks from a tasks.yaml file by orchestrating code-writer agents. Automa
    uv run ~/.claude/skills/tasks/tasks.py <path> set <task-key> progress
    ```
 
-   b. **Gather context**:
-   - Read the PRD file in the same directory (`prd.md`)
+   b. **Gather a standalone task packet**:
+   - Read the spec file in the same directory (`spec.md`, or legacy `prd.md`) and extract the acceptance criteria relevant to this task
    - Read the task's detail file if `details` path is set
-   - Read detail files from completed dependent tasks
+   - Collect the completed dependency handoff records, including each dependency's implementation summary and created or modified files
    - Scan codebase for relevant existing patterns
 
    c. **Choose agent type**:
    - Single file, simple change → `code-writer-simple`
    - Multi-file, architectural, or complex → `code-writer-complex`
 
-   d. **Invoke agent** using the prompter skill with this structure:
+   d. **Invoke the implementation agent** using the prompter skill with this structure:
 
    ```xml
    <delegation>
      <role>Senior software engineer specializing in {detected language/framework}</role>
 
      <context>
-       <prd>{summary from prd.md}</prd>
-       <dependencies>{list of completed dependent tasks and what they built}</dependencies>
+       <spec>{summary from spec.md}</spec>
+       <dependencies>{completed dependency handoff records}</dependencies>
        <codebase>{relevant existing files, patterns, conventions}</codebase>
      </context>
 
@@ -115,14 +115,47 @@ Execute tasks from a tasks.yaml file by orchestrating code-writer agents. Automa
    </delegation>
    ```
 
-    e. **On success, mark done**:
-    ```bash
-    uv run ~/.claude/skills/tasks/tasks.py <path> set <task-key> done
-    ```
+   e. **Dispatch an independent `verifier` subagent after the implementation agent reports completion and before changing status**. The verifier must not be the implementation agent. Give it the standalone task packet and the implementation claim:
 
-   **For parallel tasks**: Launch all agents in a single tool call block.
+   ```xml
+   <delegation>
+     <role>Independent verifier</role>
 
-7. **Loop**: After completing a batch, go back to step 3 to find the next ready tasks.
+     <task-packet>
+       <key>{task-key}</key>
+       <description>{task.description}</description>
+       <details>{contents of task detail file if exists}</details>
+       <acceptance-criteria>{relevant criteria from spec.md}</acceptance-criteria>
+       <completed-dependency-handoffs>{completed dependency handoff records}</completed-dependency-handoffs>
+     </task-packet>
+
+     <implementation-claim>
+       <summary>{implementation agent's claimed summary}</summary>
+       <files>{implementation agent's claimed created/modified files}</files>
+     </implementation-claim>
+
+     <instructions>
+       - Independently inspect the implementation and claimed files
+       - Check every task requirement and supplied acceptance criterion
+       - Check compatibility with the completed dependency handoffs
+       - Return evidence for every conclusion
+       - Return exactly one verdict: PASS, FAIL, BLOCKED, or PARTIAL
+       - PASS only when the evidence shows the task is complete
+     </instructions>
+   </delegation>
+   ```
+
+   f. **Gate status on the verifier verdict**:
+   - Only an evidence-backed `PASS` permits marking the task `done`:
+     ```bash
+     uv run ~/.claude/skills/tasks/tasks.py <path> set <task-key> done
+     ```
+   - `FAIL`, `BLOCKED`, or `PARTIAL` keeps the task `progress`. Return the verifier's evidence and do not mark it done.
+   - Never mark a completed implementation task `done` without a dedicated verifier `PASS`.
+
+   **For parallel tasks**: Launch all implementation agents in a single tool call block. When each implementation completes, dispatch one independent `verifier` subagent for that task, supplying its task packet, implementation claim, and dependency handoff records. Each task remains `progress` until its own verifier returns an evidence-backed `PASS`; do not let another task's result satisfy this gate.
+
+7. **Loop**: After completing a batch and its verifier dispatches, go back to step 3 to find the next ready tasks.
 
 8. **Final verification** when all tasks report done:
    ```bash
@@ -144,9 +177,10 @@ Execute tasks from a tasks.yaml file by orchestrating code-writer agents. Automa
 ## Error Handling
 
 - **Task fails**: Leave status as `"progress"`, report the error, allow user to retry
+- **Verifier returns FAIL, BLOCKED, or PARTIAL**: Leave status as `"progress"`, report the verifier's evidence and verdict, allow user to retry
 - **No ready tasks but not all done**: Report which tasks are blocking and why
 - **Missing dependency**: Report which upstream tasks need to complete first
-- **Missing detail file**: Proceed using only the task description and PRD context
+- **Missing detail file**: Proceed using only the task description and spec context
 
 ## Output Format
 

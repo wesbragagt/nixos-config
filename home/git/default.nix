@@ -61,9 +61,8 @@ in
       { pager = "delta --dark --paging=never --line-numbers"; }
     ];
   };
-}
-// lib.optionalAttrs hunkEnabled {
-  programs.hunk = {
+
+  programs.hunk = lib.mkIf hunkEnabled {
     enable = true;
     enableGitIntegration = false;
     settings = {

@@ -14,14 +14,14 @@
 }:
 buildNpmPackage (finalAttrs: {
   pname = "claude-code";
-  version = "2.1.241";
+  version = "2.1.258";
 
   src = fetchzip {
     url = "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-${finalAttrs.version}.tgz";
-    hash = "sha256-RkuKYiZ457u9lwepw2walT00INlCgnWr7GBwrYKsTRQ=";
+    hash = "sha256-uvTwOkICykQ3oAfG9PcGPwmw65TL9v8TfG5jfEBA7WM=";
   };
 
-  npmDepsHash = "sha256-rNkinqS3vOBj90wzAhMPIx43DCGqAeyUTwxV1oFAoKc=";
+  npmDepsHash = "sha256-CrjZjtNqyT6kEWrb9NXSFia6hzC9FYGGfz1Ld/YR7BY=";
 
   strictDeps = true;
 
@@ -34,7 +34,7 @@ buildNpmPackage (finalAttrs: {
     cat > package.json <<'EOF'
     {
       "name": "@anthropic-ai/claude-code",
-      "version": "2.1.241",
+      "version": "2.1.258",
       "bin": {
         "claude": "bin/claude.exe"
       },
@@ -55,7 +55,7 @@ buildNpmPackage (finalAttrs: {
       },
       "dependencies": {},
       "optionalDependencies": {
-        "@anthropic-ai/claude-code-linux-x64": "2.1.241"
+        "@anthropic-ai/claude-code-linux-x64": "2.1.258"
       },
       "files": [
         "bin/claude.exe",

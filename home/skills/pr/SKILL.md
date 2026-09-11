@@ -170,4 +170,5 @@ Stop after three failed attempts on the same check. Report what you tried. Ask t
 * Do not report the PR as done while the checks still run.
 * Do not merge the PR.
 * Do not re-run a failed check to see if it passes the second time. Find the cause.
+* DO NOT write a PR description that is more than 700 words.
 </rules>
