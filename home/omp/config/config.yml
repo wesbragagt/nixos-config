@@ -35,5 +35,14 @@ disabledExtensions:
   - slash-command:pr
   - slash-command:pr-feedback
   - slash-command:rebase
+display:
+  hideToolActivity: true
+hideThinkingBlock: true
+tools:
+  artifactSpillThreshold: 20
+  artifactHeadBytes: 0
+  artifactTailBytes: 0
+  artifactTailLines: 50
+  outputMaxColumns: 200
 composer:
   shape: box
