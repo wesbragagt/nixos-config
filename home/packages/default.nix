@@ -150,6 +150,7 @@ in
       # markdown viewing
       glow
       (pkgs.writeShellScriptBin "glow-review" (builtins.readFile ../../scripts/glow-review.sh))
+      (pkgs.writeShellScriptBin "markdown-fzf" (builtins.readFile ../../scripts/markdown-fzf.sh))
 
       # scripts
       (pkgs.writeShellScriptBin "file-fzf" (builtins.readFile ../../scripts/sf.sh))

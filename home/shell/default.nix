@@ -13,6 +13,7 @@ let
     vi = "nvim";
     sf = "file-fzf";
     sg = "grep-fzf";
+    mk = "markdown-fzf";
     gs = "git status";
     gitd = "lazygit";
     # git add all changes and commit
