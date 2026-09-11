@@ -94,7 +94,17 @@ let
     fi
   '';
 in
+
 {
+  xdg.configFile."glow/glow.yml".text = ''
+    # The glow-review popup provides the centered document area.
+    style: "auto"
+    mouse: true
+    pager: false
+    width: 100
+    all: false
+    preserveNewLines: true
+  '';
   home.packages =
     with pkgs;
     [
@@ -139,6 +149,7 @@ in
 
       # markdown viewing
       glow
+      (pkgs.writeShellScriptBin "glow-review" (builtins.readFile ../../scripts/glow-review.sh))
 
       # scripts
       (pkgs.writeShellScriptBin "file-fzf" (builtins.readFile ../../scripts/sf.sh))
